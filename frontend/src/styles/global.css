@@ -20,6 +20,9 @@
   .btn-primary{
     @apply bg-white px-8 py-3 font-montserratbold text-primary hover:text-secondary hover:transition hover:ease-linear;
   }
+  .btn-secondary{
+    @apply bg-primary px-8 py-3 font-montserratbold text-white  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third;
+  }
 body {
   background-color: #fdfdfd;
   margin: 0;
@@ -152,4 +155,59 @@ code {
   transition: all 0.2s ease 0s;
   box-shadow: rgb(4 17 29 / 25%) 0px 0px 8px 0px;
   background-color: rgb(251, 253, 255);
+}
+
+.radio-item {
+  display: inline-block;
+  position: relative;
+  padding: 0 6px;
+  margin: 10px 0 0;
+}
+
+.radio-item input[type='radio'] {
+  display: none;
+}
+
+.radio-item label {
+  @apply font-montserratregular text-black;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.radio-item label:before {
+  @apply border-primary border-[2px];
+  content: " ";
+  display: inline-block;
+  position: relative;
+  top: 5px;
+  margin: 0 5px 0 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  background-color: transparent;
+}
+
+.radio-item input[type=radio]:checked + label:after {
+  width: 12px;
+  height: 12px;
+  border-radius: 15px;
+  position: absolute;
+  top: 9px;
+  left: 10px;
+  content: " ";
+  display: block;
+  @apply border-primary border-[2px] bg-primary;
+}
+
+.-open{
+  position:relative!important;
+}
+
+.nice-dates-day{
+  height: 45px!important;
+}
+
+.nice-dates-grid{
+  height: 300px!important;
+
 }
