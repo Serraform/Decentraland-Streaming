@@ -48,8 +48,7 @@ jobs:
         cd './frontend/'
         npm install --save --legacy-peer-deps
         npm run build --if-present
-        npm run test --passWithNoTests
-
+       
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v3
       with:
