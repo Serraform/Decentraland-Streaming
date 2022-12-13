@@ -1,0 +1,213 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "Montserratbold";
+    src: url("../assets/fonts/Montserrat-Bold.ttf");
+  }
+
+  @font-face {
+    font-family: "Montserratregular";
+    src: url("../assets/fonts/Montserrat-Regular.ttf");
+  }
+
+
+  .background-banner{
+    background:linear-gradient(0deg, #38B6FF -18.4%, #2561C5 19.88%, #163872 120.3%);
+  }
+
+  .btn-primary{
+    @apply bg-white px-8 py-3 font-montserratbold text-primary hover:text-secondary hover:transition hover:ease-linear;
+  }
+  .btn-secondary{
+    @apply bg-primary px-8 py-3 font-montserratbold text-white  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third;
+  }
+body {
+  background-color: #fdfdfd;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.preloader-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #f7f7f7;
+  z-index: 999999;
+}
+
+.preloader {
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  padding: 0;
+  text-align: left;
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  margin-top: -25px;
+}
+
+.preloader span {
+  @apply bg-primary;
+  position: absolute;
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  
+  -webkit-animation: preloader 1.3s linear infinite;
+  animation: preloader 1.3s linear infinite;
+}
+
+.preloader span:last-child {
+  animation-delay: -0.8s;
+  -webkit-animation-delay: -0.8s;
+}
+
+@keyframes preloader {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1, 1);
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes preloader {
+  0% {
+    -webkit-transform: scale(0, 0);
+    opacity: 0.5;
+  }
+  100% {
+    -webkit-transform: scale(1, 1);
+    opacity: 0;
+  }
+}
+
+.wallet-drawer{
+  position: fixed;
+  right: 0px;
+  bottom: 0px;
+  width: 420px;
+  z-index: 90;
+  height: 100%;
+  background: rgb(255, 255, 255);
+  border: 1px solid rgb(229, 232, 235);
+  overflow: auto;
+  filter: drop-shadow(rgba(0, 0, 0, 0.25) 0px 4px 4px);
+  transition: transform 1s ease 0s, opacity 0.3s ease 0s;
+  visibility: visible;
+  transform: translate3d(0px, 0px, 0px);
+  opacity: 1;
+  transform: translate(100%, 0);
+}
+
+.wallet-list{
+  border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-bottom: none;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(229, 232, 235);
+    border-radius: 10px;
+    margin: 0px;
+    padding-left: 0px;
+    list-style-type: none;
+    width: 100%;
+}
+
+.wallet-item{
+  border-bottom: 1px solid #e5e8eb;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  width: 100%;
+}
+
+.wallet-option{
+  -webkit-appearance: button;
+  background-color: transparent;
+  background-image: none;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  justify-content: space-between;
+}
+
+.wallet-option:hover{
+  transition: all 0.2s ease 0s;
+  box-shadow: rgb(4 17 29 / 25%) 0px 0px 8px 0px;
+  background-color: rgb(251, 253, 255);
+}
+
+.radio-item {
+  display: inline-block;
+  position: relative;
+  padding: 0 6px;
+  margin: 10px 0 0;
+}
+
+.radio-item input[type='radio'] {
+  display: none;
+}
+
+.radio-item label {
+  @apply font-montserratregular text-black;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.radio-item label:before {
+  @apply border-primary border-[2px];
+  content: " ";
+  display: inline-block;
+  position: relative;
+  top: 5px;
+  margin: 0 5px 0 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  background-color: transparent;
+}
+
+.radio-item input[type=radio]:checked + label:after {
+  width: 12px;
+  height: 12px;
+  border-radius: 15px;
+  position: absolute;
+  top: 9px;
+  left: 10px;
+  content: " ";
+  display: block;
+  @apply border-primary border-[2px] bg-primary;
+}
+
+.-open{
+  position:relative!important;
+}
+
+.nice-dates-day{
+  height: 45px!important;
+}
+
+.nice-dates-grid{
+  height: 300px!important;
+
+}
