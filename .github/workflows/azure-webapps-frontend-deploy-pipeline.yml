@@ -40,8 +40,8 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        path: '.\frontend\'
+        cache: 'yarn'
+        cache-dependency-path: './frontend/yarn.lock'
 
     - name: npm install, build, and test
       run: |
