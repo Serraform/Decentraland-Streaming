@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import {Buffer} from 'buffer';
+import { Buffer } from "buffer";
 type Props = {
   video: string;
   handleChange: Function;
@@ -19,17 +19,18 @@ const Video: React.FC<Props> = ({ video, handleChange }) => {
     const file = e.target.files[0];
     if (!file) return;
     const fileSize = file.size;
+    const fileLength = file.length;
     if (file) {
       const video = URL.createObjectURL(file);
       setLocalVideo(video);
       let reader = new FileReader();
       reader.onload = function (e) {
         if (reader.result) {
-          debugger;
           console.log(Buffer.from(reader.result as any));
           handleChange({ target: { name: "videoSize", value: fileSize } });
+          handleChange({ target: { name: "videoLength", value: fileLength } });
           handleChange({
-            target: { name: "video", value: Buffer.from(reader.result as any) }
+            target: { name: "video", value: Buffer.from(reader.result as any) },
           });
         }
       };

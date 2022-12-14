@@ -1,19 +1,20 @@
 import React, { useCallback } from "react";
-import { IStreamCreation } from "components/stream-modal/types";
 import { Formik, Field, Form } from "formik";
 import {
-  initialInfoState,
   validationSchema,
 } from "components/stream-modal/formdata";
-const StreamType: React.FC<IStreamCreation> = ({
-  handleSave,
-  changeStep,
-}) => {
-  const handleOnSubmit = useCallback((values: any) => {
-    handleSave(values)
-    changeStep(1)
-  }, [handleSave,
-    changeStep]);
+type Props = {
+  handleSave: Function,
+  changeStep: Function
+}
+const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
+  const handleOnSubmit = useCallback(
+    (values: any) => {
+      handleSave(values.type);
+      changeStep(1);
+    },
+    [handleSave, changeStep]
+  );
   return (
     <div className="px-[5rem] py-[20px] items-center flex flex-col justify-center w-100">
       <h1 className="font-montserratbold text-black text-center pb-[40px]">
@@ -21,7 +22,7 @@ const StreamType: React.FC<IStreamCreation> = ({
       </h1>
       <div className="flex flex-row flex-wrap justify-evenly items-baseline pt-[20px]">
         <Formik
-          initialValues={initialInfoState}
+          initialValues={{type: ""}}
           validationSchema={validationSchema}
           onSubmit={(values) => handleOnSubmit(values)}
         >
