@@ -1,0 +1,222 @@
+{
+	"info": {
+		"_postman_id": "15dce617-9985-4b20-a748-fab08d3f0458",
+		"name": "Serraform-Dev-LivePeer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7598595"
+	},
+	"item": [
+		{
+			"name": "Asset",
+			"item": [
+				{
+					"name": "RequestUploadURL",
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "grant_type",
+									"value": "implicit",
+									"type": "string"
+								},
+								{
+									"key": "useBrowser",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "scope",
+									"value": "api://fa3dc8d4-95c4-4503-93cb-174f26a93787/.default",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "99db2f56-62f7-4eba-8aa0-a99c8addbdb3",
+									"type": "string"
+								},
+								{
+									"key": "authUrl",
+									"value": "https://login.microsoftonline.com/b8fcd764-567f-440d-8c7a-6218dac96c10/oauth2/v2.0/authorize",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://oauth.pstmn.io/v1/callback",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://srfm-mediaservices-api.azurewebsites.net/api/Asset/RequestUploadURL/myVideoName",
+							"protocol": "https",
+							"host": [
+								"srfm-mediaservices-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"Asset",
+								"RequestUploadURL",
+								"myVideoName"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAssetStatus",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://srfm-mediaservices-api.azurewebsites.net/api/Asset/GetAssetStatus/myAssetId",
+							"protocol": "https",
+							"host": [
+								"srfm-mediaservices-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"Asset",
+								"GetAssetStatus",
+								"myAssetId"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAssetsByWalletId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://srfm-mediaservices-api.azurewebsites.net/api/Asset/GetAssetsByWalletId/walletId",
+							"protocol": "https",
+							"host": [
+								"srfm-mediaservices-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"Asset",
+								"GetAssetsByWalletId",
+								"walletId"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "GetUserDetailsByWalletId​",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://srfm-mediaservices-api.azurewebsites.net/api/User/GetUserDetailsByWalletId/mywalletId",
+							"protocol": "https",
+							"host": [
+								"srfm-mediaservices-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"User",
+								"GetUserDetailsByWalletId",
+								"mywalletId"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateUser",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Token",
+			"item": [
+				{
+					"name": "Get Token for API for UI App",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "scope",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "scope",
+									"value": "api://fa3dc8d4-95c4-4503-93cb-174f26a93787/.default",
+									"description": "scope defined on LivePeer-WebApi",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "5aeced22-b820-4984-b03a-dc800405bb6f",
+									"description": "Serraform-UI-App",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "YU78Q~MLw-pfMsrK4vETpO.Dlm.1FgvsJK26Mdm9",
+									"description": "Serraform-UI-App",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://login.microsoftonline.com/b8fcd764-567f-440d-8c7a-6218dac96c10/oauth2/v2.0/token",
+							"protocol": "https",
+							"host": [
+								"login",
+								"microsoftonline",
+								"com"
+							],
+							"path": [
+								"b8fcd764-567f-440d-8c7a-6218dac96c10",
+								"oauth2",
+								"v2.0",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "storage1": {
+      "restored": true,
+      "restoreTime": "2022-12-01T13:46:03.2277804Z"
+    },
+    "identityapp1": {
+      "restored": true,
+      "restoreTime": "2022-12-01T13:48:31.3154161Z"
+    }
+  },
+  "parameters": {
+    "storage1.resourceGroupName": {
+      "Name": "storage1.resourceGroupName",
+      "Type": "resourceGroup",
+      "Value": "Decentral-Dev"
+    },
+    "storage1.subscriptionId": {
+      "Name": "storage1.subscriptionId",
+      "Type": "subscription",
+      "Value": "47e1eda4-a17d-4779-bdaf-f8da5bfc4913"
+    }
+  }
+}

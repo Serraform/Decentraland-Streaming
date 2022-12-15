@@ -1,0 +1,19 @@
+﻿AssetManager
+
+Upload : https://docs.livepeer.studio/guides/on-demand/upload-video-asset/api
+	1. RequestUpload URL
+	2. Upload to URL - check if can be done without auth from UI iteself (no need of API)
+	3. Check Asset Upload status		
+	4. Get Assets by WalletId: Query Asset Table by UPN
+	5. suspend Asset broadcast (https://docs.livepeer.studio/reference/api/update-stream#suspend-stream) PATCH operation
+	6. live stream object creation.
+	
+
+ 5.Get StreamObject (with/without recodrd option)
+
+ 7. GEt streams by walletId
+ 8. Get stream status
+
+
+CRUD operations for USer and Asset tables
+livepeer apis
