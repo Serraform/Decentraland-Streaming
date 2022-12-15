@@ -20,7 +20,7 @@
 on:
   push:
     paths: 
-      -"main\frontend\*"
+      -"frontend\*"
   workflow_dispatch:
 
 env:
