@@ -6,17 +6,19 @@ import { RootState } from "store/configStore";
 const useConnectWallet = () => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
-
+  const jwtToken = localStorage.getItem("jwt");
   const { walletID, loading, error } = useSelector(
     (state: RootState) => state.accountData
   );
   useEffect(() => {
     try {
-      dispatch(requestConnectWallet());
+      if (jwtToken !== "") {
+        dispatch(requestConnectWallet());
+      }
     } catch (error) {
       console.log(error);
     }
-  }, [dispatch]);
+  }, [dispatch, jwtToken]);
 
   useEffect(() => {
     if (error !== null) {
