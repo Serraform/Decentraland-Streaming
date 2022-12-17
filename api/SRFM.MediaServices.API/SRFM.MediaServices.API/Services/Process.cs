@@ -50,7 +50,7 @@ namespace SRFM.MediaServices.API
 
         public async Task<object> UpdateUser(UserDB userProp)
         {
-            return await _tableWriter.UpsertAsync("User", userProp);
+            return await _tableWriter.UpdateAsync("User", userProp);
         }
 
         public async Task<object> DeleteUser(UserDB userProp)
@@ -69,7 +69,18 @@ namespace SRFM.MediaServices.API
 
             if (!string.IsNullOrEmpty(reqUpload.Url))
             {
-                //TODO : Update to table storage.
+                //TODO : Update to table storage. --> need to discuss, AssetId is pk how to get record by walletID
+                //var getAsset = await _tableReader.GetItemsAsync<AssetDB>("Asset", walletId);
+                //if (getAsset != null)
+                //{
+                //    AssetDB asset = new AssetDB
+                //    {
+                //        PartitionKey = "USA",
+                //        RowKey = getAsset.AssetId
+                //    };
+
+                //    var update = await _tableWriter.UpdateAsync("Asset", asset);
+                //}
             }
 
             return reqUpload;
@@ -80,6 +91,18 @@ namespace SRFM.MediaServices.API
             var status = await _assetManager.GetAssetUploadStatus(assetId);
 
             //TODO update TableStorage status to AssetDB object of user
+            //var getAsset = await _tableReader.GetItemsAsync<AssetDB>("Asset", assetId);
+            //if (getAsset != null)
+            //{
+            //    AssetDB asset = new AssetDB
+            //    {
+            //        PartitionKey = "USA",
+            //        RowKey = getAsset.AssetId,
+            //        UploadStatus = status                    
+            //    };
+
+            //    var update = await _tableWriter.UpdateAsync("Asset", asset);
+            //}
 
             return status;
         }

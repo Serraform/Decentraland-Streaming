@@ -7,13 +7,7 @@ using System.Threading.Tasks;
 namespace SRFM.MediaServices.API
 {
     public class AssetDB : TableEntity
-    {
-        public AssetDB(string assetId, string pkey)
-        {
-            this.PartitionKey = pkey; this.RowKey = assetId;
-        }
-
-        public AssetDB() { }
+    {       
 
         public string AssetId { get; set; }
 

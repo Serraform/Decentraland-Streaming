@@ -7,14 +7,7 @@ using System.Threading.Tasks;
 namespace SRFM.MediaServices.API
 {
     public class UserDB : TableEntity
-    {
-
-        public UserDB(string walletId, string pkey)
-        {
-            this.PartitionKey = pkey; this.RowKey = walletId;
-        }
-
-        public UserDB() { }
+    {        
 
         public string WalletId { get; set; }
 
