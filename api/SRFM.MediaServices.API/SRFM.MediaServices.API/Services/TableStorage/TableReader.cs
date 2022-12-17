@@ -20,11 +20,26 @@ namespace SRFM.MediaServices.API
             _logger = logger;
         }
 
-        public async Task<List<T>> GetItemsAsync<T>(string query, string tableName)
+        public async Task<List<T>> ListItemsAsync<T>(string tableName, string walletId) where T : TableEntity, new()
         {
-            var tableref = _tableClient.GetTableReference("User");
-            throw new NotFiniteNumberException();
-            return new List<T>();
+            var tableref = _tableClient.GetTableReference(tableName);
+
+            // by WelletId
+            TableQuery<T> query = new TableQuery<T>().Where(TableQuery.GenerateFilterCondition("WalletId", QueryComparisons.Equal, walletId));
+            TableContinuationToken token = null;
+            TableQuerySegment<T> resultSegment = await tableref.ExecuteQuerySegmentedAsync(query, token);
+            var entity = resultSegment.Results;
+
+            return resultSegment.Results as List<T>;
+        }
+
+        public async Task<T> GetItemsAsync<T>(string tableName, string walletId) where T : TableEntity
+        {
+            var tableref = _tableClient.GetTableReference(tableName);
+            // by partition and rwo keys
+            TableOperation retrieveOperation = TableOperation.Retrieve<T>("USA", walletId);
+            TableResult result = await tableref.ExecuteAsync(retrieveOperation);
+            return result.Result as T;
         }
     }
 }

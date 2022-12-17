@@ -27,15 +27,35 @@ namespace SRFM.MediaServices.API
         // Below are test methods
 
         public async Task<List<AssetDB>> GetAssetByWalletId(string walletId)
-        {            
+        {
             //TODO get assets by walletId;
-            return await _tableReader.GetItemsAsync<AssetDB>("", "");
+            return await _tableReader.ListItemsAsync<AssetDB>("Asset", walletId);
         }
 
         public async Task<List<StreamDB>> GetStreamsByWalletId(string walletId)
         {
             //TODO get streams by walletId;
-            return await _tableReader.GetItemsAsync<StreamDB>("", "");
+            return await _tableReader.ListItemsAsync<StreamDB>("Stream", walletId);
+        }
+
+        public async Task<UserDB> GetUserByWalletId(string walletId)
+        {
+            return await _tableReader.GetItemsAsync<UserDB>("User", walletId);
+        }
+
+        public async Task<object> CreateNewUser(UserDB userProp)
+        {
+            return await _tableWriter.AddAsync("User", userProp);
+        }
+
+        public async Task<object> UpdateUser(UserDB userProp)
+        {
+            return await _tableWriter.UpsertAsync("User", userProp);
+        }
+
+        public async Task<object> DeleteUser(UserDB userProp)
+        {
+            return await _tableWriter.DeleteAsync("User", userProp);
         }
 
         public async Task GetLivePeerAssets()

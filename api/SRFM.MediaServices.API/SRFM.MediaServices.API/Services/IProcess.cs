@@ -11,6 +11,14 @@ namespace SRFM.MediaServices.API
 
         public Task<List<StreamDB>> GetStreamsByWalletId(string WalletId);
 
+        public Task<UserDB> GetUserByWalletId(string WalletId);
+
+        public Task<object> CreateNewUser(UserDB userProps);
+
+        public Task<object> UpdateUser(UserDB userProps);
+
+        public Task<object> DeleteUser(UserDB userProps);
+
         public Task GetLivePeerAssets();
 
         public Task<RequestUpload> RequestUploadURL(string fileName,string walletId);
