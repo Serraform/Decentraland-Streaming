@@ -1,7 +1,6 @@
 import DeleteIcon from "assets/icons/Delete";
 import EditIcon from "assets/icons/Edit";
 import PreviewIcon from "assets/icons/Preview";
-import React from "react";
 import ReactTooltip from "react-tooltip";
 export const columnsDefinition = (
   columnHelper: any,
@@ -23,8 +22,8 @@ export const columnsDefinition = (
     header: () => <span className="font-montserratbold">Type</span>,
     cell: (info: any) => info.getValue(),
   }),
-  columnHelper.accessor("link", {
-    id: "link",
+  columnHelper.accessor("videoLink", {
+    id: "videoLink",
     header: () => <span className="font-montserratbold">Link</span>,
     cell: (info: any) => (
       <>
@@ -58,14 +57,14 @@ export const columnsDefinition = (
   columnHelper.accessor("dates", {
     id: "dates",
     header: () => <span className="font-montserratbold">Dates</span>,
-    cell: (info: any) => (
+    cell: (info: any) => {debugger; return(
       <span className="font-montserratregular text-[18px]">
-        {info.getValue()}
+        {info.row.original.startDate.toDateString()}-{info.row.original.endDate.toDateString()}
       </span>
-    ),
+    )},
   }),
-  columnHelper.accessor("attendence", {
-    id: "attendence",
+  columnHelper.accessor("attendees", {
+    id: "attendees",
     header: () => <span className="font-montserratbold">Attendence</span>,
     cell: (info: any) => (
       <span className="font-montserratregular text-[18px]">

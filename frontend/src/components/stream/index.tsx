@@ -21,10 +21,10 @@ type Props = {
   close: () => void;
   open: boolean;
   isNewStream: boolean;
-  streamData: IStream;
+  selectedStream: IStream;
 };
 
-const Stream: React.FC<Props> = ({ open, close, isNewStream, streamData }) => {
+const Stream: React.FC<Props> = ({ open, close, isNewStream, selectedStream }) => {
   const [modalHeight, setModalHeight] = useState("auto");
   return (
     <>
@@ -50,7 +50,7 @@ const Stream: React.FC<Props> = ({ open, close, isNewStream, streamData }) => {
         {isNewStream ? (
           <CreateStream setModalHeight={setModalHeight} />
         ) : (
-          <EditStream setModalHeight={setModalHeight} streamData={streamData} />
+          <EditStream setModalHeight={setModalHeight} selectedStream={selectedStream} />
         )}
       </Modal>
     </>
