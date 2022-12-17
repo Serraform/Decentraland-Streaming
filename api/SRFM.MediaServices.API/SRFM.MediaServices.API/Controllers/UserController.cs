@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SRFM.MediaServices.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -62,17 +62,25 @@ namespace SRFM.MediaServices.API.Controllers
         [Route("UpdateUser")]
         public async Task<IActionResult> UpdateUser([FromBody] UserDB entity)
         {
-            if (entity != null)
-            {
-                entity.PartitionKey = "USA";
-                entity.RowKey = entity.WalletId;
 
-                // Add new userDB object to Table Storage >> need to check Status code 201/204 by "Prefer header"
-                var statusCode = await _process.UpdateUser(entity);
-                var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
-                return ret;
+            UserDB user = await _process.GetUserByWalletId(entity.WalletId);
+
+            if (user != null)
+            {
+                if (entity != null)
+                {
+                    entity.PartitionKey = "USA";
+                    entity.RowKey = user.WalletId;
+                    entity.ETag = user.ETag;
+
+                    // Add new userDB object to Table Storage >> need to check Status code 201/204 by "Prefer header"
+                    var statusCode = await _process.UpdateUser(entity);
+                    var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
+                    return ret;
+                }
+                throw new CustomException("WalletId inputs Required");
             }
-            throw new CustomException("WalletId inputs Required");
+            return NotFound();            
         }
 
         [HttpDelete]

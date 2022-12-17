@@ -35,6 +35,12 @@ namespace SRFM.MediaServices.API.Controllers
         [Route("RequestUploadURL/{filename}/{walletId}")]
         public async Task<RequestUpload> RequestUploadURL(string filename, string walletId)
         {
+
+            //1. Is is required to check the welletID in user table
+            //2. After which step need to create new record in Asset table
+            //3. And which step need to check staus
+            //4. filename and url 
+
             var reqUpload = await _process.RequestUploadURL(filename, walletId);
             return reqUpload;
 
