@@ -7,42 +7,34 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { columnsDefinition } from "components/streams/definitions/columns";
-
-type Stream = {
-  status: boolean;
-  type: string;
-  link: string;
-  name: string;
-  dates: string;
-  attendence: number;
-};
-
-const data: Stream[] = [
+import { IStream } from "components/stream/definitions";
+const data: IStream[] = [
   {
     status: true,
     type: "VOD",
-    link: "https://example.com",
+    videoLink: "https://example.com",
     name: "Example stream",
-    dates: "2020-01-01T00:00:00Z",
-    attendence: 0,
+    startDate: new Date("2020-01-01T00:00:00Z"),
+    endDate: new Date("2020-01-01T00:00:00Z"),
+    attendees: "0",
   },
   {
     status: true,
     type: "VOD",
-    link: "https://example.com",
+    videoLink: "https://example.com",
     name: "Example stream",
-    dates: "2020-01-01T00:00:00Z",
-    attendence: 0,
+    startDate: new Date("2020-01-01T00:00:00Z"),
+    endDate: new Date("2020-01-01T00:00:00Z"),
+    attendees: "0",
   },
 ];
 
 const Streams = () => {
-  const columnHelper = createColumnHelper<Stream>();
+  const columnHelper = createColumnHelper<IStream>();
   const [copySuccess, setCopy] = useState(false);
   const columns = useMemo(
     () => columnsDefinition(columnHelper, setCopy, copySuccess),
-    [columnHelper,
-      copySuccess]
+    [columnHelper, copySuccess]
   );
   const table = useReactTable({
     data,

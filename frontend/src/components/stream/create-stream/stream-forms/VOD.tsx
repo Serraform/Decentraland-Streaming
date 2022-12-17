@@ -1,11 +1,11 @@
 import { Formik, Field, Form } from "formik";
-import { IStreamVOD } from "components/stream-modal/types";
-import Video from "components/stream-modal/create-modal/video";
+import { IStreamVOD } from "components/stream/definitions";
+import Video from "components/stream/create-stream/video";
 import { DateRangePicker } from "react-nice-dates";
 import "react-nice-dates/build/style.css";
 import { enGB } from "date-fns/locale";
 import React, { useCallback, useState } from "react";
-import { validationSchema } from "components/stream-modal/formdata";
+import { validationSchema } from "components/stream/definitions";
 
 type Props = {
   handleSave: Function;
@@ -20,6 +20,9 @@ const StreamVOD: React.FC<Props> = ({ handleSave }) => {
     videoLenght: "",
     startDate: undefined,
     endDate: undefined,
+    status:false,
+    type: "vod",
+    videoLink:""
   });
 
   const modifiersClassNames = {

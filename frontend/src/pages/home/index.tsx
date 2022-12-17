@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import Banner from 'components/home/banner'
 import Streams from 'components/streams';
-import StreamModal from 'components/stream-modal';
+import StreamModal from 'components/stream';
 const Home = () => {
   const [modalIsOpen, setIsOpen] = useState(false);
 

@@ -1,10 +1,10 @@
 import React, { useState} from "react";
-import StreamType from "components/stream-modal/create-modal/stream-type";
-import StreamInfo from "components/stream-modal/create-modal/stream-info";
+import StreamType from "components/stream/create-stream/stream-type";
+import StreamData from "components/stream/create-stream/stream-data";
 type Props = {
   setModalHeight: Function;
 };
-const CreateModal: React.FC<Props> = ({ setModalHeight }) => {
+const CreateStream: React.FC<Props> = ({ setModalHeight }) => {
   const [step, setStep] = useState(0);
   const [streamType, setStreamType] = useState("");
  
@@ -22,7 +22,7 @@ const CreateModal: React.FC<Props> = ({ setModalHeight }) => {
           <StreamType handleSave={setStreamType} changeStep={changeStep} />
         );
       case 1:
-        return <StreamInfo streamType={streamType} />;
+        return <StreamData streamType={streamType} />;
       default:
         return <></>;
     }
@@ -30,4 +30,4 @@ const CreateModal: React.FC<Props> = ({ setModalHeight }) => {
   return <>{renderSteps()}</>;
 };
 
-export default CreateModal;
+export default CreateStream;

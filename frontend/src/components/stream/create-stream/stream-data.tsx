@@ -1,12 +1,11 @@
 import React from "react";
-import { IStreamCreation } from "components/stream-modal/types";
-import StreamVOD from "components/stream-modal/create-modal/stream-forms/VOD";
-import LiveStream from "components/stream-modal/create-modal/stream-forms/live-stream";
+import { IStreamCreation } from "components/stream/definitions";
+import StreamVOD from "components/stream/create-stream/stream-forms/VOD";
+import LiveStream from "components/stream/create-stream/stream-forms/live-stream";
 const StreamInfo: React.FC<IStreamCreation> = ({ streamType }) => {
   const handleSave = (values: any) => {
     const sendStreamInfo = {
       ...values,
-      type: streamType,
     };
     console.log(sendStreamInfo)
   };

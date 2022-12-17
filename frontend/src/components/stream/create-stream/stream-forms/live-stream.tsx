@@ -1,10 +1,10 @@
 import { Formik, Field, Form } from "formik";
-import { ILiveStream } from "components/stream-modal/types";
+import { ILiveStream } from "components/stream/definitions";
 import { DateRangePicker } from "react-nice-dates";
 import "react-nice-dates/build/style.css";
 import { enGB } from "date-fns/locale";
 import React, { useCallback, useState } from "react";
-import { validationSchema } from "components/stream-modal/formdata";
+import { validationSchema } from "components/stream/definitions";
 
 type Props = {
   handleSave: Function;
@@ -14,10 +14,12 @@ const LiveStream: React.FC<Props> = ({ handleSave }) => {
   const [liveStreamVideo] = useState<ILiveStream>({
     name: "",
     attendees: "",
-    videoM3U8: "",
     liveEventLength: "",
     startDate: undefined,
     endDate: undefined,
+    status: false,
+    type: "live-stream",
+    videoLink:""
   });
 
   const modifiersClassNames = {
@@ -33,7 +35,7 @@ const LiveStream: React.FC<Props> = ({ handleSave }) => {
     return (
       values.name === "" ||
       values.attendees === "" ||
-      values.videoM3U8 === "" ||
+      values.videoLink === "" ||
       values.liveEventLength === "" ||
       values.startDate === undefined ||
       values.endDate === undefined
@@ -55,8 +57,8 @@ const LiveStream: React.FC<Props> = ({ handleSave }) => {
                 </h2>
                 <Field
                   type="text"
-                  value={values.videoM3U8}
-                  name="videoM3U8"
+                  value={values.videoLink}
+                  name="videoLink"
                   required
                   onChange={handleChange}
                   placeholder="Live Stream Link"
