@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchStreamsService } from "store/services/stream.service";
+// import { fetchStreamsService } from "store/services/stream.service";
 import { IStream } from "components/stream/definitions";
 
 type InitialState = {
@@ -11,9 +11,30 @@ type InitialState = {
   message: string;
 };
 
+
+
 const initialState: InitialState = {
   loading: false,
-  streams: [],
+  streams: [
+    {
+      status: true,
+      type: "VOD",
+      videoLink: "https://example.com",
+      name: "Example stream",
+      startDate: new Date("2020-01-01T00:00:00Z"),
+      endDate: new Date("2020-01-01T00:00:00Z"),
+      attendees: "0",
+    },
+    {
+      status: true,
+      type: "VOD",
+      videoLink: "https://example.com",
+      name: "Example stream",
+      startDate: new Date("2020-01-01T00:00:00Z"),
+      endDate: new Date("2020-01-01T00:00:00Z"),
+      attendees: "0",
+    },
+  ],
   error: "",
   selectedStream: {
     name: "",
@@ -28,11 +49,11 @@ const initialState: InitialState = {
   message: "",
 };
 
-export const fetchStream = createAsyncThunk(
+export const fetchStreams = createAsyncThunk(
   "products/fetchProducts",
   async (walletID: string) => {
-    const response = await fetchStreamsService(walletID);
-    return response.data;
+    // const response = await fetchStreamsService(walletID);
+    return {streams: initialState.streams};
   }
 );
 
@@ -45,14 +66,14 @@ const streamSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchStream.pending, (state) => {
+    builder.addCase(fetchStreams.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(fetchStream.fulfilled, (state, action) => {
+    builder.addCase(fetchStreams.fulfilled, (state, action) => {
       state.loading = false;
       state.streams = action.payload.streams;
     });
-    builder.addCase(fetchStream.rejected, (state, action) => {
+    builder.addCase(fetchStreams.rejected, (state, action) => {
       state.loading = false;
       state.error = (action.error as any).message;
     });

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   useReactTable,
   createColumnHelper,
@@ -8,36 +8,21 @@ import {
 } from "@tanstack/react-table";
 import { columnsDefinition } from "components/streams/definitions/columns";
 import { IStream } from "components/stream/definitions";
-const data: IStream[] = [
-  {
-    status: true,
-    type: "VOD",
-    videoLink: "https://example.com",
-    name: "Example stream",
-    startDate: new Date("2020-01-01T00:00:00Z"),
-    endDate: new Date("2020-01-01T00:00:00Z"),
-    attendees: "0",
-  },
-  {
-    status: true,
-    type: "VOD",
-    videoLink: "https://example.com",
-    name: "Example stream",
-    startDate: new Date("2020-01-01T00:00:00Z"),
-    endDate: new Date("2020-01-01T00:00:00Z"),
-    attendees: "0",
-  },
-];
-
+import useFetchStreams from "hooks/useFetchStreams";
 const Streams = () => {
+  const { streams, loading } = useFetchStreams();
   const columnHelper = createColumnHelper<IStream>();
   const [copySuccess, setCopy] = useState(false);
+
+  const handleSelectStream = (selectedStream: IStream) => {
+    debugger;
+  }
   const columns = useMemo(
-    () => columnsDefinition(columnHelper, setCopy, copySuccess),
+    () => columnsDefinition(columnHelper, setCopy, copySuccess, handleSelectStream),
     [columnHelper, copySuccess]
   );
   const table = useReactTable({
-    data,
+    data: streams,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -76,7 +61,15 @@ const Streams = () => {
           ))}
         </tbody>
       </table>
-      {table.getRowModel().rows.length === 0 && (
+      {loading && (
+        <div className="pt-40 pb-40 border-third border border-t-0">
+          <div className="preloader">
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      )}
+      {table.getRowModel().rows.length === 0 && !loading && (
         <h1 className="font-montserratbold text-primary text-center pt-40 pb-40 border-third border border-t-0">
           You don’t have anything yet click on <br />
           “Add new stream”
