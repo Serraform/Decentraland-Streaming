@@ -1,7 +1,9 @@
 import Modal from "react-modal";
 import CloseIcon from "assets/icons/Close";
-import CreateModal from "components/stream-modal/create-modal";
+import CreateStream from "components/stream/create-stream";
+import EditStream from "components/stream/edit-stream";
 import { useState } from "react";
+import {  ILiveStream, IStreamVOD } from "components/stream/definitions";
 const customStyles = {
   content: {
     top: "50%",
@@ -11,17 +13,18 @@ const customStyles = {
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
-    backgroundColor: "#fcfcfc"
+    backgroundColor: "#fcfcfc",
   },
 };
 
 type Props = {
-  close: () => void;
+  close: Function;
   open: boolean;
   isNewStream: boolean;
+  selectedStream: ILiveStream | IStreamVOD;
 };
 
-const StreamModal: React.FC<Props> = ({ open, close, isNewStream }) => {
+const Stream: React.FC<Props> = ({ open, close, isNewStream, selectedStream }) => {
   const [modalHeight, setModalHeight] = useState("auto");
   return (
     <>
@@ -31,7 +34,7 @@ const StreamModal: React.FC<Props> = ({ open, close, isNewStream }) => {
           close();
           setModalHeight("auto");
         }}
-        style={{ content: { ...customStyles.content, height: modalHeight } }}
+        style={{ content: { ...customStyles.content, height: !isNewStream ? "700px" : modalHeight } }}
         contentLabel="Example Modal"
       >
         <div className="flex justify-end">
@@ -44,10 +47,14 @@ const StreamModal: React.FC<Props> = ({ open, close, isNewStream }) => {
             <CloseIcon />
           </button>
         </div>
-        {isNewStream && <CreateModal setModalHeight={setModalHeight} />}
+        {isNewStream ? (
+          <CreateStream setModalHeight={setModalHeight} selectedStream={selectedStream}  />
+        ) : (
+          <EditStream   selectedStream={selectedStream} isNewStream={isNewStream} />
+        )}
       </Modal>
     </>
   );
 };
 
-export default StreamModal;
+export default Stream;

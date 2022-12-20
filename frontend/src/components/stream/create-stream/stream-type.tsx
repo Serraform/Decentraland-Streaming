@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { Formik, Field, Form } from "formik";
 import {
   validationSchema,
-} from "components/stream-modal/formdata";
+} from "components/stream/definitions";
 type Props = {
   handleSave: Function,
   changeStep: Function
