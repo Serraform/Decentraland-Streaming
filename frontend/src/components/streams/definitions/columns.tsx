@@ -1,12 +1,12 @@
 import DeleteIcon from "assets/icons/Delete";
 import EditIcon from "assets/icons/Edit";
 import PreviewIcon from "assets/icons/Preview";
-import React from "react";
 import ReactTooltip from "react-tooltip";
 export const columnsDefinition = (
   columnHelper: any,
   setCopy: Function,
-  copySuccess: boolean
+  copySuccess: boolean,
+  handleSelectStream: Function
 ) => [
   columnHelper.accessor("status", {
     id: "status",
@@ -23,8 +23,8 @@ export const columnsDefinition = (
     header: () => <span className="font-montserratbold">Type</span>,
     cell: (info: any) => info.getValue(),
   }),
-  columnHelper.accessor("link", {
-    id: "link",
+  columnHelper.accessor("videoLink", {
+    id: "videoLink",
     header: () => <span className="font-montserratbold">Link</span>,
     cell: (info: any) => (
       <>
@@ -58,14 +58,18 @@ export const columnsDefinition = (
   columnHelper.accessor("dates", {
     id: "dates",
     header: () => <span className="font-montserratbold">Dates</span>,
-    cell: (info: any) => (
-      <span className="font-montserratregular text-[18px]">
-        {info.getValue()}
-      </span>
-    ),
+    cell: (info: any) => {
+      
+      return (
+        <span className="font-montserratregular text-[18px]">
+          {info.row.original.startDate.toDateString()}-
+          {info.row.original.endDate.toDateString()}
+        </span>
+      );
+    },
   }),
-  columnHelper.accessor("attendence", {
-    id: "attendence",
+  columnHelper.accessor("attendees", {
+    id: "attendees",
     header: () => <span className="font-montserratbold">Attendence</span>,
     cell: (info: any) => (
       <span className="font-montserratregular text-[18px]">
@@ -91,6 +95,7 @@ export const columnsDefinition = (
           className="flex flex-row items-center justify-between hover:cursor-pointer w-fit mx-auto p-1 rounded-sm"
           data-iscapture="true"
           data-tip={`Edit Stream`}
+          onClick={() => handleSelectStream(info.row.original)}
         >
           <EditIcon />{" "}
         </button>

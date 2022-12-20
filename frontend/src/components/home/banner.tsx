@@ -1,20 +1,18 @@
 import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
 type Props = {
-  openNewStream: () => void;
+  openNewStream: Function;
+  walletID: string;
 };
 
-const Banner: React.FC<Props> = ({ openNewStream }) => {
-  const { walletID } = useSelector(
-    (state: RootState) => state.accountData
-  );
+const Banner: React.FC<Props> = ({ openNewStream, walletID }) => {
   return (
     <div className="  background-banner pt-[40px] pb-[40px]">
       <div className="container flex flex-row justify-between items-center">
         <h1 className="text-white font-montserratbold text-xl">
           Start streaming to DECENTRALAND here
         </h1>
-        <button onClick={openNewStream} disabled={walletID === ""} className="btn-primary disabled:">
+        <button onClick={() => openNewStream()} disabled={walletID === ""} className="btn-primary">
           Add new stream
         </button>
       </div>

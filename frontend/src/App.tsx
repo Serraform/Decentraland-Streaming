@@ -1,18 +1,16 @@
 import React, { Suspense, useEffect } from "react";
 import Home from "pages/home";
 import Layout from "layout/index";
-
+import { getToken } from "store/services/token.service";
 import { ToastProvider } from "react-toast-notifications";
 import useConnectWallet from "hooks/useConnectWallet";
 import {getToken} from "store/services/token.service";
 function App() {
 
   useConnectWallet();
-
   useEffect(() => {
-    getToken()
-  }, [])
-
+    getToken();
+  }, []);
   return (
     <ToastProvider placement="bottom-center">
       <Suspense

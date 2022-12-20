@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import {
   useReactTable,
   createColumnHelper,
@@ -7,45 +7,32 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { columnsDefinition } from "components/streams/definitions/columns";
-
-type Stream = {
-  status: boolean;
-  type: string;
-  link: string;
-  name: string;
-  dates: string;
-  attendence: number;
-};
-
-const data: Stream[] = [
-  {
-    status: true,
-    type: "VOD",
-    link: "https://example.com",
-    name: "Example stream",
-    dates: "2020-01-01T00:00:00Z",
-    attendence: 0,
-  },
-  {
-    status: true,
-    type: "VOD",
-    link: "https://example.com",
-    name: "Example stream",
-    dates: "2020-01-01T00:00:00Z",
-    attendence: 0,
-  },
-];
-
+import { IStream } from "components/stream/definitions";
+import useFetchStreams from "hooks/useFetchStreams";
+import { selectStream } from "store/slices/stream.slice";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "store/configStore";
 const Streams = () => {
-  const columnHelper = createColumnHelper<Stream>();
+  const useAppDispatch = () => useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
+  const { streams, loading } = useFetchStreams();
+  const columnHelper = createColumnHelper<IStream>();
   const [copySuccess, setCopy] = useState(false);
+
+  const handleSelectStream = useCallback(
+    (selectedStream: IStream) => {
+      const setSelectedStream = { ...selectedStream } as any;
+      dispatch(selectStream(setSelectedStream));
+    },
+    [dispatch]
+  );
   const columns = useMemo(
-    () => columnsDefinition(columnHelper, setCopy, copySuccess),
-    [columnHelper,
-      copySuccess]
+    () =>
+      columnsDefinition(columnHelper, setCopy, copySuccess, handleSelectStream),
+    [columnHelper, copySuccess, handleSelectStream]
   );
   const table = useReactTable({
-    data,
+    data: streams,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -84,7 +71,15 @@ const Streams = () => {
           ))}
         </tbody>
       </table>
-      {table.getRowModel().rows.length === 0 && (
+      {loading && (
+        <div className="pt-40 pb-40 border-third border border-t-0">
+          <div className="preloader">
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      )}
+      {table.getRowModel().rows.length === 0 && !loading && (
         <h1 className="font-montserratbold text-primary text-center pt-40 pb-40 border-third border border-t-0">
           You don’t have anything yet click on <br />
           “Add new stream”
