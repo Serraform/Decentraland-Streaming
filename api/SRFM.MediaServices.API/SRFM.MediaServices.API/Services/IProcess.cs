@@ -7,11 +7,16 @@ namespace SRFM.MediaServices.API
 {
     public interface IProcess
     {
+
+        public Task<List<AssetDB>> ListAssets();
+
         public Task<List<AssetDB>> GetAssetByWalletId(string WalletId);
 
         public Task<List<StreamDB>> GetStreamsByWalletId(string WalletId);
 
         public Task<UserDB> GetUserByWalletId(string WalletId);
+
+        public Task<List<UserDB>> ListUsers();
 
         public Task<object> CreateNewUser(UserDB userProps);
 

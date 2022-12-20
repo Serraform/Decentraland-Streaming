@@ -25,22 +25,31 @@ namespace SRFM.MediaServices.API
         }
 
         // Below are test methods
+        public async Task<List<AssetDB>> ListAssets()
+        {
+            return await _tableReader.ListItemsAsync<AssetDB>("Asset", "USA");
+        }
 
         public async Task<List<AssetDB>> GetAssetByWalletId(string walletId)
         {
             //TODO get assets by walletId;
-            return await _tableReader.ListItemsAsync<AssetDB>("Asset", walletId);
+            return await _tableReader.ListItemsByWalletIdAsync<AssetDB>("Asset", walletId);
         }
 
         public async Task<List<StreamDB>> GetStreamsByWalletId(string walletId)
         {
             //TODO get streams by walletId;
-            return await _tableReader.ListItemsAsync<StreamDB>("Stream", walletId);
+            return await _tableReader.ListItemsByWalletIdAsync<StreamDB>("Stream", walletId);
+        }
+
+        public async Task<List<UserDB>> ListUsers()
+        {
+            return await _tableReader.ListItemsAsync<UserDB>("User", "USA");
         }
 
         public async Task<UserDB> GetUserByWalletId(string walletId)
         {
-            return await _tableReader.GetItemsAsync<UserDB>("User", walletId);
+            return await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", walletId);
         }
 
         public async Task<object> CreateNewUser(UserDB userProp)
@@ -70,7 +79,7 @@ namespace SRFM.MediaServices.API
             if (!string.IsNullOrEmpty(reqUpload.Url))
             {
                 //TODO : Create Asset
-                var checkUser = await _tableReader.GetItemsAsync<AssetDB>("User", walletId);
+                var checkUser = await _tableReader.GetItemsByRowKeyAsync<AssetDB>("User", walletId);
                 if (checkUser != null)
                 {
                     var AssetID = Guid.NewGuid().ToString();
@@ -98,13 +107,14 @@ namespace SRFM.MediaServices.API
             var status = await _assetManager.GetAssetUploadStatus(assetId);
 
             //TODO update TableStorage status to AssetDB object of user
-            var getAsset = await _tableReader.GetItemsAsync<AssetDB>("Asset", assetId);
+            var getAsset = await _tableReader.GetItemsByRowKeyAsync<AssetDB>("Asset", assetId);
             if (getAsset != null)
             {
                 AssetDB asset = new AssetDB
                 {
                     PartitionKey = "USA",
                     RowKey = getAsset.AssetId,
+                    ETag = getAsset.ETag,
                     UploadStatus = status.Status
                 };
 
@@ -139,15 +149,15 @@ namespace SRFM.MediaServices.API
             //if (!string.IsNullOrEmpty(streamStatus.Url))
             //{
             //    //TODO : Create Asset
-            //    var checkUser = await _tableReader.GetItemsAsync<AssetDB>("User", walletId);
-            //    if (checkUser != null)
+            //    var checkStream = await _tableReader.GetItemsAsync<AssetDB>("Stream", walletId);
+            //    if (checkStream != null)
             //    {
-            //        var AssetID = Guid.NewGuid().ToString();
-            //        AssetDB asset = new AssetDB
+            //        var StreamID = Guid.NewGuid().ToString();
+            //        StreamDB asset = new StreamtDB
             //        {
             //            PartitionKey = "USA",
-            //            AssetId = AssetID,
-            //            RowKey = AssetID,
+            //            StreamId = StreamID,
+            //            RowKey = StreamID,
             //            WalletId = walletId,
             //            FileName = fileName,
             //            Url = reqUpload.Url
