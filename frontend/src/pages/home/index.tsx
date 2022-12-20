@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Banner from "components/home/banner";
 import Streams from "components/streams";
 import StreamModal from "components/stream";

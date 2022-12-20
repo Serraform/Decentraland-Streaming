@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchStreamsService } from "store/services/stream.service";
+// import { fetchStreamsService } from "store/services/stream.service";
 import {
   IStreamVOD,
   ILiveStream,

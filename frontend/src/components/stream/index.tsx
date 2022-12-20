@@ -3,7 +3,7 @@ import CloseIcon from "assets/icons/Close";
 import CreateStream from "components/stream/create-stream";
 import EditStream from "components/stream/edit-stream";
 import { useState } from "react";
-import { IStream, ILiveStream, IStreamVOD } from "components/stream/definitions";
+import {  ILiveStream, IStreamVOD } from "components/stream/definitions";
 const customStyles = {
   content: {
     top: "50%",

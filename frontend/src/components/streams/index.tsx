@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import {
   useReactTable,
   createColumnHelper,
@@ -10,7 +10,7 @@ import { columnsDefinition } from "components/streams/definitions/columns";
 import { IStream } from "components/stream/definitions";
 import useFetchStreams from "hooks/useFetchStreams";
 import { selectStream } from "store/slices/stream.slice";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 const Streams = () => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -19,14 +19,17 @@ const Streams = () => {
   const columnHelper = createColumnHelper<IStream>();
   const [copySuccess, setCopy] = useState(false);
 
-  const handleSelectStream = (selectedStream: IStream) => {
-    const setSelectedStream = { ...selectedStream } as any
-    dispatch(selectStream(setSelectedStream));
-  };
+  const handleSelectStream = useCallback(
+    (selectedStream: IStream) => {
+      const setSelectedStream = { ...selectedStream } as any;
+      dispatch(selectStream(setSelectedStream));
+    },
+    [dispatch]
+  );
   const columns = useMemo(
     () =>
       columnsDefinition(columnHelper, setCopy, copySuccess, handleSelectStream),
-    [columnHelper, copySuccess]
+    [columnHelper, copySuccess, handleSelectStream]
   );
   const table = useReactTable({
     data: streams,

@@ -1,5 +1,5 @@
 import { Formik,  Form } from "formik";
-import { IStreamVOD, IStream } from "components/stream/definitions";
+import { IStreamVOD } from "components/stream/definitions";
 import Video from "components/stream/create-stream/video";
 import React, { useCallback, useState } from "react";
 import { validationSchema } from "components/stream/definitions";
