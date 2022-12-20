@@ -3,17 +3,26 @@ import { ILiveStream } from "components/stream/definitions";
 import React, { useCallback, useState } from "react";
 import { validationSchema } from "components/stream/definitions";
 import CommonForm from "components/stream/stream-forms/common";
+import { useSelector } from "react-redux";
+import { RootState } from "store/configStore";
+
 type Props = {
   handleSave: Function;
   selectedStream: ILiveStream;
   isNewStream: boolean;
+  handleEstimateCost: Function;
 };
 
 const LiveStream: React.FC<Props> = ({
   handleSave,
   selectedStream,
   isNewStream,
+  handleEstimateCost,
 }) => {
+  const { cost, loading, error } = useSelector(
+    (state: RootState) => state.transactionData
+  );
+
   const [liveStreamVideo] = useState<ILiveStream>({
     ...selectedStream,
   });
@@ -29,7 +38,6 @@ const LiveStream: React.FC<Props> = ({
       values.name === "" ||
       values.attendees === "" ||
       values.videoLink === "" ||
-      values.liveEventLength === "" ||
       values.startDate === undefined ||
       values.endDate === undefined
     );
@@ -60,30 +68,32 @@ const LiveStream: React.FC<Props> = ({
                       className="mb-[20px] mt-[10px] w-[100%] border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
                     />
                   </div>
-                  <div className="mb-2">
-                    <h2 className="font-montserratbold text-black text-[15px]">
-                      Live Stream Duration (in minutes)
-                    </h2>
-                    <Field
-                      type="text"
-                      value={values.liveEventLength}
-                      name="liveEventLength"
-                      required
-                      onChange={handleChange}
-                      placeholder="Live Event Length"
-                      className="mb-[20px] mt-[10px] w-[100%] border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
-                    />
-                  </div>
                 </>
               )}
               <CommonForm values={values} handleChange={handleChange} />
-              <button
-                onClick={() => handleOnSubmit(values)}
+              {cost!==0 && !loading && <h2 className="font-montserratbold text-black text-[15px]">
+                     The cost for upload will be: ${cost} ETH
+                    </h2>}
+              {cost===0  && <button
+                onClick={() => handleEstimateCost(values)}
                 className="mt-[40px] btn-secondary"
-                disabled={disabledEstimateCost(values)}
+                disabled={disabledEstimateCost(values) || loading}
               >
                 Estimate Cost
-              </button>
+              </button>}
+              {cost!==0 && !loading  && <button
+                onClick={() => handleSave(values)}
+                className="mt-[40px] btn-secondary"
+                disabled={disabledEstimateCost(values) || loading}
+              >
+             Upload Asset
+              </button>}
+              {loading && (
+                <div className="preloader">
+                  <span></span>
+                  <span></span>
+                </div>
+              )}
             </div>
           </Form>
         </>

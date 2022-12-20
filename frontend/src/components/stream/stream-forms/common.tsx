@@ -60,7 +60,7 @@ const CommonForm: React.FC<Props> = ({ values, handleChange }) => {
           locale={enGB}
         >
           {({ startDateInputProps, endDateInputProps, focus }) => {
-            debugger;
+            
             return (
             <div className="date-range">
               <h2 className="font-montserratbold text-black text-[15px]">

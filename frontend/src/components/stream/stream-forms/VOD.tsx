@@ -7,11 +7,12 @@ import CommonForm from 'components/stream/stream-forms/common';
 type Props = {
   handleSave: Function;
   selectedStream: IStreamVOD,
-  isNewStream: boolean
+  isNewStream: boolean;
+  handleEstimateCost: Function;
 };
 
 
-const StreamVOD: React.FC<Props> = ({ handleSave, selectedStream, isNewStream }) => {
+const StreamVOD: React.FC<Props> = ({ handleSave, selectedStream, isNewStream, handleEstimateCost }) => {
   const [streamInfoVOD] = useState<IStreamVOD>({
     ...selectedStream,
   });

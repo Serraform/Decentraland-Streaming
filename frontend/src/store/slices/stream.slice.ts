@@ -1,9 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 // import { fetchStreamsService } from "store/services/stream.service";
-import {
-  IStreamVOD,
-  ILiveStream,
-} from "components/stream/definitions";
+import { IStreamVOD, ILiveStream } from "components/stream/definitions";
 
 type InitialState = {
   loading: boolean;
@@ -38,7 +35,6 @@ const initialState: InitialState = {
       startDate: new Date("2022-11-01T00:00:00Z"),
       endDate: new Date("2022-12-01T00:00:00Z"),
       attendees: "0",
-      liveEventLength: "60",
       type: "live-stream",
     },
   ],
@@ -54,7 +50,6 @@ const initialState: InitialState = {
     video: "",
     videoSize: "",
     videoLenght: "",
-    liveEventLength: "",
   },
   isNewStream: true,
   openModal: false,
@@ -92,6 +87,16 @@ const streamSlice = createSlice({
     handleCloseModal() {
       return { ...initialState, openModal: false };
     },
+    uploadStream(state: any, payload) {
+      const streamToAdd = { ...payload.payload };
+      let newData = initialState.streams.map((item) => Object.assign({}, item));
+      newData.push(streamToAdd);
+      return {
+        ...initialState,
+        openModal: false,
+        streams: newData,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchStreams.pending, (state) => {
@@ -108,7 +113,7 @@ const streamSlice = createSlice({
   },
 });
 
-export const { selectStream, handleOpenModal, handleCloseModal } =
+export const { selectStream, handleOpenModal, handleCloseModal, uploadStream } =
   streamSlice.actions;
 
 export default streamSlice.reducer;
