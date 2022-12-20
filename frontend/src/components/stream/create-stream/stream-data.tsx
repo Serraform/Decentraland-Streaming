@@ -1,22 +1,41 @@
 import React from "react";
-import { IStreamCreation } from "components/stream/definitions";
-import StreamVOD from "components/stream/create-stream/stream-forms/VOD";
-import LiveStream from "components/stream/create-stream/stream-forms/live-stream";
-const StreamInfo: React.FC<IStreamCreation> = ({ streamType }) => {
+import {
+  IStreamCreation,
+  ILiveStream,
+  IStreamVOD,
+} from "components/stream/definitions";
+import StreamVOD from "components/stream/stream-forms/VOD";
+import LiveStream from "components/stream/stream-forms/live-stream";
+const StreamInfo: React.FC<IStreamCreation> = ({
+  streamType,
+  selectedStream,
+}) => {
   const handleSave = (values: any) => {
     const sendStreamInfo = {
       ...values,
     };
-    console.log(sendStreamInfo)
+    console.log(sendStreamInfo);
   };
   const renderStreamForm = () => {
     switch (streamType) {
       case "vod":
-        return <StreamVOD handleSave={handleSave} />;
+        return (
+          <StreamVOD
+            handleSave={handleSave}
+            selectedStream={selectedStream as IStreamVOD}
+            isNewStream={true}
+          />
+        );
       case "live-stream":
-        return <LiveStream handleSave={handleSave} />;
+        return (
+          <LiveStream
+            handleSave={handleSave}
+            selectedStream={selectedStream as ILiveStream}
+            isNewStream={true}
+          />
+        );
       default:
-        <></>
+        <></>;
     }
   };
   return (

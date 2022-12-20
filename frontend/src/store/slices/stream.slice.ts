@@ -1,38 +1,45 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchStreamsService } from "store/services/stream.service";
-import { IStream } from "components/stream/definitions";
+import {
+  IStreamVOD,
+  ILiveStream,
+} from "components/stream/definitions";
 
 type InitialState = {
   loading: boolean;
-  streams: IStream[];
+  streams: (IStreamVOD | ILiveStream)[];
   error: string;
-  selectedStream: IStream;
+  selectedStream: IStreamVOD | ILiveStream;
   searchText: string;
   message: string;
+  openModal: boolean;
+  isNewStream: boolean;
 };
-
-
 
 const initialState: InitialState = {
   loading: false,
   streams: [
     {
       status: true,
-      type: "VOD",
+      type: "vod",
       videoLink: "https://example.com",
       name: "Example stream",
       startDate: new Date("2020-01-01T00:00:00Z"),
       endDate: new Date("2020-01-01T00:00:00Z"),
       attendees: "0",
+      video: "https://example.com",
+      videoSize: "2312312313",
+      videoLenght: "1200",
     },
     {
       status: true,
-      type: "VOD",
       videoLink: "https://example.com",
-      name: "Example stream",
+      name: "Example live stream",
       startDate: new Date("2020-01-01T00:00:00Z"),
       endDate: new Date("2020-01-01T00:00:00Z"),
       attendees: "0",
+      liveEventLength: "60",
+      type: "live-stream",
     },
   ],
   error: "",
@@ -44,20 +51,26 @@ const initialState: InitialState = {
     endDate: new Date(),
     type: "",
     videoLink: "",
+    video: "",
+    videoSize: "",
+    videoLenght: "",
+    liveEventLength: "",
   },
+  isNewStream: true,
+  openModal: false,
   searchText: "",
   message: "",
 };
 
 export const fetchStreams = createAsyncThunk(
-  "products/fetchProducts",
+  "streams/fetchStreams",
   async (walletID: string) => {
-    if(walletID){
+    if (walletID) {
       // const response = await fetchStreamsService(walletID);
       // return {streams: response.data};
-      return initialState
+      return initialState;
     }
-    return {streams: []}
+    return { streams: [] };
   }
 );
 
@@ -66,7 +79,18 @@ const streamSlice = createSlice({
   initialState,
   reducers: {
     selectStream(state: any, payload) {
-      return { ...initialState, selectedStream: {...payload.payload} };
+      return {
+        ...initialState,
+        selectedStream: { ...payload.payload },
+        openModal: true,
+        isNewStream: false,
+      };
+    },
+    handleOpenModal() {
+      return { ...initialState, openModal: true };
+    },
+    handleCloseModal() {
+      return { ...initialState, openModal: false };
     },
   },
   extraReducers: (builder) => {
@@ -84,6 +108,7 @@ const streamSlice = createSlice({
   },
 });
 
-export const { selectStream } = streamSlice.actions;
+export const { selectStream, handleOpenModal, handleCloseModal } =
+  streamSlice.actions;
 
 export default streamSlice.reducer;

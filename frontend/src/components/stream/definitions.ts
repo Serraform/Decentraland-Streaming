@@ -21,6 +21,7 @@ type ILiveStream = IStream & {
 
  type IStreamCreation = {
   streamType: string;
+  selectedStream: IStream;
 };
 
 

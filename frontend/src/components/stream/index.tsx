@@ -3,7 +3,7 @@ import CloseIcon from "assets/icons/Close";
 import CreateStream from "components/stream/create-stream";
 import EditStream from "components/stream/edit-stream";
 import { useState } from "react";
-import { IStream } from "components/stream/definitions";
+import { IStream, ILiveStream, IStreamVOD } from "components/stream/definitions";
 const customStyles = {
   content: {
     top: "50%",
@@ -18,10 +18,10 @@ const customStyles = {
 };
 
 type Props = {
-  close: () => void;
+  close: Function;
   open: boolean;
   isNewStream: boolean;
-  selectedStream: IStream;
+  selectedStream: ILiveStream | IStreamVOD;
 };
 
 const Stream: React.FC<Props> = ({ open, close, isNewStream, selectedStream }) => {
@@ -48,9 +48,9 @@ const Stream: React.FC<Props> = ({ open, close, isNewStream, selectedStream }) =
           </button>
         </div>
         {isNewStream ? (
-          <CreateStream setModalHeight={setModalHeight} />
+          <CreateStream setModalHeight={setModalHeight} selectedStream={selectedStream}  />
         ) : (
-          <EditStream setModalHeight={setModalHeight} selectedStream={selectedStream} />
+          <EditStream  selectedStream={selectedStream} isNewStream={isNewStream} />
         )}
       </Modal>
     </>
