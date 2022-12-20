@@ -34,7 +34,7 @@ const Stream: React.FC<Props> = ({ open, close, isNewStream, selectedStream }) =
           close();
           setModalHeight("auto");
         }}
-        style={{ content: { ...customStyles.content, height: modalHeight } }}
+        style={{ content: { ...customStyles.content, height: !isNewStream ? "700px" : modalHeight } }}
         contentLabel="Example Modal"
       >
         <div className="flex justify-end">
@@ -50,7 +50,7 @@ const Stream: React.FC<Props> = ({ open, close, isNewStream, selectedStream }) =
         {isNewStream ? (
           <CreateStream setModalHeight={setModalHeight} selectedStream={selectedStream}  />
         ) : (
-          <EditStream  selectedStream={selectedStream} isNewStream={isNewStream} />
+          <EditStream   selectedStream={selectedStream} isNewStream={isNewStream} />
         )}
       </Modal>
     </>

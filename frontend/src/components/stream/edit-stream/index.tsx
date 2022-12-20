@@ -1,5 +1,5 @@
 import React from "react";
-import { IStream, IStreamVOD, ILiveStream } from "components/stream/definitions";
+import {  IStreamVOD, ILiveStream } from "components/stream/definitions";
 import StreamVOD from "components/stream/stream-forms/VOD";
 import LiveStream from "components/stream/stream-forms/live-stream";
 type Props = {

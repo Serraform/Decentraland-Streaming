@@ -4,12 +4,12 @@ import { DateRangePicker } from "react-nice-dates";
 import { enGB } from "date-fns/locale";
 
 type Props = {
-	values: any,
-	handleChange: Function
-}
+  values: any;
+  handleChange: Function;
+};
 
 const CommonForm: React.FC<Props> = ({ values, handleChange }) => {
-	const modifiersClassNames = {
+  const modifiersClassNames = {
     highlight: "-highlight",
   };
   return (
@@ -54,13 +54,14 @@ const CommonForm: React.FC<Props> = ({ values, handleChange }) => {
           onEndDateChange={(e: any) =>
             handleChange({ target: { name: "endDate", value: e } })
           }
-          minimumDate={new Date()}
           minimumLength={1}
           format="dd MMM yyyy"
           modifiersClassNames={modifiersClassNames}
           locale={enGB}
         >
-          {({ startDateInputProps, endDateInputProps, focus }) => (
+          {({ startDateInputProps, endDateInputProps, focus }) => {
+            debugger;
+            return (
             <div className="date-range">
               <h2 className="font-montserratbold text-black text-[15px]">
                 Select Start and End Date of Stream
@@ -79,7 +80,7 @@ const CommonForm: React.FC<Props> = ({ values, handleChange }) => {
                 />
               </div>
             </div>
-          )}
+          )}}
         </DateRangePicker>
       </div>
     </>
