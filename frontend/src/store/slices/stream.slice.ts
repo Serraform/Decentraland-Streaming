@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import { fetchStreamsService } from "store/services/stream.service";
+import { fetchStreamsService } from "store/services/stream.service";
 import { IStream } from "components/stream/definitions";
 
 type InitialState = {
@@ -52,8 +52,12 @@ const initialState: InitialState = {
 export const fetchStreams = createAsyncThunk(
   "products/fetchProducts",
   async (walletID: string) => {
-    // const response = await fetchStreamsService(walletID);
-    return {streams: initialState.streams};
+    if(walletID){
+      // const response = await fetchStreamsService(walletID);
+      // return {streams: response.data};
+      return initialState
+    }
+    return {streams: []}
   }
 );
 
@@ -61,8 +65,8 @@ const streamSlice = createSlice({
   name: "streamSlice",
   initialState,
   reducers: {
-    selectStream(state) {
-      return { ...initialState, selectedStream: state.selectedStream };
+    selectStream(state: any, payload) {
+      return { ...initialState, selectedStream: {...payload.payload} };
     },
   },
   extraReducers: (builder) => {

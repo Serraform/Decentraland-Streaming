@@ -9,16 +9,23 @@ import {
 import { columnsDefinition } from "components/streams/definitions/columns";
 import { IStream } from "components/stream/definitions";
 import useFetchStreams from "hooks/useFetchStreams";
+import { selectStream } from "store/slices/stream.slice";
+import { useSelector, useDispatch } from "react-redux";
+import type { AppDispatch } from "store/configStore";
 const Streams = () => {
+  const useAppDispatch = () => useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const { streams, loading } = useFetchStreams();
   const columnHelper = createColumnHelper<IStream>();
   const [copySuccess, setCopy] = useState(false);
 
   const handleSelectStream = (selectedStream: IStream) => {
-    debugger;
-  }
+    const setSelectedStream = { ...selectedStream } as any
+    dispatch(selectStream(setSelectedStream));
+  };
   const columns = useMemo(
-    () => columnsDefinition(columnHelper, setCopy, copySuccess, handleSelectStream),
+    () =>
+      columnsDefinition(columnHelper, setCopy, copySuccess, handleSelectStream),
     [columnHelper, copySuccess]
   );
   const table = useReactTable({

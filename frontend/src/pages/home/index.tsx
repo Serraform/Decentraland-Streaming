@@ -9,6 +9,9 @@ const Home = () => {
   const { selectedStream } = useSelector(
     (state: RootState) => state.streamData
   );
+  const { walletID } = useSelector(
+    (state: RootState) => state.accountData
+  );
   const handleClose = () => setIsOpen(false);
   const handleOpen = () => setIsOpen(true);
 
@@ -20,7 +23,7 @@ const Home = () => {
         isNewStream={true}
         selectedStream={selectedStream}
       />
-      <Banner openNewStream={handleOpen} />
+      <Banner openNewStream={handleOpen} walletID={walletID} />
       <Streams />
     </>
   );

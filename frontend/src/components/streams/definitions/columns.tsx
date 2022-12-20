@@ -59,7 +59,7 @@ export const columnsDefinition = (
     id: "dates",
     header: () => <span className="font-montserratbold">Dates</span>,
     cell: (info: any) => {
-      debugger;
+      
       return (
         <span className="font-montserratregular text-[18px]">
           {info.row.original.startDate.toDateString()}-

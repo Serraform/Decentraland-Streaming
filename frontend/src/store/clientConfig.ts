@@ -5,5 +5,6 @@ export default axios.create({
   timeout: 50000,
   headers: {
     Authorization: `Bearer ${jwtToken}`,
+    "Access-Control-Allow-Origin": "*"
   },
 });
