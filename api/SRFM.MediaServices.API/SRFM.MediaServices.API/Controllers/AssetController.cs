@@ -30,6 +30,14 @@ namespace SRFM.MediaServices.API.Controllers
 
         // GET: api/<AssetController>
 
+        [HttpGet]
+        [Route("ListAsset")]
+        public async Task<List<AssetDB>> ListAsset()
+        {
+            // query TableStorage - Asset Table to get all assets by walletId
+            List<AssetDB> asset = await _process.ListAssets();
+            return asset;
+        }
 
         [HttpGet]
         [Route("RequestUploadURL/{filename}/{walletId}")]

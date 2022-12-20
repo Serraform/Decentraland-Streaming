@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SRFM.MediaServices.API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -23,6 +23,15 @@ namespace SRFM.MediaServices.API.Controllers
         {
             _process = process;
             _logger = logger;
+        }
+
+        [HttpGet]
+        [Route("ListUsers")]
+        public async Task<List<UserDB>> ListUsers()
+        {
+            // query TableStorage - Asset Table to get all assets by walletId
+            List<UserDB> user = await _process.ListUsers();
+            return user;
         }
 
         [HttpGet]

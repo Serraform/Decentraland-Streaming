@@ -6,8 +6,10 @@ namespace SRFM.MediaServices.API
 {
     public interface ITableReader
     {
-        public Task<List<T>> ListItemsAsync<T>(string tableName, string walletId) where T : TableEntity, new();
+        public Task<List<T>> ListItemsByWalletIdAsync<T>(string tableName, string rowKey) where T : TableEntity, new();
 
-        public Task<T> GetItemsAsync<T>(string tableName, string walletId) where T : TableEntity;
+        public Task<List<T>> ListItemsAsync<T>(string tableName,string partitionKey) where T : TableEntity, new();
+
+        public Task<T> GetItemsByRowKeyAsync<T>(string tableName, string walletId) where T : TableEntity;
     }
 }
