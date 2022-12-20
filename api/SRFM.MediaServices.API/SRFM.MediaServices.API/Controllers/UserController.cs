@@ -26,20 +26,89 @@ namespace SRFM.MediaServices.API.Controllers
         }
 
         [HttpGet]
+        [Route("ListUsers")]
+        public async Task<List<UserDB>> ListUsers()
+        {
+            // query TableStorage - Asset Table to get all assets by walletId
+            List<UserDB> user = await _process.ListUsers();
+            return user;
+        }
+
+        [HttpGet]
         [Route("GetUserDetailsByWalletId/{walletId}")]
         public async Task<UserDB> GetUserDetailsByWalletId(string walletId)
         {
             // query TableStorage - Asset Table to get all assets by walletId
 
-            return new UserDB() { Id = "user123", WalletId = walletId };
+            if (walletId != null)
+            {
+                UserDB user = await _process.GetUserByWalletId(walletId);
+                return user;
+            }
+            throw new CustomException("WalletId inputs Required");
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] UserDB value)
+        [Route("CreateUser")]
+        public async Task<object> CreateUser([FromBody] UserDB entity)
         {
-            // Add new userDB object to Table Storage
-            var ret = new ObjectResult(value) { StatusCode = StatusCodes.Status201Created };
-            return ret;
+            if (entity != null)
+            {
+                entity.PartitionKey = "USA";
+                entity.WalletId = Guid.NewGuid().ToString();
+                entity.RowKey = entity.WalletId;
+
+                // Add new userDB object to Table Storage >> need to check Status code 201/204 by "Prefer header"
+                var ret = await _process.CreateNewUser(entity);
+                //var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
+                return ret;
+            }
+            throw new CustomException("User inputs Required");
+        }
+
+
+        [HttpPut]
+        [Route("UpdateUser")]
+        public async Task<IActionResult> UpdateUser([FromBody] UserDB entity)
+        {
+
+            UserDB user = await _process.GetUserByWalletId(entity.WalletId);
+
+            if (user != null)
+            {
+                if (entity != null)
+                {
+                    entity.PartitionKey = "USA";
+                    entity.RowKey = user.WalletId;
+                    entity.ETag = user.ETag;
+
+                    // Add new userDB object to Table Storage >> need to check Status code 201/204 by "Prefer header"
+                    var statusCode = await _process.UpdateUser(entity);
+                    var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
+                    return ret;
+                }
+                throw new CustomException("WalletId inputs Required");
+            }
+            return NotFound();            
+        }
+
+        [HttpDelete]
+        [Route("DeleteUserByWalletId/{walletId}")]
+        public async Task<IActionResult> DeleteUserByWalletId(string walletId)
+        {
+            // Add new userDB object to Table Storage >> need to check Status code 201/204 by "Prefer header"
+
+            UserDB user = await _process.GetUserByWalletId(walletId);
+
+            if (user != null)
+            {
+
+                var statusCode = await _process.DeleteUser(user);
+                var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
+                return ret;
+
+            }
+            throw new CustomException("WalletId not correct");
         }
 
 
