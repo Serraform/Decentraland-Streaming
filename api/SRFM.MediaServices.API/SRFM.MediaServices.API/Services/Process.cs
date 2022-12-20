@@ -69,18 +69,25 @@ namespace SRFM.MediaServices.API
 
             if (!string.IsNullOrEmpty(reqUpload.Url))
             {
-                //TODO : Update to table storage. --> need to discuss, AssetId is pk how to get record by walletID
-                //var getAsset = await _tableReader.GetItemsAsync<AssetDB>("Asset", walletId);
-                //if (getAsset != null)
-                //{
-                //    AssetDB asset = new AssetDB
-                //    {
-                //        PartitionKey = "USA",
-                //        RowKey = getAsset.AssetId
-                //    };
+                //TODO : Create Asset
+                var checkUser = await _tableReader.GetItemsAsync<AssetDB>("User", walletId);
+                if (checkUser != null)
+                {
+                    var AssetID = Guid.NewGuid().ToString();
+                    AssetDB asset = new AssetDB
+                    {
+                        PartitionKey = "USA",
+                        AssetId = AssetID,
+                        RowKey = AssetID,
+                        WalletId = walletId,
+                        FileName = fileName,
+                        Url = reqUpload.Url
+                        //UploadStatus = reqUpload.Status //Need to check upload status in livepear response
+                        //AssetName = //Need to add
+                    };
 
-                //    var update = await _tableWriter.UpdateAsync("Asset", asset);
-                //}
+                    var createAsset = await _tableWriter.AddAsync("Asset", asset);
+                }
             }
 
             return reqUpload;
@@ -91,18 +98,18 @@ namespace SRFM.MediaServices.API
             var status = await _assetManager.GetAssetUploadStatus(assetId);
 
             //TODO update TableStorage status to AssetDB object of user
-            //var getAsset = await _tableReader.GetItemsAsync<AssetDB>("Asset", assetId);
-            //if (getAsset != null)
-            //{
-            //    AssetDB asset = new AssetDB
-            //    {
-            //        PartitionKey = "USA",
-            //        RowKey = getAsset.AssetId,
-            //        UploadStatus = status                    
-            //    };
+            var getAsset = await _tableReader.GetItemsAsync<AssetDB>("Asset", assetId);
+            if (getAsset != null)
+            {
+                AssetDB asset = new AssetDB
+                {
+                    PartitionKey = "USA",
+                    RowKey = getAsset.AssetId,
+                    UploadStatus = status.Status
+                };
 
-            //    var update = await _tableWriter.UpdateAsync("Asset", asset);
-            //}
+                var update = await _tableWriter.UpdateAsync("Asset", asset);
+            }
 
             return status;
         }
@@ -128,6 +135,29 @@ namespace SRFM.MediaServices.API
         {
             var streamStatus = await _assetManager.CreateNewStream(streamProps);
             //TODO update table storage with stream
+
+            //if (!string.IsNullOrEmpty(streamStatus.Url))
+            //{
+            //    //TODO : Create Asset
+            //    var checkUser = await _tableReader.GetItemsAsync<AssetDB>("User", walletId);
+            //    if (checkUser != null)
+            //    {
+            //        var AssetID = Guid.NewGuid().ToString();
+            //        AssetDB asset = new AssetDB
+            //        {
+            //            PartitionKey = "USA",
+            //            AssetId = AssetID,
+            //            RowKey = AssetID,
+            //            WalletId = walletId,
+            //            FileName = fileName,
+            //            Url = reqUpload.Url
+            //            //UploadStatus = reqUpload.Status //Need to check upload status in livepear response
+            //            //AssetName = //Need to add
+            //        };
+
+            //        var createAsset = await _tableWriter.AddAsync("Asset", asset);
+            //    }
+            //}
 
             return streamStatus;
         }

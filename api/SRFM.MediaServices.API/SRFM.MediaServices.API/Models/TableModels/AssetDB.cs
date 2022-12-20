@@ -19,9 +19,13 @@ namespace SRFM.MediaServices.API
 
         public string StreamFrom { get; set; }
 
+        public string FileName { get; set; }
+
+        public string Url { get; set; }
+
         public string VideoDescription { get; set; }
 
-        public string UploadStatus { get; set; }
+        public AssetUploadStatus UploadStatus { get; set; }
         //PartitionKey - USA
         // RowKey - AssetId(guid)
         // AssetId
