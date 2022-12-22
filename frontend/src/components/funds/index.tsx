@@ -13,7 +13,7 @@ const Funds = () => {
     <div className={container}>
       <div className={balanceStyle}>
         <p className="font-montserratmedium">Total Balance</p>
-        <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem]">0 ETH</h3>
+        <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem]">0 USDT</h3>
       </div>
       <p className="font-montserratmedium mt-[24px]">In order to upload your video, you must
 fund your account</p>

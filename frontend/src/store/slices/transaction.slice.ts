@@ -15,7 +15,7 @@ const initialState: InitialState = {
 export const estimateCost = createAsyncThunk(
   "transaction/estimateCost",
   async (streamValues: any) => {
-    return { cost: 0.15 };
+    return { cost: 1.15 };
   }
 );
 

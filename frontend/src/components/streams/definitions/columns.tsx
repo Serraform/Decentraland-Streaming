@@ -25,7 +25,7 @@ export const columnsDefinition = (
   }),
   columnHelper.accessor("videoLink", {
     id: "videoLink",
-    header: () => <span className="font-montserratbold">Link</span>,
+    header: () => <span className="font-montserratbold">Playback URL</span>,
     cell: (info: any) => (
       <>
         <ReactTooltip id="main" place="top" type={"dark"} effect={"float"} />
@@ -59,7 +59,6 @@ export const columnsDefinition = (
     id: "dates",
     header: () => <span className="font-montserratbold">Dates</span>,
     cell: (info: any) => {
-      
       return (
         <span className="font-montserratregular text-[18px]">
           {info.row.original.startDate.toDateString()}-
@@ -86,7 +85,7 @@ export const columnsDefinition = (
           data-for="main"
           className="flex flex-row items-center justify-between hover:cursor-pointer  hover:transition hover:ease-linear w-fit mx-auto p-1 rounded-sm"
           data-iscapture="true"
-          data-tip={`Preview Stream`}
+          data-tip={`Check Stream Info`}
         >
           <PreviewIcon />
         </button>
@@ -95,8 +94,7 @@ export const columnsDefinition = (
           className="flex flex-row items-center justify-between hover:cursor-pointer w-fit mx-auto p-1 rounded-sm"
           data-iscapture="true"
           data-tip={`Edit Stream`}
-          onClick={() => handleSelectStream(info.row.original, info.row.index
-            )}
+          onClick={() => handleSelectStream(info.row.original, info.row.index)}
         >
           <EditIcon />{" "}
         </button>

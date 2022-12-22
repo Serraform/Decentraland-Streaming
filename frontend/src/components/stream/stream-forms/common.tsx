@@ -1,6 +1,7 @@
 import { Field } from "formik";
 import "react-nice-dates/build/style.css";
-import { DateRangePicker } from "react-nice-dates";
+import { DateRangePicker,  } from 'react-nice-dates'
+
 import { enGB } from "date-fns/locale";
 
 type Props = {
@@ -22,38 +23,41 @@ const CommonForm: React.FC<Props> = ({
   handleSave,
   disabledEstimateCost,
 }) => {
+ 
   const modifiersClassNames = {
     highlight: "-highlight",
   };
   return (
     <>
-      <div className="mb-2">
-        <h2 className="font-montserratbold text-black text-[15px]">
-          Stream name
-        </h2>
-        <Field
-          type="text"
-          value={values.name}
-          name="name"
-          required
-          onChange={handleChange}
-          placeholder="Name"
-          className="mb-[20px] mt-[10px] w-[100%] border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
-        />
-      </div>
-      <div className="mb-2">
-        <h2 className="font-montserratbold text-black text-[15px]">
-          Max estimated number of attendees
-        </h2>
-        <Field
-          type="text"
-          required
-          value={values.attendees}
-          name="attendees"
-          onChange={handleChange}
-          placeholder="Attendees"
-          className="mb-[20px] mt-[10px] w-[100%] border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
-        />
+      <div className="flex flex-row justify-between">
+        <div className="mb-2 w-full mr-3">
+          <h2 className="font-montserratbold text-black text-[15px]">
+            Stream name
+          </h2>
+          <Field
+            type="text"
+            value={values.name}
+            name="name"
+            required
+            onChange={handleChange}
+            placeholder="Name"
+            className="mb-[20px] mt-[10px] w-[100%] border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
+          />
+        </div>
+        <div className="mb-2 w-full ml-3">
+          <h2 className="font-montserratbold text-black text-[15px]">
+            Max estimated number of attendees
+          </h2>
+          <Field
+            type="text"
+            required
+            value={values.attendees}
+            name="attendees"
+            onChange={handleChange}
+            placeholder="Attendees"
+            className="mb-[20px] mt-[10px] w-[100%] border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
+          />
+        </div>
       </div>
       <div>
         <DateRangePicker
@@ -81,15 +85,16 @@ const CommonForm: React.FC<Props> = ({
                 </h2>
                 <div className="flex flex-row items-baseline">
                   <input
-                    className="mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
+                    className={`mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border ${(focus === "startDate" ? ' -focused' : '')} border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
                     {...startDateInputProps}
                     placeholder="Start date"
                   />
                   -
+                  {" "}
                   <input
                     {...endDateInputProps}
                     placeholder="End date"
-                    className="mb-[20px] mt-[10px] w-[100%] m-2 mr-0 border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
+                    className={`mb-[20px] mt-[10px] m-2 ml-2 w-[100%] border ${(focus === "endDate" ? ' -focused' : '')} border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
                   />
                 </div>
               </div>
@@ -98,14 +103,14 @@ const CommonForm: React.FC<Props> = ({
         </DateRangePicker>
       </div>
       {cost !== 0 && !loading && (
-        <h2 className="font-montserratbold text-black text-[15px]">
-          The cost for upload will be: ${cost} ETH
+        <h2 className="font-montserratbold text-black text-[15px] mt-auto">
+          The cost for upload will be: ${cost} USDT
         </h2>
       )}
       {cost === 0 && (
         <button
           onClick={() => handleEstimateCost(values)}
-          className="mt-[40px] btn-secondary"
+          className=" btn-secondary mt-auto"
           disabled={disabledEstimateCost(values) || loading}
         >
           Estimate Cost
@@ -114,7 +119,7 @@ const CommonForm: React.FC<Props> = ({
       {cost !== 0 && !loading && (
         <button
           onClick={() => handleSave(values)}
-          className="mt-[40px] btn-secondary"
+          className="btn-secondary"
           disabled={disabledEstimateCost(values) || loading}
         >
           Upload Asset
