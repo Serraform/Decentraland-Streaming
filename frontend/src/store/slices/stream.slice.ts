@@ -43,8 +43,8 @@ const initialState: InitialState = {
     name: "",
     status: false,
     attendees: "",
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: undefined,
+    endDate: undefined,
     type: "",
     videoLink: "",
     video: "",
@@ -75,9 +75,8 @@ const insert = (arr: Array<any>, index: number, newItem: any) => [
   // inserted item
   newItem,
   // part of the array after the specified index
-  ...arr.slice(index)
-]
-
+  ...arr.slice(index),
+];
 
 const streamSlice = createSlice({
   name: "streamSlice",
@@ -113,8 +112,8 @@ const streamSlice = createSlice({
     editStream(state: any, payload) {
       const streamToAdd = { ...payload.payload };
       let newData = initialState.streams.map((item) => Object.assign({}, item));
-      newData.splice(payload.payload.index, 1)
-      newData = insert(newData,payload.payload.index, streamToAdd)
+      newData.splice(payload.payload.index, 1);
+      newData = insert(newData, payload.payload.index, streamToAdd);
       return {
         ...initialState,
         openModal: false,
@@ -137,7 +136,12 @@ const streamSlice = createSlice({
   },
 });
 
-export const { selectStream, handleOpenModal, handleCloseModal, uploadStream, editStream } =
-  streamSlice.actions;
+export const {
+  selectStream,
+  handleOpenModal,
+  handleCloseModal,
+  uploadStream,
+  editStream,
+} = streamSlice.actions;
 
 export default streamSlice.reducer;

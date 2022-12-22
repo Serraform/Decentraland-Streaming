@@ -212,11 +212,14 @@ code {
   position:relative!important;
 }
 
-.nice-dates-day{
-  height: 45px!important;
-}
+
 
 .nice-dates-grid{
-  height: 300px!important;
+  height: 400px!important;
 
+}
+
+.nice-dates{
+  position: absolute;
+    width: 100%;
 }
