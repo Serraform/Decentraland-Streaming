@@ -19,7 +19,7 @@ const LiveStream: React.FC<Props> = ({
   isNewStream,
   handleEstimateCost,
 }) => {
-  const { cost, loading, error } = useSelector(
+  const { cost, loading } = useSelector(
     (state: RootState) => state.transactionData
   );
 
