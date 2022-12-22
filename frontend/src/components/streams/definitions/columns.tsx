@@ -95,7 +95,8 @@ export const columnsDefinition = (
           className="flex flex-row items-center justify-between hover:cursor-pointer w-fit mx-auto p-1 rounded-sm"
           data-iscapture="true"
           data-tip={`Edit Stream`}
-          onClick={() => handleSelectStream(info.row.original)}
+          onClick={() => handleSelectStream(info.row.original, info.row.index
+            )}
         >
           <EditIcon />{" "}
         </button>

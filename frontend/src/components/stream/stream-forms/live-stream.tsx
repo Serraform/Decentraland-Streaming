@@ -70,30 +70,15 @@ const LiveStream: React.FC<Props> = ({
                   </div>
                 </>
               )}
-              <CommonForm values={values} handleChange={handleChange} />
-              {cost!==0 && !loading && <h2 className="font-montserratbold text-black text-[15px]">
-                     The cost for upload will be: ${cost} ETH
-                    </h2>}
-              {cost===0  && <button
-                onClick={() => handleEstimateCost(values)}
-                className="mt-[40px] btn-secondary"
-                disabled={disabledEstimateCost(values) || loading}
-              >
-                Estimate Cost
-              </button>}
-              {cost!==0 && !loading  && <button
-                onClick={() => handleSave(values)}
-                className="mt-[40px] btn-secondary"
-                disabled={disabledEstimateCost(values) || loading}
-              >
-             Upload Asset
-              </button>}
-              {loading && (
-                <div className="preloader">
-                  <span></span>
-                  <span></span>
-                </div>
-              )}
+              <CommonForm
+                values={values}
+                handleChange={handleChange}
+                cost={cost}
+                loading={loading}
+                handleEstimateCost={handleEstimateCost}
+                handleSave={handleSave}
+                disabledEstimateCost={disabledEstimateCost}
+              />
             </div>
           </Form>
         </>

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import { fetchStreamsService } from "store/services/stream.service";
+import { fetchStreamsService } from "store/services/stream.service";
 import { IStreamVOD, ILiveStream } from "components/stream/definitions";
 
 type InitialState = {
@@ -21,8 +21,8 @@ const initialState: InitialState = {
       type: "vod",
       videoLink: "https://example.com",
       name: "Example stream",
-      startDate: new Date("2022-12-21T00:00:00Z"),
-      endDate: new Date("2022-12-24T00:00:00Z"),
+      startDate: new Date("2023-12-21T00:00:00Z"),
+      endDate: new Date("2023-12-24T00:00:00Z"),
       attendees: "0",
       video: "https://example.com",
       videoSize: "2312312313",
@@ -32,8 +32,8 @@ const initialState: InitialState = {
       status: true,
       videoLink: "https://example.com",
       name: "Example live stream",
-      startDate: new Date("2022-11-01T00:00:00Z"),
-      endDate: new Date("2022-12-01T00:00:00Z"),
+      startDate: new Date("2023-11-01T12:00:00Z"),
+      endDate: new Date("2023-12-01T15:00:00Z"),
       attendees: "0",
       type: "live-stream",
     },
@@ -69,6 +69,16 @@ export const fetchStreams = createAsyncThunk(
   }
 );
 
+const insert = (arr: Array<any>, index: number, newItem: any) => [
+  // part of the array before the specified index
+  ...arr.slice(0, index),
+  // inserted item
+  newItem,
+  // part of the array after the specified index
+  ...arr.slice(index)
+]
+
+
 const streamSlice = createSlice({
   name: "streamSlice",
   initialState,
@@ -76,7 +86,10 @@ const streamSlice = createSlice({
     selectStream(state: any, payload) {
       return {
         ...initialState,
-        selectedStream: { ...payload.payload },
+        selectedStream: {
+          ...payload.payload.setSelectedStream,
+          index: payload.payload.index,
+        },
         openModal: true,
         isNewStream: false,
       };
@@ -91,6 +104,17 @@ const streamSlice = createSlice({
       const streamToAdd = { ...payload.payload };
       let newData = initialState.streams.map((item) => Object.assign({}, item));
       newData.push(streamToAdd);
+      return {
+        ...initialState,
+        openModal: false,
+        streams: newData,
+      };
+    },
+    editStream(state: any, payload) {
+      const streamToAdd = { ...payload.payload };
+      let newData = initialState.streams.map((item) => Object.assign({}, item));
+      newData.splice(payload.payload.index, 1)
+      newData = insert(newData,payload.payload.index, streamToAdd)
       return {
         ...initialState,
         openModal: false,
@@ -113,7 +137,7 @@ const streamSlice = createSlice({
   },
 });
 
-export const { selectStream, handleOpenModal, handleCloseModal, uploadStream } =
+export const { selectStream, handleOpenModal, handleCloseModal, uploadStream, editStream } =
   streamSlice.actions;
 
 export default streamSlice.reducer;

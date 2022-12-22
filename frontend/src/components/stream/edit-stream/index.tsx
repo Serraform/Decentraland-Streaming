@@ -4,7 +4,10 @@ import StreamVOD from "components/stream/stream-forms/VOD";
 import LiveStream from "components/stream/stream-forms/live-stream";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "store/configStore";
-import { estimateCost } from "store/slices/transaction.slice";
+import { estimateCost,finishTransaction } from "store/slices/transaction.slice";
+
+import { editStream } from "store/slices/stream.slice";
+import { useToasts } from "react-toast-notifications";
 type Props = {
   selectedStream: IStreamVOD | ILiveStream;
   isNewStream: boolean;
@@ -12,12 +15,15 @@ type Props = {
 const EditStream: React.FC<Props> = ({ selectedStream, isNewStream }) => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
+  const { addToast } = useToasts();
 
   const handleSave = (values: any) => {
-    const sendStreamInfo = {
-      ...values,
-    };
-    console.log(sendStreamInfo);
+    dispatch(editStream({...values}));
+    addToast("Stream edited", {
+      appearance: "success",
+      autoDismiss: true,
+    });
+    dispatch(finishTransaction());
   };
   const handleEstimateCost = (values: any) => {
     dispatch(estimateCost(values));
@@ -29,7 +35,7 @@ const EditStream: React.FC<Props> = ({ selectedStream, isNewStream }) => {
           <StreamVOD
             handleSave={handleSave}
             selectedStream={selectedStream as IStreamVOD}
-            isNewStream={isNewStream}
+            isNewStream={false}
             handleEstimateCost={handleEstimateCost}
           />
         );
@@ -38,7 +44,7 @@ const EditStream: React.FC<Props> = ({ selectedStream, isNewStream }) => {
           <LiveStream
             handleSave={handleSave}
             selectedStream={selectedStream as ILiveStream}
-            isNewStream={isNewStream}
+            isNewStream={false}
             handleEstimateCost={handleEstimateCost}
           />
         );

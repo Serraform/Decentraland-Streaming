@@ -10,14 +10,20 @@ import { estimateCost, finishTransaction } from "store/slices/transaction.slice"
 import { uploadStream } from "store/slices/stream.slice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "store/configStore";
+import { useToasts } from "react-toast-notifications";
 const StreamInfo: React.FC<IStreamCreation> = ({
   streamType,
   selectedStream,
 }) => {
+    const { addToast } = useToasts();
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
   const handleSave = (values: any) => {
     dispatch(uploadStream({...values, type: streamType}));
+    addToast("Created stream", {
+      appearance: "success",
+      autoDismiss: true,
+    });
     dispatch(finishTransaction());
   };
   const handleEstimateCost = (values: any) => {
