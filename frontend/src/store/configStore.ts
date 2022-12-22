@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import accountReducer from 'store/slices/account.slice';
 import streamReducer from 'store/slices/stream.slice';
+import transactionReducer from './slices/transaction.slice';
 
 export const store = configureStore({
   reducer: {
     accountData: accountReducer,
-    streamData: streamReducer
+    streamData: streamReducer,
+    transactionData: transactionReducer
   },
   middleware: getDefaultMiddleware =>
   getDefaultMiddleware({

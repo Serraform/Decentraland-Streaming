@@ -1,20 +1,30 @@
-import { Formik,  Form } from "formik";
+import { Formik, Form } from "formik";
 import { IStreamVOD } from "components/stream/definitions";
 import Video from "components/stream/create-stream/video";
 import React, { useCallback, useState } from "react";
 import { validationSchema } from "components/stream/definitions";
-import CommonForm from 'components/stream/stream-forms/common';
+import CommonForm from "components/stream/stream-forms/common";
+import { useSelector } from "react-redux";
+import { RootState } from "store/configStore";
 type Props = {
   handleSave: Function;
-  selectedStream: IStreamVOD,
-  isNewStream: boolean
+  selectedStream: IStreamVOD;
+  isNewStream: boolean;
+  handleEstimateCost: Function;
 };
 
-
-const StreamVOD: React.FC<Props> = ({ handleSave, selectedStream, isNewStream }) => {
+const StreamVOD: React.FC<Props> = ({
+  handleSave,
+  selectedStream,
+  isNewStream,
+  handleEstimateCost,
+}) => {
   const [streamInfoVOD] = useState<IStreamVOD>({
     ...selectedStream,
   });
+  const { cost, loading, error } = useSelector(
+    (state: RootState) => state.transactionData
+  );
 
   const handleOnSubmit = useCallback(
     (values: any) => {
@@ -40,18 +50,24 @@ const StreamVOD: React.FC<Props> = ({ handleSave, selectedStream, isNewStream })
     >
       {({ handleChange, values }) => (
         <>
-          <Form className={`flex flex-row ${isNewStream ? "justify-between" : "justify-center"} w-[100%]`}>
-           {isNewStream && <Video video={values.video} handleChange={handleChange} />}
+          <Form
+            className={`flex flex-row ${
+              isNewStream ? "justify-between" : "justify-center"
+            } w-[100%]`}
+          >
+            {isNewStream && (
+              <Video video={values.video} handleChange={handleChange} />
+            )}
             <div className="flex flex-col justify-top w-[50%]">
-              
-              <CommonForm values={values} handleChange={handleChange}/>
-              <button
-                onClick={() => handleOnSubmit(values)}
-                className="mt-[40px] btn-secondary"
-                disabled={disabledEstimateCost(values)}
-              >
-                Estimate Cost
-              </button>
+              <CommonForm
+                values={values}
+                handleChange={handleChange}
+                cost={cost}
+                loading={loading}
+                handleEstimateCost={handleEstimateCost}
+                handleSave={handleSave}
+                disabledEstimateCost={disabledEstimateCost}
+              />
             </div>
           </Form>
         </>

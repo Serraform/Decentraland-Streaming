@@ -23,6 +23,15 @@
   .btn-secondary{
     @apply bg-primary px-8 py-3 font-montserratbold text-white  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third;
   }
+
+  .nice-dates-day.-selected {
+  color: #2561C5!important;
+  pointer-events: all !important;
+  cursor: pointer !important;
+}
+.nice-dates-day:before{
+  background-color: #2561C5!important;
+}
 body {
   background-color: #fdfdfd;
   margin: 0;

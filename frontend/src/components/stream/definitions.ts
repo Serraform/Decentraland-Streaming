@@ -16,7 +16,6 @@ type IStreamVOD = IStream & {
 };
 
 type ILiveStream = IStream & {
-  liveEventLength: string;
 };
 
  type IStreamCreation = {
