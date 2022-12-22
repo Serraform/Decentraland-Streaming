@@ -20,9 +20,9 @@ const Streams = () => {
   const [copySuccess, setCopy] = useState(false);
 
   const handleSelectStream = useCallback(
-    (selectedStream: IStream) => {
+    (selectedStream: IStream, index: number) => {
       const setSelectedStream = { ...selectedStream } as any;
-      dispatch(selectStream(setSelectedStream));
+      dispatch(selectStream({setSelectedStream, index}));
     },
     [dispatch]
   );

@@ -6,15 +6,28 @@ import {
 } from "components/stream/definitions";
 import StreamVOD from "components/stream/stream-forms/VOD";
 import LiveStream from "components/stream/stream-forms/live-stream";
+import { estimateCost, finishTransaction } from "store/slices/transaction.slice";
+import { uploadStream } from "store/slices/stream.slice";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "store/configStore";
+import { useToasts } from "react-toast-notifications";
 const StreamInfo: React.FC<IStreamCreation> = ({
   streamType,
   selectedStream,
 }) => {
+    const { addToast } = useToasts();
+  const useAppDispatch = () => useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const handleSave = (values: any) => {
-    const sendStreamInfo = {
-      ...values,
-    };
-    console.log(sendStreamInfo);
+    dispatch(uploadStream({...values, type: streamType}));
+    addToast("Created stream", {
+      appearance: "success",
+      autoDismiss: true,
+    });
+    dispatch(finishTransaction());
+  };
+  const handleEstimateCost = (values: any) => {
+    dispatch(estimateCost(values));
   };
   const renderStreamForm = () => {
     switch (streamType) {
@@ -24,6 +37,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
             handleSave={handleSave}
             selectedStream={selectedStream as IStreamVOD}
             isNewStream={true}
+            handleEstimateCost={handleEstimateCost}
           />
         );
       case "live-stream":
@@ -32,6 +46,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
             handleSave={handleSave}
             selectedStream={selectedStream as ILiveStream}
             isNewStream={true}
+            handleEstimateCost={handleEstimateCost}
           />
         );
       default:
