@@ -22,7 +22,7 @@ const StreamVOD: React.FC<Props> = ({
   const [streamInfoVOD] = useState<IStreamVOD>({
     ...selectedStream,
   });
-  const { cost, loading, error } = useSelector(
+  const { cost, loading } = useSelector(
     (state: RootState) => state.transactionData
   );
 
