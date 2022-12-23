@@ -16,6 +16,7 @@ const WalletInfo: React.FC<Prop> = ({ walletID }) => {
         {walletID.slice(walletID.length - 4, walletID.length)}
       </span>
       <Funds />
+
     </div>
   );
 };
