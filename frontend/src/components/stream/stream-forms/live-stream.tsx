@@ -1,4 +1,4 @@
-import { Formik, Field, Form } from "formik";
+import { Formik, Form } from "formik";
 import { ILiveStream } from "components/stream/definitions";
 import React, { useCallback, useState } from "react";
 import { validationSchema } from "components/stream/definitions";
@@ -37,7 +37,6 @@ const LiveStream: React.FC<Props> = ({
     return (
       values.name === "" ||
       values.attendees === "" ||
-      values.videoLink === "" ||
       values.startDate === undefined ||
       values.endDate === undefined
     );
@@ -50,26 +49,8 @@ const LiveStream: React.FC<Props> = ({
     >
       {({ handleChange, values }) => (
         <>
-          <Form className="flex flex-row justify-center items-center w-[100%]">
-            <div className="flex flex-col justify-top w-[50%]">
-              {isNewStream && (
-                <>
-                  <div className="mb-2">
-                    <h2 className="font-montserratbold text-black text-[15px]">
-                      Link to Live Stream (M3U8)
-                    </h2>
-                    <Field
-                      type="text"
-                      value={values.videoLink}
-                      name="videoLink"
-                      required
-                      onChange={handleChange}
-                      placeholder="Live Stream Link"
-                      className="mb-[20px] mt-[10px] w-[100%] border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
-                    />
-                  </div>
-                </>
-              )}
+          <Form className="flex flex-row justify-center items-center w-[100%] h-[35vh]">
+            <div className="flex flex-col justify-top w-[50%] h-[100%]" style={{position:"relative"}}>
               <CommonForm
                 values={values}
                 handleChange={handleChange}

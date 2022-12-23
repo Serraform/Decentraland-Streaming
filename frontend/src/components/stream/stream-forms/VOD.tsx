@@ -53,12 +53,15 @@ const StreamVOD: React.FC<Props> = ({
           <Form
             className={`flex flex-row ${
               isNewStream ? "justify-between" : "justify-center"
-            } w-[100%]`}
+            } w-[100%] h-[40vh]`}
+            
           >
             {isNewStream && (
-              <Video video={values.video} handleChange={handleChange} />
+              <Video   values={values} video={values.video} handleChange={handleChange} />
             )}
-            <div className="flex flex-col justify-top w-[50%]">
+            <div className="flex flex-col justify-top w-[50%]" style={{
+              position: "relative",
+            }}>
               <CommonForm
                 values={values}
                 handleChange={handleChange}

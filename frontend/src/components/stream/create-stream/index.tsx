@@ -13,7 +13,7 @@ const CreateStream: React.FC<Props> = ({ setModalHeight, selectedStream }) => {
   const changeStep = (index: number) => {
     setStep(index);
     if (index === 1) {
-      setModalHeight("700px");
+      setModalHeight("100%");
     }
   };
 
