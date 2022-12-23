@@ -1,6 +1,6 @@
 import client from "store/clientConfig";
 export const createAccount = async (walletID: string) => {
-  return await client.post("/User", {
+  return await client.post("/User/CreateUser", {
     walletID: walletID
   });
 };

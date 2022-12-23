@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-//import { fetchStreamsService } from "store/services/stream.service";
+import { fetchStreamsService } from "store/services/stream.service";
 import { IStreamVOD, ILiveStream } from "components/stream/definitions";
 
 type InitialState = {
@@ -16,27 +16,27 @@ type InitialState = {
 const initialState: InitialState = {
   loading: false,
   streams: [
-    {
-      status: true,
-      type: "vod",
-      videoLink: "https://example.com",
-      name: "Example stream",
-      startDate: new Date("2023-12-21T00:00:00Z"),
-      endDate: new Date("2023-12-24T00:00:00Z"),
-      attendees: "0",
-      video: "https://example.com",
-      videoSize: "2312312313",
-      videoLenght: "1200",
-    },
-    {
-      status: true,
-      videoLink: "https://example.com",
-      name: "Example live stream",
-      startDate: new Date("2023-11-01T12:00:00Z"),
-      endDate: new Date("2023-12-01T15:00:00Z"),
-      attendees: "0",
-      type: "live-stream",
-    },
+    // {
+    //   status: true,
+    //   type: "vod",
+    //   videoLink: "https://example.com",
+    //   name: "Example stream",
+    //   startDate: new Date("2023-12-21T00:00:00Z"),
+    //   endDate: new Date("2023-12-24T00:00:00Z"),
+    //   attendees: "0",
+    //   video: "https://example.com",
+    //   videoSize: "2312312313",
+    //   videoLenght: "1200",
+    // },
+    // {
+    //   status: true,
+    //   videoLink: "https://example.com",
+    //   name: "Example live stream",
+    //   startDate: new Date("2023-11-01T12:00:00Z"),
+    //   endDate: new Date("2023-12-01T15:00:00Z"),
+    //   attendees: "0",
+    //   type: "live-stream",
+    // },
   ],
   error: "",
   selectedStream: {
@@ -61,9 +61,8 @@ export const fetchStreams = createAsyncThunk(
   "streams/fetchStreams",
   async (walletID: string) => {
     if (walletID) {
-      // const response = await fetchStreamsService(walletID);
-      // return {streams: response.data};
-      return initialState;
+      const response = await fetchStreamsService(walletID);
+      return {streams: response.data};
     }
     return { streams: [] };
   }

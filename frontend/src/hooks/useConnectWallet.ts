@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { requestConnectWallet } from "store/slices/account.slice";
 import { useSelector, useDispatch } from "react-redux";
 import type { AppDispatch } from "store/configStore";
@@ -6,19 +6,9 @@ import { RootState } from "store/configStore";
 const useConnectWallet = () => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
-  const jwtToken = localStorage.getItem("jwt");
   const { walletID, loading, error } = useSelector(
     (state: RootState) => state.accountData
   );
-  useEffect(() => {
-    try {
-      if (jwtToken !== "") {
-        dispatch(requestConnectWallet());
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }, [dispatch, jwtToken]);
 
   useEffect(() => {
     if (error !== null) {
@@ -26,7 +16,7 @@ const useConnectWallet = () => {
     }
   }, [error]);
 
-  const connectWallet = () => dispatch(requestConnectWallet());
+  const connectWallet = useCallback(() => dispatch(requestConnectWallet()), []) as any;
   return { walletID, loading, connectWallet };
 };
 

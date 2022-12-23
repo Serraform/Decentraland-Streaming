@@ -17,6 +17,7 @@ export const requestConnectWallet = createAsyncThunk(
       method: "eth_requestAccounts",
     });
     try {
+      
       await createAccount(accounts[0]);
       return accounts[0];
     } catch (e) {
