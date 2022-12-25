@@ -22,12 +22,12 @@ const StreamTable: React.FC<Props> = ({
   });
   return (
     <div className="container pt-10">
-      <table className="border-third border-solid border w-[100%]">
+     <table className="border-third  border rounded w-[100%]">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id} className="border-b-third border-b ">
+            <tr key={headerGroup.id} className="border-b-third border-solid border-b ">
               {headerGroup.headers.map((header) => (
-                <th key={header.id} className="pt-2 pb-2">
+                <th key={header.id} className="pt-2 pb-2 rounded">
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -40,24 +40,32 @@ const StreamTable: React.FC<Props> = ({
           ))}
         </thead>
         <tbody>
-          {table.getCoreRowModel().rows.map((row) => (
-            <tr key={row.id} className="my-2 py-2 h-20">
-              {/* {row.getVisibleCells().map((cell) => (
+          {table.getRowModel().rows.map((row) => (
+            <tr key={row.id} className="my-2 py-2 h-20 rounded">
+              {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}
                   className="d-flex flex-row items-center justify-center text-center"
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
-              ))} */}
+              ))}
             </tr>
           ))}
         </tbody>
       </table>
-
+      {table.getRowModel().rows.length === 0  && (
+        <h1 className="font-montserratbold text-primary text-center pt-40 pb-40" style={{
+          boxShadow: "0px 0px 10px rgba(193, 193, 193, 0.5)",
+    overflow: "hidden"
+        }}>
+          You don’t have anything yet click on <br />
+          “Add new stream”
+        </h1>
+      )}
       <div className="h-4" />
       <div className="flex items-center gap-2">
-        {/* <button
+        <button
           className="border rounded p-1"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
@@ -77,7 +85,7 @@ const StreamTable: React.FC<Props> = ({
             {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount()}
           </strong>
-        </span> */}
+        </span>
       </div>
     </div>
   );
