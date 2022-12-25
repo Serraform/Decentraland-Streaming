@@ -18,12 +18,19 @@
   }
 
   .btn-primary{
-    @apply bg-white px-8 py-3 font-montserratbold text-primary hover:text-secondary hover:transition hover:ease-linear disabled:bg-third disabled:text-white;
+    @apply bg-white px-8 py-3 rounded font-montserratbold text-primary hover:text-secondary hover:transition hover:ease-linear disabled:bg-third disabled:text-white;
   }
   .btn-secondary{
-    @apply bg-primary px-8 py-3 font-montserratbold text-white  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third;
+    @apply bg-primary px-8 py-3 rounded font-montserratbold text-white  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third;
+  }
+  .btn-third{
+    @apply  px-8 py-3 rounded font-montserratbold text-primary  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third;
   }
 
+  table{
+    box-shadow: 0px 0px 10px rgba(193, 193, 193, 0.5);
+    overflow: hidden;
+  }
   .nice-dates-day.-selected {
   color: #2561C5!important;
   pointer-events: all !important;
@@ -210,6 +217,10 @@ code {
 
 .-open{
   position:relative!important;
+}
+
+input{
+  @apply rounded;
 }
 
 

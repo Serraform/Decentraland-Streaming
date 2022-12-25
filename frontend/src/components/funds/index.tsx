@@ -11,7 +11,7 @@ import {
 const Funds = () => {
   return (
     <div className={container}>
-      <div className={balanceStyle}>
+      <div className={`${balanceStyle} rounded`}>
         <p className="font-montserratmedium">Total Balance</p>
         <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem]">0 USDT</h3>
       </div>
@@ -21,12 +21,23 @@ fund your account</p>
         <p className={`${labelStyle} font-montserratbold tracking-[0.1rem] `}>Fund Account</p>
         <input
           placeholder="amount"
-          className={`text-primary ${inputStyle}`}
+          className={`text-primary ${inputStyle} rounded rounded-b-none`}
         />
-        <button className={`${buttonStyle} bg-primary`}>
+        <button className={`${buttonStyle} bg-primary rounded rounded-t-none`}>
           Send transaction
         </button>
+      {/* <button className="btn-third" style={{ paddingLeft: 0}} onClick={async () => {
+         const { ethereum } = window as any;
+         if (!ethereum) {
+           return;
+         }
+     
+         const accounts = await ethereum.request({
+           method: "eth_requestAccounts",
+         });
+      }}>Log out</button> */}
       </div>
+
     </div>
   );
 };

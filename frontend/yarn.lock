@@ -5623,6 +5623,11 @@ jake@^10.8.5:
     filelist "^1.0.1"
     minimatch "^3.0.4"
 
+jazzicon-ts@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/jazzicon-ts/-/jazzicon-ts-2.0.0.tgz#6bf644b928d1cf65d8dd981e7d38b851dc5de894"
+  integrity sha512-Yf+FyyrZDIiTaDfs/N+oBL4AKrhzWFjnqopHPJLWM2McIVRzc1D3EN11dwrftCoD1kLdhrAViCoThl9u7eqM+w==
+
 jest-changed-files@^27.5.1:
   version "27.5.1"
   resolved "https://registry.yarnpkg.com/jest-changed-files/-/jest-changed-files-27.5.1.tgz#a348aed00ec9bf671cc58a66fcbe7c3dfd6a68f5"
