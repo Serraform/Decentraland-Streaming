@@ -1,4 +1,4 @@
-import client from "store/clientConfig";
+import {client} from "store/clientConfig";
 
 
 export const fetchStreamsService = async (walletID: string) => {

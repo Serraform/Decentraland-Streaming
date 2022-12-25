@@ -14,6 +14,7 @@ const Home = () => {
   const dispatch = useAppDispatch();
 
   const openModalAction = () => {
+    
     dispatch(handleOpenModal())
   }
   const closeModalAction = () => {

@@ -1,7 +1,5 @@
-import { useSelector } from "react-redux";
-import { RootState } from "store/configStore";
 type Props = {
-  openNewStream: Function;
+  openNewStream: any;
   walletID: string;
 };
 
@@ -12,7 +10,7 @@ const Banner: React.FC<Props> = ({ openNewStream, walletID }) => {
         <h1 className="text-white font-montserratbold text-xl">
           Start streaming to DECENTRALAND here
         </h1>
-        <button onClick={() => openNewStream()} disabled={walletID === ""} className="btn-primary">
+        <button onClick={openNewStream} disabled={walletID === ""} className="btn-primary">
           Add new stream
         </button>
       </div>
