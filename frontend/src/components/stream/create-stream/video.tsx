@@ -78,7 +78,7 @@ const Video: React.FC<Props> = ({ values, video, handleChange }) => {
       ) : (
         <button
           onClick={onBtnClick}
-          className="h-[100%] bg-secondary flex justify-center items-center text-white font-montserratbold text-[30px] hover:cursor-pointer"
+          className="h-[100%] rounded bg-secondary flex justify-center items-center text-white font-montserratbold text-[30px] hover:cursor-pointer"
         >
           Upload your video!
         </button>

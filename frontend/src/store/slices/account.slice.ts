@@ -1,9 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   createAccount,
-  getAccountDetailsByWalletId,
 } from "store/services/account.service";
-const initialState = { walletID: "", loading: false, error: null };
+import jazzicon from "jazzicon-ts";
+
+const initialState = {
+  walletID: "",
+  avatar: undefined,
+  loading: false,
+  error: null,
+};
 
 export const requestConnectWallet = createAsyncThunk(
   "connect-wallet",
@@ -12,16 +18,16 @@ export const requestConnectWallet = createAsyncThunk(
     if (!ethereum) {
       return;
     }
-
     const accounts = await ethereum.request({
       method: "eth_requestAccounts",
     });
     try {
-      
       await createAccount(accounts[0]);
-      return accounts[0];
+      const addr = accounts[0].slice(2, 10);
+      const identicon = jazzicon(40, parseInt(addr, 10));
+      return { walletID: accounts[0], avatar: identicon };
     } catch (e) {
-      return accounts[0];
+      return { walletID: "", avatar: "" };
     }
   }
 );
@@ -36,7 +42,8 @@ const accountSlice = createSlice({
     });
     builder.addCase(requestConnectWallet.fulfilled, (state, action) => {
       state.loading = false;
-      state.walletID = action.payload;
+      state.walletID = action.payload?.walletID;
+      state.avatar = action.payload?.avatar as any;
     });
     builder.addCase(requestConnectWallet.rejected, (state, action) => {
       state.loading = false;

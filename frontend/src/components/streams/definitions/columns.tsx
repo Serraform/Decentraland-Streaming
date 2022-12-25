@@ -83,7 +83,7 @@ export const columnsDefinition = (
       <div className="flex flex-row items-baseline justify-evenly">
         <button
           data-for="main"
-          className="flex flex-row items-center justify-between hover:cursor-pointer  hover:transition hover:ease-linear w-fit mx-auto p-1 rounded-sm"
+          className="flex w-[2rem] flex-row items-center justify-between hover:cursor-pointer  hover:transition hover:ease-linear  mx-auto p-1 rounded-sm"
           data-iscapture="true"
           data-tip={`Check Stream Info`}
         >
@@ -91,7 +91,7 @@ export const columnsDefinition = (
         </button>
         <button
           data-for="main"
-          className="flex flex-row items-center justify-between hover:cursor-pointer w-fit mx-auto p-1 rounded-sm"
+          className="flex w-[2rem] flex-row items-center justify-between hover:cursor-pointer  mx-auto p-1 rounded-sm"
           data-iscapture="true"
           data-tip={`Edit Stream`}
           onClick={() => handleSelectStream(info.row.original, info.row.index)}
@@ -100,7 +100,7 @@ export const columnsDefinition = (
         </button>
         <button
           data-for="main"
-          className="flex flex-row items-center justify-between hover:cursor-pointer  w-fit mx-auto p-1 rounded-sm"
+          className="flex w-[1.7rem] flex-row items-center justify-between hover:cursor-pointer   mx-auto p-1 rounded-sm"
           data-iscapture="true"
           data-tip={`Delete Stream`}
         >
