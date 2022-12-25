@@ -4,39 +4,18 @@ import {
   getPaginationRowModel,
   flexRender,
 } from "@tanstack/react-table";
+import { IStreamVOD, ILiveStream } from "components/stream/definitions";
 type Props = {
   columns: any;
-  streams: Array<any>;
+  streams: (IStreamVOD | ILiveStream)[];
 };
 const StreamTable: React.FC<Props> = ({
   columns,
   streams
 }) => {
-    const streamsTest  = [
-        {
-          status: true,
-          type: "vod",
-          videoLink: "https://example.com",
-          name: "Example stream",
-          startDate: new Date("2023-12-21T00:00:00Z"),
-          endDate: new Date("2023-12-24T00:00:00Z"),
-          attendees: "0",
-          video: "https://example.com",
-          videoSize: "2312312313",
-          videoLenght: "1200",
-        },
-        {
-          status: true,
-          videoLink: "https://example.com",
-          name: "Example live stream",
-          startDate: new Date("2023-11-01T12:00:00Z"),
-          endDate: new Date("2023-12-01T15:00:00Z"),
-          attendees: "0",
-          type: "live-stream",
-        },
-      ];
+
   const table = useReactTable({
-    data: streamsTest,
+    data: streams,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

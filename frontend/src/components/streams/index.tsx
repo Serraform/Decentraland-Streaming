@@ -1,10 +1,6 @@
-import { useMemo, useState, useCallback, Suspense } from "react";
+import { useMemo, useState, useCallback } from "react";
 import {
-  useReactTable,
   createColumnHelper,
-  getCoreRowModel,
-  getPaginationRowModel,
-  flexRender,
 } from "@tanstack/react-table";
 import { columnsDefinition } from "components/streams/definitions/columns";
 import { IStream } from "components/stream/definitions";
