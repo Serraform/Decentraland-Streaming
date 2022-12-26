@@ -1,6 +1,6 @@
 import { Field } from "formik";
 import "react-nice-dates/build/style.css";
-import { DateRangePicker,  } from 'react-nice-dates'
+import { DateRangePicker,useDateInput  } from 'react-nice-dates'
 
 import { enGB } from "date-fns/locale";
 
@@ -23,7 +23,27 @@ const CommonForm: React.FC<Props> = ({
   handleSave,
   disabledEstimateCost,
 }) => {
- 
+  const timeStartInputProps = useDateInput({
+    date: values.startDate,
+    format: 'HH:mm',
+    locale: enGB,
+    onDateChange: (e: any) =>
+    handleChange({
+      target: { name: "startDate", value: e },
+    })
+  })
+
+  const timeEndInputProps = useDateInput({
+    date: values.endDate,
+    format: 'HH:mm',
+    locale: enGB,
+    onDateChange: (e: any) =>
+    handleChange({
+      target: { name: "endDate", value: e },
+    })
+  })
+
+
   const modifiersClassNames = {
     highlight: "-highlight",
   };
@@ -73,7 +93,7 @@ const CommonForm: React.FC<Props> = ({
           }
           minimumDate={new Date()}
           minimumLength={1}
-          format="dd MMM yyyy HH:mm"
+          format="dd MMM yyyy"
           modifiersClassNames={modifiersClassNames}
           locale={enGB}
         >
@@ -89,6 +109,7 @@ const CommonForm: React.FC<Props> = ({
                     {...startDateInputProps}
                     placeholder="Start date"
                   />
+                    <input  className={`mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border ${(focus === "startDate" ? ' -focused' : '')} border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`} style={{ marginLeft: 16, width: 80 }} {...timeStartInputProps} />
                   -
                   {" "}
                   <input
@@ -96,6 +117,7 @@ const CommonForm: React.FC<Props> = ({
                     placeholder="End date"
                     className={`mb-[20px] mt-[10px] m-2 ml-2 w-[100%] border ${(focus === "endDate" ? ' -focused' : '')} border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
                   />
+                   <input   className={`mb-[20px] mt-[10px] m-2 ml-2 w-[100%] border ${(focus === "endDate" ? ' -focused' : '')} border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`} style={{ marginLeft: 16, width: 80 }} {...timeEndInputProps} />
                 </div>
               </div>
             );

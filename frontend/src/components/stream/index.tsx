@@ -9,8 +9,8 @@ const customStyles = {
     top: "50%",
     left: "50%",
     right: "auto",
-    width: "100%",
     height:"100%",
+    width:"100%",
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
@@ -27,32 +27,29 @@ type Props = {
 };
 
 const Stream: React.FC<Props> = ({ open, close, isNewStream, selectedStream }) => {
-  const [modalHeight, setModalHeight] = useState("auto");
   return (
     <>
       <Modal
         isOpen={open}
         onRequestClose={() => {
           close();
-          setModalHeight("auto");
         }}
-        style={{ content: { ...customStyles.content, height: !isNewStream ? "100%" : modalHeight } }}
+        style={{ content: { ...customStyles.content } }}
         contentLabel="Example Modal"
       >
         <div className="flex justify-end">
           <button
             onClick={() => {
               close();
-              setModalHeight("auto");
             }}
           >
             <CloseIcon />
           </button>
         </div>
         {isNewStream ? (
-          <CreateStream setModalHeight={setModalHeight} selectedStream={selectedStream}  />
+          <CreateStream  selectedStream={selectedStream}  />
         ) : (
-          <EditStream   selectedStream={selectedStream} isNewStream={isNewStream} />
+          <EditStream   selectedStream={selectedStream}  />
         )}
       </Modal>
     </>
