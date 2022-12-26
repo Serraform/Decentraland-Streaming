@@ -226,11 +226,19 @@ input{
 
 
 .nice-dates-grid{
-  height: 400px!important;
+  height: 310px!important;
 
 }
 
 .nice-dates{
   position: absolute;
     width: 100%;
+}
+
+.nice-dates-day{
+  height: 50px!important;
+}
+
+.nice-dates-popover{
+  width: 60%!important;
 }
