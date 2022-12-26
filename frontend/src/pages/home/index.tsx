@@ -15,6 +15,7 @@ const Home = () => {
   const closeModalAction = () => {
     dispatch(handleCloseModal())
   }
+  
   return (
     <>
       <StreamModal

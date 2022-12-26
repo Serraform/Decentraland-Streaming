@@ -1,4 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  createAccount,
+} from "store/services/account.service";
 import jazzicon from "jazzicon-ts";
 
 const initialState = {
@@ -15,13 +18,17 @@ export const requestConnectWallet = createAsyncThunk(
     if (!ethereum) {
       return;
     }
-
     const accounts = await ethereum.request({
       method: "eth_requestAccounts",
     });
-    const addr = accounts[0].slice(2, 10);
-    const identicon = jazzicon(40, parseInt(addr, 10));
-    return { walletID: accounts[0], avatar: identicon };
+    try {
+      await createAccount(accounts[0]);
+      const addr = accounts[0].slice(2, 10);
+      const identicon = jazzicon(40, parseInt(addr, 10));
+      return { walletID: accounts[0], avatar: identicon };
+    } catch (e) {
+      return { walletID: "", avatar: "" };
+    }
   }
 );
 

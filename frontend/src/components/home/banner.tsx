@@ -1,3 +1,5 @@
+import { useSelector } from "react-redux";
+import { RootState } from "store/configStore";
 type Props = {
   openNewStream: Function;
   walletID: string;
