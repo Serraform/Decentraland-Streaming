@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useMemo } from "react";
+import React, { Suspense, useEffect } from "react";
 import Home from "pages/home";
 import Layout from "layout/index";
 import { getToken } from "store/services/token.service";
