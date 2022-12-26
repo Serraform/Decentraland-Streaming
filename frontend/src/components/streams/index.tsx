@@ -42,9 +42,9 @@ const Streams = () => {
       <table className="border-third  border rounded w-[100%]">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id} className="border-b-third border-solid border-b ">
+            <tr key={headerGroup.id}  >
               {headerGroup.headers.map((header) => (
-                <th key={header.id} className="pt-2 pb-2 rounded">
+                <th key={header.id} className="pt-2 pb-2 ">
                   {header.isPlaceholder
                     ? null
                     : flexRender(
