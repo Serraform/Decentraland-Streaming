@@ -31,6 +31,7 @@ const Stream: React.FC<Props> = ({ open, close, isNewStream, selectedStream }) =
     <>
       <Modal
         isOpen={open}
+        ariaHideApp={false}
         onRequestClose={() => {
           close();
         }}

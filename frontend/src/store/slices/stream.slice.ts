@@ -1,11 +1,8 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchStreamsService } from "store/services/stream.service";
+import { createSlice } from "@reduxjs/toolkit";
 import { IStreamVOD, ILiveStream } from "components/stream/definitions";
 
 type InitialState = {
-  loading: boolean;
   streams: (IStreamVOD | ILiveStream)[];
-  error: string;
   selectedStream: IStreamVOD | ILiveStream;
   searchText: string;
   message: string;
@@ -14,7 +11,7 @@ type InitialState = {
 };
 
 const initialState: InitialState = {
-  loading: false,
+  // streams: [],
   streams: [
     {
       status: true,
@@ -38,7 +35,6 @@ const initialState: InitialState = {
       type: "live-stream",
     },
   ],
-  error: "",
   selectedStream: {
     name: "",
     status: false,
@@ -57,16 +53,6 @@ const initialState: InitialState = {
   message: "",
 };
 
-export const fetchStreams = createAsyncThunk(
-  "streams/fetchStreams",
-  async (walletID: string) => {
-    if (walletID) {
-      const response = await fetchStreamsService(walletID);
-      return {streams: response.data};
-    }
-    return { streams: [] };
-  }
-);
 
 const insert = (arr: Array<any>, index: number, newItem: any) => [
   // part of the array before the specified index
@@ -119,19 +105,6 @@ const streamSlice = createSlice({
         streams: newData,
       };
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(fetchStreams.pending, (state) => {
-      state.loading = true;
-    });
-    builder.addCase(fetchStreams.fulfilled, (state, action) => {
-      state.loading = false;
-      state.streams = action.payload.streams;
-    });
-    builder.addCase(fetchStreams.rejected, (state, action) => {
-      state.loading = false;
-      state.error = (action.error as any).message;
-    });
   },
 });
 

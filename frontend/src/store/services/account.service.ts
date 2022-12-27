@@ -1,4 +1,4 @@
-import client from "store/clientConfig";
+import {client} from "store/clientConfig";
 export const createAccount = async (walletID: string) => {
   return await client.post("/User/CreateUser", {
     walletID: walletID
