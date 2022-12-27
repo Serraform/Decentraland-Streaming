@@ -1,6 +1,6 @@
 import { Field } from "formik";
 import "react-nice-dates/build/style.css";
-import { DateRangePicker,useDateInput  } from 'react-nice-dates'
+import { DateRangePicker, useDateInput } from "react-nice-dates";
 
 import { enGB } from "date-fns/locale";
 
@@ -12,6 +12,7 @@ type Props = {
   disabledEstimateCost: (values: any) => boolean;
   handleEstimateCost: Function;
   handleSave: Function;
+  close: Function;
 };
 
 const CommonForm: React.FC<Props> = ({
@@ -22,27 +23,27 @@ const CommonForm: React.FC<Props> = ({
   handleEstimateCost,
   handleSave,
   disabledEstimateCost,
+  close,
 }) => {
   const timeStartInputProps = useDateInput({
     date: values.startDate,
-    format: 'HH:mm',
+    format: "HH:mm",
     locale: enGB,
     onDateChange: (e: any) =>
-    handleChange({
-      target: { name: "startDate", value: e },
-    })
-  })
+      handleChange({
+        target: { name: "startDate", value: e },
+      }),
+  });
 
   const timeEndInputProps = useDateInput({
     date: values.endDate,
-    format: 'HH:mm',
+    format: "HH:mm",
     locale: enGB,
     onDateChange: (e: any) =>
-    handleChange({
-      target: { name: "endDate", value: e },
-    })
-  })
-
+      handleChange({
+        target: { name: "endDate", value: e },
+      }),
+  });
 
   const modifiersClassNames = {
     highlight: "-highlight",
@@ -105,19 +106,34 @@ const CommonForm: React.FC<Props> = ({
                 </h2>
                 <div className="flex flex-row items-baseline">
                   <input
-                    className={`mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border ${(focus === "startDate" ? ' -focused' : '')} border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
+                    className={`mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border ${
+                      focus === "startDate" ? " -focused" : ""
+                    } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
                     {...startDateInputProps}
                     placeholder="Start date"
                   />
-                    <input  className={`mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border ${(focus === "startDate" ? ' -focused' : '')} border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`} style={{ marginLeft: 16, width: 80 }} {...timeStartInputProps} />
-                  -
-                  {" "}
+                  <input
+                    className={`mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border ${
+                      focus === "startDate" ? " -focused" : ""
+                    } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
+                    style={{ marginLeft: 16, width: 80 }}
+                    {...timeStartInputProps}
+                  />
+                  -{" "}
                   <input
                     {...endDateInputProps}
                     placeholder="End date"
-                    className={`mb-[20px] mt-[10px] m-2 ml-2 w-[100%] border ${(focus === "endDate" ? ' -focused' : '')} border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
+                    className={`mb-[20px] mt-[10px] m-2 ml-2 w-[100%] border ${
+                      focus === "endDate" ? " -focused" : ""
+                    } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
                   />
-                   <input   className={`mb-[20px] mt-[10px] m-2 ml-2 w-[100%] border ${(focus === "endDate" ? ' -focused' : '')} border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`} style={{ marginLeft: 16, width: 80 }} {...timeEndInputProps} />
+                  <input
+                    className={`mb-[20px] mt-[10px] m-2 ml-2 w-[100%] border ${
+                      focus === "endDate" ? " -focused" : ""
+                    } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
+                    style={{ marginLeft: 16, width: 80 }}
+                    {...timeEndInputProps}
+                  />
                 </div>
               </div>
             );
@@ -129,24 +145,34 @@ const CommonForm: React.FC<Props> = ({
           The cost for upload will be: ${cost} USDT
         </h2>
       )}
-      {cost === 0 && (
+      <div className="mt-auto flex flex-row justify-end">
         <button
-          onClick={() => handleEstimateCost(values)}
-          className=" btn-secondary mt-auto"
-          disabled={disabledEstimateCost(values) || loading}
+        
+          onClick={() => close()}
+          className=" btn-third mt-auto ml-0"
         >
-          Estimate Cost
+          Cancel
         </button>
-      )}
-      {cost !== 0 && !loading && (
-        <button
-          onClick={() => handleSave(values)}
-          className="btn-secondary"
-          disabled={disabledEstimateCost(values) || loading}
-        >
-          Upload Asset
-        </button>
-      )}
+
+        {cost === 0 && (
+          <button
+            onClick={() => handleEstimateCost(values)}
+            className=" btn-secondary mt-auto"
+            disabled={disabledEstimateCost(values) || loading}
+          >
+            Estimate Cost
+          </button>
+        )}
+        {cost !== 0 && !loading && (
+          <button
+            onClick={() => handleSave(values)}
+            className="btn-secondary"
+            disabled={disabledEstimateCost(values) || loading}
+          >
+            Upload Asset
+          </button>
+        )}
+      </div>
       {loading && (
         <div className="preloader">
           <span></span>

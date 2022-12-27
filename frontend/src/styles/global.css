@@ -18,13 +18,13 @@
   }
 
   .btn-primary{
-    @apply bg-white px-8 py-3 rounded font-montserratbold text-primary hover:text-secondary hover:transition hover:ease-linear disabled:bg-third disabled:text-white;
+    @apply bg-white px-6 py-2 rounded font-montserratbold text-primary hover:text-secondary hover:transition hover:ease-linear disabled:bg-third disabled:text-white;
   }
   .btn-secondary{
-    @apply bg-primary px-8 py-3 rounded font-montserratbold text-white  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third;
+    @apply bg-primary px-6 py-2 rounded font-montserratbold text-white  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third;
   }
   .btn-third{
-    @apply  px-8 py-3 rounded font-montserratbold text-primary  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third;
+    @apply  px-6 py-2 rounded font-montserratbold text-primary  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third;
   }
 
   table{

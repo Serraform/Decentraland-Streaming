@@ -14,6 +14,7 @@ import { useToasts } from "react-toast-notifications";
 const StreamInfo: React.FC<IStreamCreation> = ({
   streamType,
   selectedStream,
+  close
 }) => {
     const { addToast } = useToasts();
   const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -38,6 +39,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
             selectedStream={selectedStream as IStreamVOD}
             isNewStream={true}
             handleEstimateCost={handleEstimateCost}
+            close={close}
           />
         );
       case "live-stream":
@@ -47,6 +49,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
             selectedStream={selectedStream as ILiveStream}
             isNewStream={true}
             handleEstimateCost={handleEstimateCost}
+            close={close}
           />
         );
       default:
