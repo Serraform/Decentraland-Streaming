@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import  { Suspense, useEffect } from "react";
 import Home from "pages/home";
 import Layout from "layout/index";
