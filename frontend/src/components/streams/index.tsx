@@ -17,7 +17,6 @@ const Streams = () => {
   // const { streams } = useSelector((state: RootState) => state.streamData);
   const {
     data: streams,
-    // data,
     error,
     isLoading: loading,
   } = useFetchStreamsByWalletIdQuery(walletID, { skip: walletID === "" });
@@ -39,7 +38,7 @@ const Streams = () => {
       columnsDefinition(columnHelper, setCopy, copySuccess, handleSelectStream),
     [columnHelper, copySuccess, handleSelectStream]
   );
-  if (loading)
+  if ((loading || !streams) && !error)
     return (
       <div className="container pt-10">
         <div className="preloader">
@@ -58,7 +57,6 @@ const Streams = () => {
         </h1>
       </div>
     );
-  if (!streams) return <></>;
   return <StreamTable columns={columns} streams={streams as any} />;
 };
 
