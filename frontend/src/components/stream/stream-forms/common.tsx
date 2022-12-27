@@ -140,16 +140,18 @@ const CommonForm: React.FC<Props> = ({
           }}
         </DateRangePicker>
       </div>
+      <div className="mt-auto flex flex-col justify-end items-end">
       {cost !== 0 && !loading && (
-        <h2 className="font-montserratbold text-black text-[15px] mt-auto">
+        <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem]">
           The cost for upload will be: ${cost} USDT
         </h2>
       )}
-      <div className="mt-auto flex flex-row justify-end">
+      <div>
+
         <button
         
-          onClick={() => close()}
-          className=" btn-third mt-auto ml-0"
+        onClick={() => close()}
+        className=" btn-third mt-auto ml-0"
         >
           Cancel
         </button>
@@ -165,13 +167,14 @@ const CommonForm: React.FC<Props> = ({
         )}
         {cost !== 0 && !loading && (
           <button
-            onClick={() => handleSave(values)}
-            className="btn-secondary"
-            disabled={disabledEstimateCost(values) || loading}
+          onClick={() => handleSave(values)}
+          className="btn-secondary"
+          disabled={disabledEstimateCost(values) || loading}
           >
             Upload Asset
           </button>
         )}
+        </div>
       </div>
       {loading && (
         <div className="preloader">

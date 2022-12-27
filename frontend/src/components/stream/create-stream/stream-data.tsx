@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   IStreamCreation,
   ILiveStream,
@@ -6,27 +6,52 @@ import {
 } from "components/stream/definitions";
 import StreamVOD from "components/stream/stream-forms/VOD";
 import LiveStream from "components/stream/stream-forms/live-stream";
-import { estimateCost, finishTransaction } from "store/slices/transaction.slice";
+import {
+  estimateCost,
+  finishTransaction,
+} from "store/slices/transaction.slice";
 import { uploadStream } from "store/slices/stream.slice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 import { useToasts } from "react-toast-notifications";
+import { Player, useCreateStream } from "@livepeer/react";
 const StreamInfo: React.FC<IStreamCreation> = ({
   streamType,
   selectedStream,
-  close
+  close,
 }) => {
-    const { addToast } = useToasts();
+  const [streamNameForLivepeer, setStreamNameLivepeer] = useState<string>("");
+  const {
+    mutate: createLiveStream,
+    data: stream,
+    status,
+  } = useCreateStream(
+    streamNameForLivepeer ? { name: streamNameForLivepeer } : null
+  );
+  const { addToast } = useToasts();
+
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
-  const handleSave = (values: any) => {
-    dispatch(uploadStream({...values, type: streamType}));
-    addToast("Created stream", {
-      appearance: "success",
-      autoDismiss: true,
-    });
-    dispatch(finishTransaction());
-  };
+
+  useEffect(() => {
+    if (stream) {
+      const { createdAt, id, playbackId, playbackUrl, rtmpIngestUrl, streamKey } = stream;
+      debugger;
+      console.log(stream);
+    }
+  }, [stream]);
+
+  useEffect(() => {
+    if (streamNameForLivepeer) {
+      createLiveStream?.();
+    }
+  }, [streamNameForLivepeer]);
+
+  const handleSave = useCallback((values: any) => {
+    if (values.type === "live-stream") {
+      setStreamNameLivepeer(values.name);
+    }
+  }, []);
   const handleEstimateCost = (values: any) => {
     dispatch(estimateCost(values));
   };

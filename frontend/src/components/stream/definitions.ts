@@ -6,7 +6,11 @@ interface IStream {
   startDate: Date | undefined;
   endDate: Date | undefined;
   type: string;
-  videoLink: string;
+  createdAt: number;
+  id: string; 
+  playbackId: string;
+  playbackUrl: string;
+  
 }
 
 type IStreamVOD = IStream & {
@@ -16,6 +20,8 @@ type IStreamVOD = IStream & {
 };
 
 type ILiveStream = IStream & {
+  rtmpIngestUrl: string; 
+  streamKey: string;
 };
 
  type IStreamCreation = {

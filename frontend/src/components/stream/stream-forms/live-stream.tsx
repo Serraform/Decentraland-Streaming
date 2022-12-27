@@ -31,7 +31,10 @@ const LiveStream: React.FC<Props> = ({
 
   const handleOnSubmit = useCallback(
     (values: any) => {
-      handleSave(values);
+      const valuesToSend = {
+        ...values, type: "live-stream"
+      }
+      handleSave(valuesToSend);
     },
     [handleSave]
   );
@@ -59,7 +62,7 @@ const LiveStream: React.FC<Props> = ({
                 cost={cost}
                 loading={loading}
                 handleEstimateCost={handleEstimateCost}
-                handleSave={handleSave}
+                handleSave={handleOnSubmit}
                 disabledEstimateCost={disabledEstimateCost}
                 close={close}
               />

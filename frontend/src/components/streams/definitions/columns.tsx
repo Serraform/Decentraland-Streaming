@@ -23,8 +23,8 @@ export const columnsDefinition = (
     header: () => <span className="font-montserratbold">Type</span>,
     cell: (info: any) => info.getValue(),
   }),
-  columnHelper.accessor("videoLink", {
-    id: "videoLink",
+  columnHelper.accessor("playbackUrl", {
+    id: "playbackUrl",
     header: () => <span className="font-montserratbold">Playback URL</span>,
     cell: (info: any) => (
       <>
