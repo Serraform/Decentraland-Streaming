@@ -52,6 +52,11 @@ namespace SRFM.MediaServices.API
             return await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", walletId);
         }
 
+        public async Task<AssetDB> GetAssetByAssetId(string assetId)
+        {
+            return await _tableReader.GetItemsByRowKeyAsync<AssetDB>("Asset", assetId);
+        }
+
         public async Task<object> CreateNewUser(UserDB userProp)
         {
             return await _tableWriter.AddAsync("User", userProp);
@@ -67,6 +72,8 @@ namespace SRFM.MediaServices.API
             return await _tableWriter.DeleteAsync("User", userProp);
         }
 
+      
+
         public async Task GetLivePeerAssets()
         {
             await _assetManager.GetAssets<string>("");
@@ -79,7 +86,7 @@ namespace SRFM.MediaServices.API
             if (!string.IsNullOrEmpty(reqUpload.Url))
             {
                 //TODO : Create Asset
-                var checkUser = await _tableReader.GetItemsByRowKeyAsync<AssetDB>("User", walletId);
+                var checkUser = await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", walletId);
                 if (checkUser != null)
                 {
                     var AssetID = Guid.NewGuid().ToString();
@@ -122,6 +129,11 @@ namespace SRFM.MediaServices.API
             }
 
             return status;
+        }
+
+        public async Task<object> DeleteAsset(AssetDB assetProp)
+        {
+            return await _tableWriter.DeleteAsync("Asset", assetProp);
         }
 
         public async Task<HttpResponseMessage> SuspendStream(string streamId, string walletId)

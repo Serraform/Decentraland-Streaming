@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SRFM.MediaServices.API.Models.LivePeer;
@@ -84,8 +85,26 @@ namespace SRFM.MediaServices.API.Controllers
             //  return new List<AssetDB>() { new AssetDB() { AssetId = "MyAssetId", WalletId = "xyzabc" } };
         }
 
+        [HttpDelete]
+        [Route("DeleteAssetByAssetId/{assetId}")]
+        public async Task<IActionResult> DeleteUserByWalletId(string assetId)
+        {
+            // Add new userDB object to Table Storage >> need to check Status code 201/204 by "Prefer header"
+
+            AssetDB asset = await _process.GetAssetByAssetId(assetId);
+
+            if (asset != null)
+            {
+                var statusCode = await _process.DeleteAsset(asset);
+                var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
+                return ret;
+
+            }
+            throw new CustomException("WalletId not correct");
+        }
+
         // PUT api/<AssetController>/5
-        
+
 
         //[HttpGet]
         //public IEnumerable<string> Get()
