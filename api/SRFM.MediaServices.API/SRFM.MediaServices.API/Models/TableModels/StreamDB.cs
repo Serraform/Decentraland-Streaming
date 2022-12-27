@@ -16,9 +16,17 @@ namespace SRFM.MediaServices.API
 
         public string StreamId { get; set; }
 
-        public string StreamFrom { get; set; }
+        public string StreamFrom { get; set; }       
 
-        public string FileName { get; set; }
+        public string StreamType { get; set; }
+
+        public string StreamDuration { get; set; }
+
+        public string StreamStartDate { get; set; }
+
+        public string StreamEndDate { get; set; }
+
+        public string Attendees { get; set; }
 
         public string Url { get; set; }
 

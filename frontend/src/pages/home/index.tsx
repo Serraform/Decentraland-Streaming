@@ -1,7 +1,7 @@
 import Streams from "components/streams";
 import StreamModal from "components/stream";
 import { RootState } from "store/configStore";
-import {   handleCloseModal } from "store/slices/stream.slice";
+import {  handleCloseModal } from "store/slices/stream.slice";
 import { useSelector, useDispatch } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 const Home = () => {
