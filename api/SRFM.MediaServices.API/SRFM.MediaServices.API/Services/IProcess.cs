@@ -26,7 +26,7 @@ namespace SRFM.MediaServices.API
 
         public Task<object> DeleteUser(UserDB userProps);
 
-        public Task<object> DeleteAsset(UserDB assetProps);
+        public Task<object> DeleteAsset(AssetDB assetProps);
 
         public Task GetLivePeerAssets();
 

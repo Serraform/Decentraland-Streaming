@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SRFM.MediaServices.API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class StreamController : ControllerBase

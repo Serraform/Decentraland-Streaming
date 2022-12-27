@@ -131,7 +131,7 @@ namespace SRFM.MediaServices.API
             return status;
         }
 
-        public async Task<object> DeleteAsset(UserDB assetProp)
+        public async Task<object> DeleteAsset(AssetDB assetProp)
         {
             return await _tableWriter.DeleteAsync("Asset", assetProp);
         }

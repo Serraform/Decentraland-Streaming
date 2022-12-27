@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SRFM.MediaServices.API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AssetController : ControllerBase
@@ -95,7 +95,7 @@ namespace SRFM.MediaServices.API.Controllers
 
             if (asset != null)
             {
-                var statusCode = await _process.DeleteUser(user);
+                var statusCode = await _process.DeleteAsset(asset);
                 var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
                 return ret;
 
