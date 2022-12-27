@@ -16,7 +16,7 @@ const useConnectWallet = () => {
     }
   }, [error]);
 
-  const connectWallet = useCallback(() => dispatch(requestConnectWallet()), []) as any;
+  const connectWallet = useCallback(() => dispatch(requestConnectWallet()), [dispatch]) as any;
   return { walletID, loading, connectWallet };
 };
 
