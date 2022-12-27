@@ -24,7 +24,7 @@ const initialState: InitialState = {
   //     video: "https://example.com",
   //     videoSize: "2312312313",
   //     videoLenght: "1200",
-  //     createdAt: 
+  //     createdAt:
   //   },
   //   {
   //     status: true,
@@ -49,10 +49,9 @@ const initialState: InitialState = {
     videoSize: "",
     videoLenght: "",
     createdAt: 0,
-  id: "", 
-  playbackId: "",
-  playbackUrl: "",
-    
+    id: "",
+    playbackId: "",
+    playbackUrl: "",
   },
   isNewStream: true,
   openModal: false,
