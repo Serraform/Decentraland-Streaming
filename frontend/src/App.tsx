@@ -7,15 +7,14 @@ import useConnectWallet from "hooks/useConnectWallet";
 function App() {
   const { connectWallet } = useConnectWallet();
   const token = localStorage.getItem("token");
-  const dontConnectWallet = token === "" || token === undefined || token === null
+  const dontConnectWallet =
+    token === "" || token === undefined || token === null;
   useEffect(() => {
     getToken();
   }, []);
-  
-  useEffect(() => {
-    
-    if(!dontConnectWallet){
 
+  useEffect(() => {
+    if (!dontConnectWallet) {
       connectWallet();
     }
   }, [dontConnectWallet]);
