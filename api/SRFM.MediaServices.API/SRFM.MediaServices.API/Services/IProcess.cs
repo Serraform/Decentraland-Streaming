@@ -12,6 +12,8 @@ namespace SRFM.MediaServices.API
 
         public Task<List<AssetDB>> GetAssetByWalletId(string WalletId);
 
+        public Task<AssetDB> GetAssetByAssetId(string WalletId);
+
         public Task<List<StreamDB>> GetStreamsByWalletId(string WalletId);
 
         public Task<UserDB> GetUserByWalletId(string WalletId);
@@ -23,6 +25,8 @@ namespace SRFM.MediaServices.API
         public Task<object> UpdateUser(UserDB userProps);
 
         public Task<object> DeleteUser(UserDB userProps);
+
+        public Task<object> DeleteAsset(UserDB assetProps);
 
         public Task GetLivePeerAssets();
 
