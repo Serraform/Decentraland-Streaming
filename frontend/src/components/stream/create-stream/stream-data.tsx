@@ -6,23 +6,25 @@ import {
 } from "components/stream/definitions";
 import StreamVOD from "components/stream/stream-forms/VOD";
 import LiveStream from "components/stream/stream-forms/live-stream";
-import {
-  estimateCost,
-} from "store/slices/transaction.slice";
+import { estimateCost } from "store/slices/transaction.slice";
 import { uploadStream } from "store/slices/stream.slice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 import { useToasts } from "react-toast-notifications";
-import  useUploadStream  from "hooks/useCreateStream";
+import { RootState } from "store/configStore";
+// import  useCreateLiveStream  from "hooks/useCreateLiveStream";
+import { useCreateLiveStreamMutation } from "store/api/streams.api";
 const StreamInfo: React.FC<IStreamCreation> = ({
   streamType,
   selectedStream,
   close,
 }) => {
-  const [streamNameForLivepeer, setStreamNameLivepeer] = useState<string>("");
+  // const [streamNameForLivepeer, setStreamNameLivepeer] = useState<string>("");
+  // const { stream, isLoading } = useCreateLiveStream(streamNameForLivepeer, null);
   const [streamValues, setStreamValues] = useState<ILiveStream | IStreamVOD>();
-  
-  const { stream, isLoading } = useUploadStream(streamNameForLivepeer, null);
+  const { walletID } = useSelector((state: RootState) => state.accountData);
+  const [createLiveStream, { isLoading, data: stream }] =
+    useCreateLiveStreamMutation();
   const { addToast } = useToasts();
 
   const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -30,6 +32,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
 
   useEffect(() => {
     if (stream) {
+      debugger;
       const {
         createdAt,
         id,
@@ -48,7 +51,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
         playbackUrl,
         rtmpIngestUrl,
         streamKey,
-      }
+      };
       dispatch(uploadStream(newStream));
       addToast("Stream created", {
         appearance: "success",
@@ -59,7 +62,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
 
   const handleSave = useCallback((values: any) => {
     if (values.type === "live-stream") {
-      setStreamNameLivepeer(values.name);
+      createLiveStream({walletID: walletID, streamName: values.name});
     }
     setStreamValues(values);
   }, []);
@@ -76,14 +79,13 @@ const StreamInfo: React.FC<IStreamCreation> = ({
             isNewStream={true}
             handleEstimateCost={handleEstimateCost}
             close={close}
-                    isLoading={isLoading}
-
+            isLoading={isLoading}
           />
         );
       case "live-stream":
         return (
           <LiveStream
-          isLoading={isLoading}
+            isLoading={isLoading}
             handleSave={handleSave}
             selectedStream={selectedStream as ILiveStream}
             isNewStream={true}

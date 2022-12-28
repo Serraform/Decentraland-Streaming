@@ -1,13 +1,10 @@
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "store/configStore";
+import { useEffect } from "react";
 import { useCreateStream } from "@livepeer/react";
 
-const useUploadStream = (name: string, video: any) => {
+const useCreateLiveStream = (name: string, video: any) => {
   const {
     mutate: createLiveStream,
     data: stream,
-    status,
     isLoading
   } = useCreateStream(
     name ? { name: name } : null
@@ -17,9 +14,9 @@ const useUploadStream = (name: string, video: any) => {
     if (name !== "") {
       createLiveStream?.();
     }
-  }, [name]);
+  }, [name, createLiveStream]);
 
   return { isLoading, stream }
 };
 
-export default useUploadStream;
+export default useCreateLiveStream;
