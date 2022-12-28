@@ -45,6 +45,8 @@ const EditStream: React.FC<Props> = ({ selectedStream, setFullSide, close }) => 
             isNewStream={false}
             handleEstimateCost={handleEstimateCost}
             close={close}
+
+            isLoading={false}
           />
         );
       case "live-stream":
@@ -55,6 +57,7 @@ const EditStream: React.FC<Props> = ({ selectedStream, setFullSide, close }) => 
             isNewStream={false}
             handleEstimateCost={handleEstimateCost}
             close={close}
+            isLoading={false}
           />
         );
       default:

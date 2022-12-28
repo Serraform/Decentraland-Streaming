@@ -8,26 +8,21 @@ import StreamVOD from "components/stream/stream-forms/VOD";
 import LiveStream from "components/stream/stream-forms/live-stream";
 import {
   estimateCost,
-  finishTransaction,
 } from "store/slices/transaction.slice";
 import { uploadStream } from "store/slices/stream.slice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 import { useToasts } from "react-toast-notifications";
-import { Player, useCreateStream } from "@livepeer/react";
+import  useUploadStream  from "hooks/useCreateStream";
 const StreamInfo: React.FC<IStreamCreation> = ({
   streamType,
   selectedStream,
   close,
 }) => {
   const [streamNameForLivepeer, setStreamNameLivepeer] = useState<string>("");
-  const {
-    mutate: createLiveStream,
-    data: stream,
-    status,
-  } = useCreateStream(
-    streamNameForLivepeer ? { name: streamNameForLivepeer } : null
-  );
+  const [streamValues, setStreamValues] = useState<ILiveStream | IStreamVOD>();
+  
+  const { stream, isLoading } = useUploadStream(streamNameForLivepeer, null);
   const { addToast } = useToasts();
 
   const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -35,22 +30,38 @@ const StreamInfo: React.FC<IStreamCreation> = ({
 
   useEffect(() => {
     if (stream) {
-      const { createdAt, id, playbackId, playbackUrl, rtmpIngestUrl, streamKey } = stream;
-      debugger;
+      const {
+        createdAt,
+        id,
+        playbackId,
+        playbackUrl,
+        rtmpIngestUrl,
+        streamKey,
+      } = stream;
       console.log(stream);
+      const newStream = {
+        ...streamValues,
+        status: stream.isActive,
+        createdAt,
+        id,
+        playbackId,
+        playbackUrl,
+        rtmpIngestUrl,
+        streamKey,
+      }
+      dispatch(uploadStream(newStream));
+      addToast("Stream created", {
+        appearance: "success",
+        autoDismiss: true,
+      });
     }
-  }, [stream]);
-
-  useEffect(() => {
-    if (streamNameForLivepeer) {
-      createLiveStream?.();
-    }
-  }, [streamNameForLivepeer]);
+  }, [stream, streamValues]);
 
   const handleSave = useCallback((values: any) => {
     if (values.type === "live-stream") {
       setStreamNameLivepeer(values.name);
     }
+    setStreamValues(values);
   }, []);
   const handleEstimateCost = (values: any) => {
     dispatch(estimateCost(values));
@@ -65,11 +76,14 @@ const StreamInfo: React.FC<IStreamCreation> = ({
             isNewStream={true}
             handleEstimateCost={handleEstimateCost}
             close={close}
+                    isLoading={isLoading}
+
           />
         );
       case "live-stream":
         return (
           <LiveStream
+          isLoading={isLoading}
             handleSave={handleSave}
             selectedStream={selectedStream as ILiveStream}
             isNewStream={true}

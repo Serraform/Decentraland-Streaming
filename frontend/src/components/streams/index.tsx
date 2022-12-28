@@ -14,9 +14,9 @@ import { useFetchStreamsByWalletIdQuery } from "store/api/streams.api";
 
 const Streams = () => {
   const { walletID } = useSelector((state: RootState) => state.accountData);
-  // const { streams } = useSelector((state: RootState) => state.streamData);
+  const { streams } = useSelector((state: RootState) => state.streamData);
   const {
-    data: streams,
+    // data: streams,
     error,
     isLoading: loading,
   } = useFetchStreamsByWalletIdQuery(walletID, { skip: walletID === "" });

@@ -12,6 +12,7 @@ type Props = {
   isNewStream: boolean;
   handleEstimateCost: Function;
   close: Function;
+  isLoading: boolean;
 };
 
 const LiveStream: React.FC<Props> = ({
@@ -19,9 +20,10 @@ const LiveStream: React.FC<Props> = ({
   selectedStream,
   isNewStream,
   handleEstimateCost,
-  close
+  close,
+  isLoading
 }) => {
-  const { cost, loading } = useSelector(
+  const { cost } = useSelector(
     (state: RootState) => state.transactionData
   );
 
@@ -60,7 +62,7 @@ const LiveStream: React.FC<Props> = ({
                 values={values}
                 handleChange={handleChange}
                 cost={cost}
-                loading={loading}
+                loading={isLoading}
                 handleEstimateCost={handleEstimateCost}
                 handleSave={handleOnSubmit}
                 disabledEstimateCost={disabledEstimateCost}

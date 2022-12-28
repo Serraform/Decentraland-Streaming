@@ -146,10 +146,9 @@ const CommonForm: React.FC<Props> = ({
           The cost for upload will be: ${cost} USDT
         </h2>
       )}
-      <div>
+      <div className="flex">
 
         <button
-        
         onClick={() => close()}
         className=" btn-third mt-auto ml-0"
         >
@@ -165,23 +164,19 @@ const CommonForm: React.FC<Props> = ({
             Estimate Cost
           </button>
         )}
-        {cost !== 0 && !loading && (
+        {cost !== 0 && (
           <button
           onClick={() => handleSave(values)}
-          className="btn-secondary"
+          className="btn-secondary flex flex-row items-center"
           disabled={disabledEstimateCost(values) || loading}
           >
+          {loading &&  <div className="basic mr-[1rem]"/>}
             Upload Asset
           </button>
         )}
         </div>
       </div>
-      {loading && (
-        <div className="preloader">
-          <span></span>
-          <span></span>
-        </div>
-      )}
+      
     </>
   );
 };
