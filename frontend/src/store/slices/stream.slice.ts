@@ -11,33 +11,26 @@ type InitialState = {
 };
 
 const initialState: InitialState = {
-  streams: [],
-  // streams: [
-  //   {
-  //     status: true,
-  //     type: "vod",
-  //     playbackUrl: "https://example.com",
-  //     name: "Example stream",
-  //     startDate: new Date("2023-12-21T00:00:00Z"),
-  //     endDate: new Date("2023-12-24T00:00:00Z"),
-  //     attendees: "0",
-  //     video: "https://example.com",
-  //     videoSize: "2312312313",
-  //     videoLenght: "1200",
-  //     createdAt:
-  //   },
-  //   {
-  //     status: true,
-  //     playbackUrl: "https://example.com",
-  //     name: "Example live stream",
-  //     startDate: new Date("2023-11-01T12:00:00Z"),
-  //     endDate: new Date("2023-12-01T15:00:00Z"),
-  //     attendees: "0",
-  //     type: "live-stream",
-  //     rtmpIngestUrl: "",
-  //     streamKey: "",
-  //   },
-  // ],
+  // streams: [],
+  streams: [
+    {
+      name:"Testing Live stream2",
+      status:false,
+      attendees:"12",
+      startDate:new Date("2022-12-29T03:00:00.000Z"),
+      endDate:new Date("2022-12-31T03:00:00.000Z"),
+      type:"live-stream",
+      video:"",
+      videoSize:"",
+      videoLenght:"",
+      createdAt:1672330083298,
+      id:"e5ffacff-2f64-4f29-b5d8-3f46c163edd0",
+      playbackId:"e5fflg5ysneh7t4w",
+      playbackUrl:"https://livepeercdn.com/hls/e5fflg5ysneh7t4w/index.m3u8",
+      rtmpIngestUrl:"rtmp://rtmp.livepeer.com/live/e5ff-cz4e-tg49-1q9f",
+      streamKey:"e5ff-cz4e-tg49-1q9f"
+    },
+  ],
   selectedStream: {
     name: "",
     status: false,

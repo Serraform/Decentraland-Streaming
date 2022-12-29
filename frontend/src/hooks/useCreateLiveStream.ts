@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useCreateStream } from "@livepeer/react";
 
 const useCreateLiveStream = (name: string, video: any) => {
@@ -10,11 +10,11 @@ const useCreateLiveStream = (name: string, video: any) => {
     name ? { name: name } : null
   );
 
-  useEffect(() => {
+  useMemo(() => {
     if (name !== "") {
       createLiveStream?.();
     }
-  }, [name, createLiveStream]);
+  },[name]);
 
   return { isLoading, stream }
 };

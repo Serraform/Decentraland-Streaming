@@ -12,27 +12,25 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 import { useToasts } from "react-toast-notifications";
 import { RootState } from "store/configStore";
-// import  useCreateLiveStream  from "hooks/useCreateLiveStream";
-import { useCreateLiveStreamMutation } from "store/api/streams.api";
+import  useCreateLiveStream  from "hooks/useCreateLiveStream";
+// import { useCreateLiveStreamMutation } from "store/api/streams.api";
 const StreamInfo: React.FC<IStreamCreation> = ({
   streamType,
   selectedStream,
   close,
 }) => {
-  // const [streamNameForLivepeer, setStreamNameLivepeer] = useState<string>("");
-  // const { stream, isLoading } = useCreateLiveStream(streamNameForLivepeer, null);
+  const [streamNameForLivepeer, setStreamNameLivepeer] = useState<string>("");
+  const { stream, isLoading } = useCreateLiveStream(streamNameForLivepeer, null);
   const [streamValues, setStreamValues] = useState<ILiveStream | IStreamVOD>();
-  const { walletID } = useSelector((state: RootState) => state.accountData);
-  const [createLiveStream, { isLoading, data: stream }] =
-    useCreateLiveStreamMutation();
+  // const { walletID } = useSelector((state: RootState) => state.accountData);
+  // const [createLiveStream, { isLoading, data: stream }] =
+  //   useCreateLiveStreamMutation();
   const { addToast } = useToasts();
 
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
-
   useEffect(() => {
     if (stream) {
-      debugger;
       const {
         createdAt,
         id,
@@ -62,7 +60,8 @@ const StreamInfo: React.FC<IStreamCreation> = ({
 
   const handleSave = useCallback((values: any) => {
     if (values.type === "live-stream") {
-      createLiveStream({walletID: walletID, streamName: values.name});
+      // createLiveStream({walletID: walletID, streamName: values.name});
+      setStreamNameLivepeer(values.name)
     }
     setStreamValues(values);
   }, []);

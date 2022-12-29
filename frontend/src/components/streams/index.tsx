@@ -48,7 +48,7 @@ const Streams = () => {
         </div>
       </div>
     );
-  if (error)
+  if (false)
     return (
       <div className="container pt-10">
         <h1 className="font-montserratbold text-primary text-center pt-20 pb-20 border-third border-r-0 border-t-0">
