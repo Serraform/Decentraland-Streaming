@@ -57,7 +57,7 @@ const Streams = () => {
         </h1>
       </div>
     );
-  return <StreamTable columns={columns} streams={streams as any} />;
+  return <StreamTable columns={columns} streams={streams as any} handleSelectStream={handleSelectStream} />;
 };
 
 export default Streams;

@@ -30,6 +30,7 @@
   table{
     box-shadow: 0px 0px 10px rgba(193, 193, 193, 0.5);
     overflow: hidden;
+
   }
   .nice-dates-day.-selected {
   color: #2561C5!important;

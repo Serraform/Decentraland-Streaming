@@ -21,15 +21,12 @@ const StreamVOD: React.FC<Props> = ({
   isNewStream,
   handleEstimateCost,
   close,
-  isLoading
-
+  isLoading,
 }) => {
   const [streamInfoVOD] = useState<IStreamVOD>({
     ...selectedStream,
   });
-  const { cost } = useSelector(
-    (state: RootState) => state.transactionData
-  );
+  const { cost } = useSelector((state: RootState) => state.transactionData);
 
   const handleOnSubmit = useCallback(
     (values: any) => {
@@ -59,14 +56,22 @@ const StreamVOD: React.FC<Props> = ({
             className={`flex flex-row ${
               isNewStream ? "justify-between" : "justify-center"
             } w-[100%] h-[40vh]`}
-            
           >
-            {isNewStream && (
-              <Video   values={values} video={values.video} handleChange={handleChange} />
+            {isNewStream ? (
+              <Video
+                values={values}
+                video={values.video}
+                handleChange={handleChange}
+              />
+            ) : (
+              <Video values={values} video={values.video} handleChange={() => null}/>
             )}
-            <div className="flex flex-col justify-top w-[50%]" style={{
-              position: "relative",
-            }}>
+            <div
+              className="flex flex-col justify-top w-[50%]"
+              style={{
+                position: "relative",
+              }}
+            >
               <CommonForm
                 values={values}
                 handleChange={handleChange}

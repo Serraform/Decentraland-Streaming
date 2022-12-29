@@ -1,5 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Buffer } from "buffer";
+import { Player } from "@livepeer/react";
+
 type Props = {
   video: string;
   handleChange: Function;
@@ -52,17 +54,11 @@ const Video: React.FC<Props> = ({ values, video, handleChange }) => {
   return (
     <div className="flex flex-col w-[40%] relative">
       {video ? (
-        <video
-          key={localVideo}
-          className="w-[40%] mb-[1rem] "
-          controls
-          style={{
-            width: "fit-content",
-            height: "100%",
-          }}
-        >
-          <source src={video} type="video/mp4" />
-        </video>
+        <Player
+          title={values.name}
+          playbackId={values.playbackId}
+                src={values.video}
+        />
       ) : localVideo ? (
         <video
           key={localVideo}

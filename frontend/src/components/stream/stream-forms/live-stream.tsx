@@ -5,7 +5,7 @@ import { validationSchema } from "components/stream/definitions";
 import CommonForm from "components/stream/stream-forms/common";
 import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
-
+import Video from "components/stream/create-stream/video";
 type Props = {
   handleSave: Function;
   selectedStream: ILiveStream;
@@ -56,7 +56,14 @@ const LiveStream: React.FC<Props> = ({
     >
       {({ handleChange, values }) => (
         <>
-          <Form className="flex flex-row justify-center items-center w-[100%] h-[35vh]">
+          <Form className="flex flex-row justify-around items-center w-[100%] h-[35vh]">
+          {!isNewStream && (
+              <Video
+                values={values}
+                video={values.playbackUrl}
+                handleChange={() => null}
+              />
+            )}
             <div className="flex flex-col justify-top w-[50%] h-[100%]" style={{position:"relative"}}>
               <CommonForm
                 values={values}
