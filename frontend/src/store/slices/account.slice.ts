@@ -3,7 +3,9 @@ import {
   createAccount,
 } from "store/services/account.service";
 import jazzicon from "jazzicon-ts";
-
+import { ethers } from "ethers";
+import smartcontractABI from "utils/abi/smartcontractABI.json";
+const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 const initialState = {
   walletID: "",
   avatar: undefined,
@@ -28,6 +30,31 @@ export const requestConnectWallet = createAsyncThunk(
       return { walletID: accounts[0], avatar: identicon };
     } catch (e) {
       return { walletID: "", avatar: "" };
+    }
+  }
+);
+
+export const fetchFunds = createAsyncThunk(
+  "fetch-funds",
+  async (walletID: string) => {
+    try{
+    const { ethereum } = window as any;
+    if (!ethereum) {
+      return;
+    }
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+
+    const contract = new ethers.Contract(
+      CONTRACT_ADDRESS as string,
+      smartcontractABI,
+      signer
+    );
+    const accountInfo = await contract.view_sub_info(walletID);
+    debugger;
+    }catch(e){
+      debugger;
+      console.log(e);
     }
   }
 );

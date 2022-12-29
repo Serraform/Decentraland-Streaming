@@ -29,6 +29,7 @@
       "@assets/*": ["assets/*"],
       "@store/*": ["store/*"],
       "@hooks/*": ["hooks/*"],
+      "@utils/*": ["utils/*"]
     }
   },
   "include": [
