@@ -53,9 +53,7 @@ const StreamVOD: React.FC<Props> = ({
       {({ handleChange, values }) => (
         <>
           <Form
-            className={`flex flex-row ${
-              isNewStream ? "justify-between" : "justify-center"
-            } w-[100%] h-[40vh]`}
+            className={`flex flex-row"justify-between" w-[100%] h-[40vh]`}
           >
             {isNewStream ? (
               <Video

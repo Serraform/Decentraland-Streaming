@@ -56,7 +56,7 @@ const LiveStream: React.FC<Props> = ({
     >
       {({ handleChange, values }) => (
         <>
-          <Form className="flex flex-row justify-around items-center w-[100%] h-[35vh]">
+          <Form className="flex flex-row justify-between items-center w-[100%] h-[35vh]">
           {!isNewStream && (
               <Video
                 values={values}
