@@ -50,15 +50,24 @@ const Video: React.FC<Props> = ({ values, video, handleChange }) => {
       reader.readAsArrayBuffer(file);
     }
   }
-
   return (
     <div className="flex flex-col w-[40%] relative">
       {video ? (
-        <Player
-          title={values.name}
-          playbackId={values.playbackId}
-                src={values.video}
-        />
+        values?.status !== "success" ? (
+          <Player
+            title={values.name}
+            playbackId={""}
+            src={""}
+            showLoadingSpinner={false}
+          />
+        ) : (
+          <Player
+            title={values.name}
+            playbackId={values.playbackId}
+            src={values.video}
+            autoPlay
+          />
+        )
       ) : localVideo ? (
         <video
           key={localVideo}

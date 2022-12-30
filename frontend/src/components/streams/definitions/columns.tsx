@@ -11,12 +11,38 @@ export const columnsDefinition = (
   columnHelper.accessor("status", {
     id: "status",
     header: () => <span className="font-montserratbold">Status</span>,
-    cell: (info: any) =>
-      info.getValue() ? (
-        <div className="mx-auto w-4 h-4 rounded-full bg-green-600" />
-      ) : (
-        <div className="mx-auto w-4 h-4 rounded-full bg-red-600" />
-      ),
+    cell: (info: any) => {
+      switch (info.getValue()) {
+        case "idle":
+          return (
+            <div className="flex justify-center flex-row items-center">
+              <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-gray-600" />
+              <span className="text-[13px]">Idle</span>
+            </div>
+          );
+        case "loading":
+          return (
+            <div className="flex justify-center flex-row items-center">
+              <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-blue-600" />
+              <span className="text-[13px]">Loading</span>{" "}
+            </div>
+          );
+        case "success":
+          return (
+            <div className="flex justify-center flex-row items-center">
+              <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-green-600" />
+              <span className="text-[13px]">Live</span>
+            </div>
+          );
+        case "error":
+          return (
+            <div className="flex justify-center flex-row items-center">
+              <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
+              <span className="text-[13px]">Live</span>
+            </div>
+          );
+      }
+    },
   }),
   columnHelper.accessor("type", {
     id: "type",

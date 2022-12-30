@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 interface IStream {
   name: string;
-  status: boolean;
+  status: 'idle' | 'loading' | 'success' | 'error';
   attendees: string;
   startDate: Date | undefined;
   endDate: Date | undefined;

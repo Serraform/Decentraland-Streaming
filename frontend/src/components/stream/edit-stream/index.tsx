@@ -11,7 +11,8 @@ import {
 import FileCopyIcon from "assets/icons/FileCopy";
 import { editStream } from "store/slices/stream.slice";
 import { useToasts } from "react-toast-notifications";
-import finalPropsSelectorFactory from "react-redux/es/connect/selectorFactory";
+import { useStream } from "@livepeer/react";
+
 type Props = {
   selectedStream: IStreamVOD | ILiveStream;
   setFullSide: Function;
@@ -22,6 +23,11 @@ const EditStream: React.FC<Props> = ({
   setFullSide,
   close,
 }) => {
+  const { data } = useStream({
+    streamId: selectedStream?.id,
+    refetchInterval: (stream) => (10000),
+  });
+
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
   const { addToast } = useToasts();
@@ -40,6 +46,8 @@ const EditStream: React.FC<Props> = ({
   const handleEstimateCost = (values: any) => {
     dispatch(estimateCost(values));
   };
+  debugger;
+
   const renderStreamForm = () => {
     switch (selectedStream.type.toLowerCase()) {
       case "vod":
@@ -57,7 +65,10 @@ const EditStream: React.FC<Props> = ({
         return (
           <LiveStream
             handleSave={handleSave}
-            selectedStream={selectedStream as ILiveStream}
+            selectedStream={{
+              ...(selectedStream as ILiveStream),
+              status: data?.isActive ? "success" : selectedStream.status,
+            }}
             isNewStream={false}
             handleEstimateCost={handleEstimateCost}
             close={close}
@@ -118,7 +129,7 @@ const EditStream: React.FC<Props> = ({
               false,
               new Date(selectedStream.createdAt).toLocaleString()
             )}
-            {renderDetail("Status", false, selectedStream.status)}
+            {renderDetail("Status", false, data?.isActive ? "Active" : selectedStream.status)}
           </div>
         </div>
       </div>

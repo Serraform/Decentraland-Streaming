@@ -15,7 +15,7 @@ const initialState: InitialState = {
   streams: [
     {
       name:"Testing Live stream2",
-      status:false,
+      status:"idle",
       attendees:"12",
       startDate:new Date("2022-12-29T03:00:00.000Z"),
       endDate:new Date("2022-12-31T03:00:00.000Z"),
@@ -33,7 +33,7 @@ const initialState: InitialState = {
   ],
   selectedStream: {
     name: "",
-    status: false,
+    status: "idle",
     attendees: "",
     startDate: undefined,
     endDate: undefined,

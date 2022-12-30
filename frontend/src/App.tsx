@@ -9,6 +9,7 @@ import {
   createReactClient,
   studioProvider,
   LivepeerConfig,
+  ThemeConfig
 } from "@livepeer/react";
 
 function App() {
@@ -30,8 +31,15 @@ function App() {
       connectWallet();
     }
   }, [dontConnectWallet]);
+
+  const livepeerTheme: ThemeConfig = {
+    colors: {
+      accent: 'rgb(0, 145, 255)',
+      containerBorderColor: 'rgba(0, 145, 255, 0.9)',
+    },
+  };
   return (
-    <LivepeerConfig client={client}>
+    <LivepeerConfig client={client} theme={livepeerTheme}>
       <ToastProvider placement="bottom-center">
         <Suspense
           fallback={
