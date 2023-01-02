@@ -50,8 +50,8 @@ export const fetchFunds = createAsyncThunk(
       smartcontractABI,
       signer
     );
-    const accountInfo = await contract.view_sub_info(walletID);
     debugger;
+    const accountInfo = await contract.sub_info(walletID);
     }catch(e){
       debugger;
       console.log(e);
