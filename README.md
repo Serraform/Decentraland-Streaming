@@ -23,8 +23,8 @@ Here are the URLs
 ## Dev / Staging
 
 #### Web 
-- Portal - https://stream.serraform.com
-- API - https://app-decentraland-api.azurewebsites.net
+- Portal - https://decentral-demo-app.azurewebsites.net
+- API - https://decentral-demo-api.azurewebsites.net
 
 
 #### Build Workfows 
