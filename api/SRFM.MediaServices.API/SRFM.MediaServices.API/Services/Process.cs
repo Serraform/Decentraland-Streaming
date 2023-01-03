@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SRFM.MediaServices.API.Models.LivePeer;
 using System;
 using System.Collections.Generic;
@@ -24,55 +27,7 @@ namespace SRFM.MediaServices.API
             _assetManager = assetManager;
         }
 
-        // Below are test methods
-        public async Task<List<AssetDB>> ListAssets()
-        {
-            return await _tableReader.ListItemsAsync<AssetDB>("Asset", "USA");
-        }
-
-        public async Task<List<AssetDB>> GetAssetByWalletId(string walletId)
-        {
-            //TODO get assets by walletId;
-            return await _tableReader.ListItemsByWalletIdAsync<AssetDB>("Asset", walletId);
-        }
-
-        public async Task<List<StreamDB>> GetStreamsByWalletId(string walletId)
-        {
-            //TODO get streams by walletId;
-            return await _tableReader.ListItemsByWalletIdAsync<StreamDB>("Stream", walletId);
-        }
-
-        public async Task<List<UserDB>> ListUsers()
-        {
-            return await _tableReader.ListItemsAsync<UserDB>("User", "USA");
-        }
-
-        public async Task<UserDB> GetUserByWalletId(string walletId)
-        {
-            return await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", walletId);
-        }
-
-        public async Task<AssetDB> GetAssetByAssetId(string assetId)
-        {
-            return await _tableReader.GetItemsByRowKeyAsync<AssetDB>("Asset", assetId);
-        }
-
-        public async Task<object> CreateNewUser(UserDB userProp)
-        {
-            return await _tableWriter.AddAsync("User", userProp);
-        }
-
-        public async Task<object> UpdateUser(UserDB userProp)
-        {
-            return await _tableWriter.UpdateAsync("User", userProp);
-        }
-
-        public async Task<object> DeleteUser(UserDB userProp)
-        {
-            return await _tableWriter.DeleteAsync("User", userProp);
-        }
-
-      
+        #region "Asset"
 
         public async Task GetLivePeerAssets()
         {
@@ -83,13 +38,15 @@ namespace SRFM.MediaServices.API
         {
             var reqUpload = await _assetManager.RequestUploadURL(fileName);
 
+            string jsonAssetString = JsonConvert.SerializeObject(reqUpload.Asset);
+
             if (!string.IsNullOrEmpty(reqUpload.Url))
             {
                 //TODO : Create Asset
                 var checkUser = await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", walletId);
                 if (checkUser != null)
                 {
-                    var AssetID = Guid.NewGuid().ToString();
+                    var AssetID = reqUpload.Asset.Id;
                     AssetDB asset = new AssetDB
                     {
                         PartitionKey = "USA",
@@ -97,9 +54,11 @@ namespace SRFM.MediaServices.API
                         RowKey = AssetID,
                         WalletId = walletId,
                         FileName = fileName,
-                        Url = reqUpload.Url
-                        //UploadStatus = reqUpload.Status //Need to check upload status in livepear response
-                        //AssetName = //Need to add
+                        Url = reqUpload.Url,
+                        AssetName = fileName,
+                        Active = true,
+                        AssetInfo = jsonAssetString
+                        //UploadStatus = reqUpload.Status //Need to check upload status in livepear                         
                     };
 
                     var createAsset = await _tableWriter.AddAsync("Asset", asset);
@@ -113,18 +72,12 @@ namespace SRFM.MediaServices.API
         {
             var status = await _assetManager.GetAssetUploadStatus(assetId);
 
-            //TODO update TableStorage status to AssetDB object of user
-            var getAsset = await _tableReader.GetItemsByRowKeyAsync<AssetDB>("Asset", assetId);
-            if (getAsset != null)
-            {
-                AssetDB asset = new AssetDB
-                {
-                    PartitionKey = "USA",
-                    RowKey = getAsset.AssetId,
-                    ETag = getAsset.ETag,
-                    UploadStatus = status.Status
-                };
+            string jsonAssetString = JsonConvert.SerializeObject(status.Status);
 
+            var asset = await _tableReader.GetItemsByRowKeyAsync<AssetDB>("Asset", assetId);
+            if (asset != null)
+            {
+                asset.UploadAssetStatus = jsonAssetString;
                 var update = await _tableWriter.UpdateAsync("Asset", asset);
             }
 
@@ -133,55 +86,155 @@ namespace SRFM.MediaServices.API
 
         public async Task<object> DeleteAsset(AssetDB assetProp)
         {
-            return await _tableWriter.DeleteAsync("Asset", assetProp);
+            return await _tableWriter.UpdateAsync("Asset", assetProp);
+        }
+
+        // Below are test methods
+        public async Task<List<AssetDB>> ListAssets()
+        {
+            return await _tableReader.ListItemsAsync<AssetDB>("Asset", "USA");
+        }
+
+        public async Task<List<AssetDB>> GetAssetByWalletId(string walletId)
+        {
+            //TODO get assets by walletId;
+            return await _tableReader.ListItemsByWalletIdAsync<AssetDB>("Asset", walletId);
+        }     
+
+        public async Task<AssetDB> GetAssetByAssetId(string assetId)
+        {
+            return await _tableReader.GetItemsByRowKeyAsync<AssetDB>("Asset", assetId);
+        }
+
+        #endregion
+
+
+        #region "User"
+
+        public async Task<object> CreateNewUser(UserDB userProp)
+        {
+            return await _tableWriter.AddAsync("User", userProp);
+        }
+
+        public async Task<object> UpdateUser(UserDB userProp)
+        {
+            return await _tableWriter.UpdateAsync("User", userProp);
+        }
+
+        public async Task<object> DeleteUser(UserDB userProp)
+        {
+            return await _tableWriter.UpdateAsync("User", userProp);
+        }
+
+        public async Task<List<UserDB>> ListUsers()
+        {
+            return await _tableReader.ListItemsAsync<UserDB>("User", "USA");
+        }
+
+        public async Task<UserDB> GetUserByWalletId(string walletId)
+        {
+            return await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", walletId);
+        }
+
+        #endregion
+
+
+
+        #region "Stream"
+
+        public async Task<List<StreamDB>> ListStream()
+        {
+            return await _tableReader.ListItemsAsync<StreamDB>("Stream", "USA");
+        }
+
+        public async Task<List<StreamDB>> GetStreamsByWalletId(string walletId)
+        {
+            //TODO get streams by walletId;
+            return await _tableReader.ListItemsByWalletIdAsync<StreamDB>("Stream", walletId);
+        }
+
+        public async Task<StreamDB> GetStreamByStreamId(string streamId)
+        {
+            return await _tableReader.GetItemsByRowKeyAsync<StreamDB>("Stream", streamId);
         }
 
         public async Task<HttpResponseMessage> SuspendStream(string streamId, string walletId)
         {
 
             var httpStatus = await _assetManager.SuspendStream(streamId);
-            //TODO update TableStorage stream status to AssetDB object 
 
+            if (httpStatus.IsSuccessStatusCode)
+            {
+                //TODO update TableStorage stream status to AssetDB object 
+                var stream = await _tableReader.GetItemsByRowKeyAsync<StreamDB>("Stream", streamId);
+
+                if (stream != null)
+                {
+                    stream.SuspendStatus = "Suspended";
+
+                    var update = await _tableWriter.UpdateAsync("Stream", stream);
+                }
+            }
             return httpStatus;
         }
 
         public async Task<HttpResponseMessage> UnSuspendStream(string streamId, string walletId)
         {
             var httpStatus = await _assetManager.UnSuspendStream(streamId);
-            //TODO update TableStorage stream status to AssetDB object 
+            //TODO update TableStorage stream status to AssetDB object
+            if (httpStatus.IsSuccessStatusCode)
+            {
+                var stream = await _tableReader.GetItemsByRowKeyAsync<StreamDB>("Stream", streamId);
+
+                if (stream != null)
+                {
+                    stream.SuspendStatus = "Normal";
+                    var update = await _tableWriter.UpdateAsync("Stream", stream);
+                }
+            }
 
             return httpStatus;
         }
 
-        public async Task<StreamLP> CreateNewStream(StreamLP streamProps,string walletId)
+        public async Task<StreamLP> CreateNewStream(StreamDB streamProps, string walletId)
         {
-            var streamStatus = await _assetManager.CreateNewStream(streamProps);
+            var streamStatus = await _assetManager.CreateNewStream(streamProps.StreamLP);
+
+            string jsonStreamString = JsonConvert.SerializeObject(streamStatus);
+
             //TODO update table storage with stream
 
-            //if (!string.IsNullOrEmpty(streamStatus.Url))
-            //{
-            //    //TODO : Create Asset
-            //    var checkStream = await _tableReader.GetItemsAsync<AssetDB>("Stream", walletId);
-            //    if (checkStream != null)
-            //    {
-            //        var StreamID = Guid.NewGuid().ToString();
-            //        StreamDB asset = new StreamtDB
-            //        {
-            //            PartitionKey = "USA",
-            //            StreamId = StreamID,
-            //            RowKey = StreamID,
-            //            WalletId = walletId,
-            //            FileName = fileName,
-            //            Url = reqUpload.Url
-            //            //UploadStatus = reqUpload.Status //Need to check upload status in livepear response
-            //            //AssetName = //Need to add
-            //        };
+            if (!string.IsNullOrEmpty(streamStatus.Id))
+            {
+                //TODO : Create Stream
+                var checkUser = await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", walletId);
+                if (checkUser != null)
+                {
 
-            //        var createAsset = await _tableWriter.AddAsync("Asset", asset);
-            //    }
-            //}
+                    StreamDB stream = new StreamDB
+                    {
+                        PartitionKey = "USA",
+                        StreamID = streamStatus.Id,
+                        RowKey = streamStatus.Id,
+                        WalletId = walletId,
+                        Name = streamStatus.Name,
+                        StreamInfo = jsonStreamString,
+                        SuspendStatus = "Normal",
+                        Active = true
+                    };
+
+                    var createStream = await _tableWriter.AddAsync("Stream", stream);
+                }
+            }
 
             return streamStatus;
         }
+
+        public async Task<object> DeleteStream(StreamDB streamProp)
+        {
+            return await _tableWriter.UpdateAsync("Stream", streamProp);
+        }
+
+        #endregion
     }
 }

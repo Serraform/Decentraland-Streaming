@@ -25,8 +25,15 @@ namespace SRFM.MediaServices.API
             var tableref = _tableClient.GetTableReference(tableName);
 
             // by WelletId
-            TableQuery<T> query = new TableQuery<T>().Where(TableQuery.GenerateFilterCondition("WalletId", QueryComparisons.Equal, walletId));
+            //TableQuery<T> query = new TableQuery<T>().Where(TableQuery.GenerateFilterCondition("WalletId", QueryComparisons.Equal, walletId));
+            string welletIDQuery =TableQuery.GenerateFilterCondition("WalletId", QueryComparisons.Equal, walletId);
+            string isActiveQuery = TableQuery.GenerateFilterConditionForBool("Active", QueryComparisons.Equal, true);
+            string combinedFilter = TableQuery.CombineFilters(welletIDQuery, TableOperators.And, isActiveQuery);
+
             TableContinuationToken token = null;
+           
+            TableQuery<T> query = new TableQuery<T>().Where(combinedFilter);
+
             TableQuerySegment<T> resultSegment = await tableref.ExecuteQuerySegmentedAsync(query, token);
             var entity = resultSegment.Results;
 
