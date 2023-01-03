@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SRFM.MediaServices.API.Models.LivePeer
 {
     public class StreamLP
-    {
+    {       
         public string Name { get; set; }
 
         public List<ProfileLP> Profiles { get; set; }

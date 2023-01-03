@@ -45,7 +45,7 @@ namespace SRFM.MediaServices.API.Controllers
 
         [HttpPost]
         [Route("CreateStream/{walletId}")]
-        public async Task<HttpResponseMessage> CreateStream([FromBody] StreamLP streamProps, string walletId)
+        public async Task<HttpResponseMessage> CreateStream([FromBody] StreamDB streamProps, string walletId)
         {
             if (streamProps != null)
             {
@@ -70,15 +70,32 @@ namespace SRFM.MediaServices.API.Controllers
 
         }
 
+        [HttpDelete]
+        [Route("DeleteStreamByStreamId/{streamId}")]
+        public async Task<IActionResult> DeleteStreamByStreamId(string streamId)
+        {
+            // Add new userDB object to Table Storage >> need to check Status code 201/204 by "Prefer header"
+
+            StreamDB stream = await _process.GetStreamByStreamId(streamId);
+
+            if (stream != null)
+            {
+                stream.Active = false;
+                var statusCode = await _process.DeleteStream(stream);
+                var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
+                return ret;
+
+            }
+            throw new CustomException("Stream id not correct");
+        }
+
         [HttpGet]
-        [Route("GetStreamsByWalletId/{walletId}")]
-        public async Task<IEnumerable<StreamDB>> GetAssetsByWalletId(string walletId)
+        [Route("GetStreamByWalletId/{walletId}")]
+        public async Task<IEnumerable<StreamDB>> GetStreamByWalletId(string walletId)
         {
             // query TableStorage - Asset Table to get all assets by walletId
             var streams = await _process.GetStreamsByWalletId(walletId);
             return streams;
-
-            //  return new List<AssetDB>() { new AssetDB() { AssetId = "MyAssetId", WalletId = "xyzabc" } };
         }
 
     }
