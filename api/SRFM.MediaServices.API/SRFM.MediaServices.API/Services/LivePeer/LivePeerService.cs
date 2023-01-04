@@ -65,6 +65,13 @@ namespace SRFM.MediaServices.API.Services.LivePeer
             return JsonConvert.DeserializeObject<StreamLP>(responseJson);
         }
 
+        public async Task<HttpResponseMessage> DeleteStream(string streamId)
+        {
+            HttpResponseMessage response = await Client.DeleteAsync($"stream/{streamId}");
+
+            return response;
+        }
+
 
 
 

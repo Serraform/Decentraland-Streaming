@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using SRFM.MediaServices.API.Models.LivePeer;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -230,9 +231,15 @@ namespace SRFM.MediaServices.API
             return streamStatus;
         }
 
-        public async Task<object> DeleteStream(StreamDB streamProp)
+        public async Task<HttpResponseMessage> DeleteStream(StreamDB streamProp)
         {
-            return await _tableWriter.UpdateAsync("Stream", streamProp);
+            var httpStatus = await _assetManager.DeleteStream(streamProp.StreamID);
+            if (httpStatus.IsSuccessStatusCode)
+            {
+                var status = await _tableWriter.UpdateAsync("Stream", streamProp);
+            }
+
+            return httpStatus;
         }
 
         #endregion

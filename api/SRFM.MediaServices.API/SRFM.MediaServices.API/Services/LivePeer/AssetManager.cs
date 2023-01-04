@@ -90,10 +90,14 @@ namespace SRFM.MediaServices.API
             return await _livePeerService.GetUploadStatus(assetId);
         }
 
-        // live peer operations here.
+        public async Task<HttpResponseMessage> DeleteStream(string streamId)
+        {
+            return await _livePeerService.DeleteStream(streamId);
+        }
+            // live peer operations here.
 
 
 
 
-    }
+        }
 }
