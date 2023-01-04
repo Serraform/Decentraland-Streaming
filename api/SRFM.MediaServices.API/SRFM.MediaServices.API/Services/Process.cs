@@ -74,12 +74,14 @@ namespace SRFM.MediaServices.API
             var status = await _assetManager.GetAssetUploadStatus(assetId);
 
             string jsonAssetString = JsonConvert.SerializeObject(status.Status);
-
-            var asset = await _tableReader.GetItemsByRowKeyAsync<AssetDB>("Asset", assetId);
-            if (asset != null)
+            if (status.Status != null)
             {
-                asset.UploadAssetStatus = jsonAssetString;
-                var update = await _tableWriter.UpdateAsync("Asset", asset);
+                var asset = await _tableReader.GetItemsByRowKeyAsync<AssetDB>("Asset", assetId);
+                if (asset != null)
+                {
+                    asset.UploadAssetStatus = jsonAssetString;
+                    var update = await _tableWriter.UpdateAsync("Asset", asset);
+                }
             }
 
             return status;
@@ -199,18 +201,20 @@ namespace SRFM.MediaServices.API
 
         public async Task<StreamLP> CreateNewStream(StreamDB streamProps, string walletId)
         {
-            var streamStatus = await _assetManager.CreateNewStream(streamProps.StreamLP);
 
-            string jsonStreamString = JsonConvert.SerializeObject(streamStatus);
-
-            //TODO update table storage with stream
-
-            if (!string.IsNullOrEmpty(streamStatus.Id))
+            var checkUser = await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", walletId);
+            if (checkUser != null)
             {
-                //TODO : Create Stream
-                var checkUser = await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", walletId);
-                if (checkUser != null)
+                var streamStatus = await _assetManager.CreateNewStream(streamProps.StreamLP);
+
+                string jsonStreamString = JsonConvert.SerializeObject(streamStatus);
+
+                //TODO update table storage with stream
+
+                if (!string.IsNullOrEmpty(streamStatus.Id))
                 {
+                    //TODO : Create Stream
+
 
                     StreamDB stream = new StreamDB
                     {
@@ -226,9 +230,11 @@ namespace SRFM.MediaServices.API
 
                     var createStream = await _tableWriter.AddAsync("Stream", stream);
                 }
-            }
 
-            return streamStatus;
+                return streamStatus;
+            }
+            throw new CustomException("Wrong wallet id for stream creation.");
+
         }
 
         public async Task<HttpResponseMessage> DeleteStream(StreamDB streamProp)

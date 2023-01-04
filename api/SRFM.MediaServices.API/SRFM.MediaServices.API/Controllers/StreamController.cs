@@ -55,6 +55,8 @@ namespace SRFM.MediaServices.API.Controllers
                 }
                 try
                 {
+                    streamProps.StreamLP.Name = streamProps.Name;
+
                     var response = await _process.CreateNewStream(streamProps, walletId);
 
                     string jsonString = JsonSerializer.Serialize(response);
