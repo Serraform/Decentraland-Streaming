@@ -56,8 +56,8 @@ namespace SRFM.MediaServices.API.Controllers
         }
 
         [HttpGet]
-        [Route("GetAssetStatus/{assetId}/{walletId}")]
-        public async Task<AssetStatusLP> GetAssetStatus(string assetId, string walletId)
+        [Route("GetAssetStatus/{assetId}")]
+        public async Task<AssetStatusLP> GetAssetStatus(string assetId)
         {
             var status = await _process.GetAssetUploadStatus(assetId);
             return status;
@@ -78,23 +78,24 @@ namespace SRFM.MediaServices.API.Controllers
             var assets = await _process.GetAssetByWalletId(walletId);
             return assets;          
         }
-        
-        [HttpDelete]
-        [Route("DeleteAssetByAssetId/{assetId}")]
-        public async Task<IActionResult> DeleteAssetByAssetId(string assetId)
-        {       
 
-            AssetDB asset = await _process.GetAssetByAssetId(assetId);
+        //-- NOTE: If you wish for the asset to be completely removed from our storage, please contact us at contact@livepeer.org
+        //[HttpDelete]
+        //[Route("DeleteAssetByAssetId/{assetId}")]
+        //public async Task<IActionResult> DeleteAssetByAssetId(string assetId)
+        //{       
 
-            if (asset != null)
-            {
-                asset.Active = false;
-                var statusCode = await _process.DeleteAsset(asset);
-                var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
-                return ret;
+        //    AssetDB asset = await _process.GetAssetByAssetId(assetId);
 
-            }
-            throw new CustomException("WalletId not correct");
-        }        
+        //    if (asset != null)
+        //    {
+        //        asset.Active = false;
+        //        var statusCode = await _process.DeleteAsset(asset);
+        //        var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
+        //        return ret;
+
+        //    }
+        //    throw new CustomException("WalletId not correct");
+        //}        
     }
 }
