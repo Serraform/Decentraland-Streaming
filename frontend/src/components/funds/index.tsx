@@ -10,43 +10,27 @@ import {
 
 import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
-import { useEffect } from "react";
+import { useEffect, useState} from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "store/configStore";
-import { fetchFunds } from "store/slices/account.slice";
-import smartcontractABI from "utils/abi/smartcontractABI.json";
-import {ethers} from 'ethers'
-const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
+import { fetchFunds, fundWallet } from "store/slices/account.slice";
+import { useToasts } from "react-toast-notifications";
 const Funds = () => {
-  const { walletID } = useSelector((state: RootState) => state.accountData);
+  const [balanceInput, setBalanceInput] = useState("")
+  const { walletID, loading, balance } = useSelector(
+    (state: RootState) => state.accountData
+  );
+  const {addToast} = useToasts();
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
   useEffect(() => {
     if (walletID !== "") {
-    // dispatch(fetchFunds(walletID));
+      dispatch(fetchFunds(walletID));
     }
   }, [walletID]);
-  const fetchFun = async () => {
-    const { ethereum } = window as any;
-    if (!ethereum) {
-      return;
-    }
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = provider.getSigner();
 
-    const contract = new ethers.Contract(
-      CONTRACT_ADDRESS as string,
-      smartcontractABI,
-      signer
-    );
-    debugger;
-    const accountInfo = await contract.view_sub_info(walletID);
-    debugger;
-  }
-  
   return (
     <div className={container}>
-      <button onClick={() => fetchFun()}>fetch</button>
       <div className={`${balanceStyle} rounded`}>
         <p className="font-montserratmedium">Total Balance</p>
         <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem]">
@@ -62,21 +46,22 @@ const Funds = () => {
         </p>
         <input
           placeholder="amount"
+          onChange={(e) => setBalanceInput(e.target.value)}
           className={`text-primary ${inputStyle} rounded rounded-b-none`}
         />
-        <button className={`${buttonStyle} bg-primary rounded rounded-t-none`}>
+        <button
+          onClick={(e) =>
+            dispatch(
+              fundWallet({
+                amountToFund: balanceInput,
+                addToast: addToast,
+              })
+            )
+          }
+          className={`${buttonStyle} bg-primary rounded rounded-t-none`}
+        >
           Send transaction
         </button>
-        {/* <button className="btn-third" style={{ paddingLeft: 0}} onClick={async () => {
-         const { ethereum } = window as any;
-         if (!ethereum) {
-           return;
-         }
-     
-         const accounts = await ethereum.request({
-           method: "eth_requestAccounts",
-         });
-      }}>Log out</button> */}
       </div>
     </div>
   );
