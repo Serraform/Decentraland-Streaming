@@ -34,7 +34,7 @@ const Funds = () => {
       <div className={`${balanceStyle} rounded`}>
         <p className="font-montserratmedium">Total Balance</p>
         <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem]">
-          0 USDT
+          0 USDC
         </h3>
       </div>
       <p className="font-montserratmedium mt-[24px]">

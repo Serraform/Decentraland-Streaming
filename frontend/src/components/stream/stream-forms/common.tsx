@@ -126,7 +126,7 @@ const CommonForm: React.FC<Props> = ({
       </div>
       {cost !== 0 && !loading && (
         <h2 className="font-montserratbold text-black text-[15px] mt-auto">
-          The cost for upload will be: ${cost} USDT
+          The cost for upload will be: ${cost} USDC
         </h2>
       )}
       {cost === 0 && (
