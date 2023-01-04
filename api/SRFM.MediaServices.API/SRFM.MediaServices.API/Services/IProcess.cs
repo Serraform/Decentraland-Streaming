@@ -38,7 +38,7 @@ namespace SRFM.MediaServices.API
 
         public Task<StreamLP> CreateNewStream(StreamDB streamProps, string walletId);
 
-        public Task<object> DeleteStream(StreamDB streamProps);
+        public Task<HttpResponseMessage> DeleteStream(StreamDB streamProps);
 
         public Task<StreamDB> GetStreamByStreamId(string StreamId);
 
