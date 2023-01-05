@@ -65,6 +65,19 @@ namespace SRFM.MediaServices.API
                 return client;                
 
             });
+
+            // add tablestorage as singleton
+            services.AddSingleton(factory =>
+            {
+                string connectionString = Configuration.GetValue<string>("TableConfig:connectionString");
+
+                var storageAcc = CloudStorageAccount.Parse(connectionString);
+                var client = storageAcc.CreateCloudQueueClient();
+
+                return client;
+
+            });
+
             services.AddLogging();
             services.AddHttpClient<LivePeerService>();
             services.AddAzureClients(builder =>
