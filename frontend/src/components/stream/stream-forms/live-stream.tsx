@@ -21,11 +21,9 @@ const LiveStream: React.FC<Props> = ({
   isNewStream,
   handleEstimateCost,
   close,
-  isLoading
+  isLoading,
 }) => {
-  const { cost } = useSelector(
-    (state: RootState) => state.transactionData
-  );
+  const { cost } = useSelector((state: RootState) => state.transactionData);
 
   const [liveStreamVideo] = useState<ILiveStream>({
     ...selectedStream,
@@ -34,8 +32,9 @@ const LiveStream: React.FC<Props> = ({
   const handleOnSubmit = useCallback(
     (values: any) => {
       const valuesToSend = {
-        ...values, streamType: "live-stream"
-      }
+        ...values,
+        streamType: "live-stream",
+      };
       handleSave(valuesToSend);
     },
     [handleSave]
@@ -48,37 +47,48 @@ const LiveStream: React.FC<Props> = ({
       values.streamEndDate === undefined
     );
   };
+  debugger;
   return (
     <Formik
       initialValues={liveStreamVideo}
       validationSchema={validationSchema}
       onSubmit={(values) => handleOnSubmit(values)}
     >
-      {({ handleChange, values }) => (
-        <>
-          <Form className="flex flex-row justify-between items-center w-[100%] h-[35vh]">
-          {!isNewStream && (
-              <Video
-                values={values}
-                video={values.playbackUrl}
-                handleChange={() => null}
-              />
-            )}
-            <div className="flex flex-col justify-top w-[50%] h-[100%]" style={{position:"relative"}}>
-              <CommonForm
-                values={values}
-                handleChange={handleChange}
-                cost={cost}
-                loading={isLoading}
-                handleEstimateCost={handleEstimateCost}
-                handleSave={handleOnSubmit}
-                disabledEstimateCost={disabledEstimateCost}
-                close={close}
-              />
-            </div>
-          </Form>
-        </>
-      )}
+      {({ handleChange, values }) => {
+        debugger;
+        return (
+          <>
+            <Form
+              className={`flex flex-row ${
+                !isNewStream ? "justify-between" : "justify-center"
+              } items-center w-[100%] h-[35vh]`}
+            >
+              {!isNewStream && (
+                <Video
+                  values={values}
+                  video={values.streamInfo.playbackUrl}
+                  handleChange={() => null}
+                />
+              )}
+              <div
+                className="flex flex-col justify-top w-[50%] h-[100%]"
+                style={{ position: "relative" }}
+              >
+                <CommonForm
+                  values={values}
+                  handleChange={handleChange}
+                  cost={cost}
+                  loading={isLoading}
+                  handleEstimateCost={handleEstimateCost}
+                  handleSave={handleOnSubmit}
+                  disabledEstimateCost={disabledEstimateCost}
+                  close={close}
+                />
+              </div>
+            </Form>
+          </>
+        );
+      }}
     </Formik>
   );
 };

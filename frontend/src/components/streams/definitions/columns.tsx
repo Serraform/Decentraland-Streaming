@@ -9,7 +9,7 @@ export const columnsDefinition = (
     id: "status",
     header: () => <span className="font-montserratbold">Status</span>,
     cell: (info: any) =>
-    JSON.parse(info.row.original.streamInfo).IsActive ? (
+    (info.row.original.streamInfo).IsActive ? (
         <div className="mx-auto w-4 h-4 rounded-full bg-green-600" />
       ) : (
         <div className="mx-auto w-4 h-4 rounded-full bg-red-600" />
@@ -52,7 +52,7 @@ export const columnsDefinition = (
     id: "playbackUrl",
     header: () => <span className="font-montserratbold">Playback URL</span>,
     cell: (info: any) => {
-      const playbackId = JSON.parse(info.row.original.streamInfo).PlayBackId;
+      const playbackId = (info.row.original.streamInfo).PlayBackId;
       const playbackUrl = `https://livepeercdn.studio/hls/${playbackId}/index.m3u8`;
       return (
       <>

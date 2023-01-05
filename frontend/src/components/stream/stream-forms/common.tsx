@@ -44,7 +44,12 @@ const CommonForm: React.FC<Props> = ({
         target: { name: "streamEndDate", value: e },
       }),
   });
-
+  const returnAsDate = (date: any) => {
+    if(typeof date === "string"){
+      return new Date(date)
+    }
+    return date;
+  }
   const modifiersClassNames = {
     highlight: "-highlight",
   };
@@ -82,8 +87,8 @@ const CommonForm: React.FC<Props> = ({
       </div>
       <div>
         <DateRangePicker
-          startDate={values.streamStartDate}
-          endDate={values.streamEndDate}
+          startDate={returnAsDate(values.streamStartDate)}
+          endDate={returnAsDate(values.streamEndDate)}
           onStartDateChange={(e: any) =>
             handleChange({
               target: { name: "streamStartDate", value: e },

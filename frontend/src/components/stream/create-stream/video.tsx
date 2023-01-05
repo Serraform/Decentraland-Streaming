@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Buffer } from "buffer";
 import { Player } from "@livepeer/react";
-
+import ReactHlsPlayer from "react-hls-player";
 type Props = {
   video: string;
   handleChange: Function;
@@ -10,6 +10,7 @@ type Props = {
 const Video: React.FC<Props> = ({ values, video, handleChange }) => {
   const [localVideo, setLocalVideo] = useState();
   const inputFileRef: any = useRef();
+  const playerRef = useRef();
 
   const onFileChangeCapture = (e: any, setLocalVideo: any) => {
     onFileChange(e, setLocalVideo);
@@ -53,21 +54,22 @@ const Video: React.FC<Props> = ({ values, video, handleChange }) => {
   return (
     <div className="flex flex-col w-[40%] relative">
       {video ? (
-        values?.status !== "success" ? (
-          <Player
-            title={values.name}
-            playbackId={""}
-            src={""}
-            showLoadingSpinner={false}
-          />
-        ) : (
-          <Player
-            title={values.name}
-            playbackId={values.playbackId}
-            src={values.video}
-            autoPlay
-          />
-        )
+        // values?.status !== "success" ? (
+        //   <Player
+        //     title={values.name}
+        //     playbackId={""}
+        //     src={""}
+        //     showLoadingSpinner={false}
+        //   />
+        // ) :
+        <ReactHlsPlayer
+          src={video}
+          autoPlay={true}
+          controls={true}
+          width="100%"
+          height="auto"
+          playerRef={playerRef as any}
+        />
       ) : localVideo ? (
         <video
           key={localVideo}

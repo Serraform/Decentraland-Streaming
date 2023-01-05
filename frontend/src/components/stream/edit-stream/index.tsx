@@ -23,11 +23,6 @@ const EditStream: React.FC<Props> = ({
   setFullSide,
   close,
 }) => {
-  const { data } = useStream({
-    streamId: selectedStream?.id,
-    refetchInterval: (stream) => (10000),
-  });
-
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
   const { addToast } = useToasts();
@@ -46,7 +41,6 @@ const EditStream: React.FC<Props> = ({
   const handleEstimateCost = (values: any) => {
     dispatch(estimateCost(values));
   };
-  debugger;
 
   const renderStreamForm = () => {
     switch (selectedStream.streamType.toLowerCase()) {
@@ -67,7 +61,11 @@ const EditStream: React.FC<Props> = ({
             handleSave={handleSave}
             selectedStream={{
               ...(selectedStream as ILiveStream),
-              status: data?.isActive ? "success" : selectedStream.status,
+              streamInfo: {
+                ...selectedStream?.streamInfo,
+                playbackUrl: `https://livepeercdn.studio/hls/${selectedStream?.streamInfo.PlayBackId}/index.m3u8`,
+              },
+              status: (selectedStream?.streamInfo).IsActive,
             }}
             isNewStream={false}
             handleEstimateCost={handleEstimateCost}
@@ -111,25 +109,37 @@ const EditStream: React.FC<Props> = ({
         <div className=" mt-[40px]">
           <h3 className="font-montserratbold">Details</h3>
           <div className="flex flex-col justify-between border-t-third border mt-1 border-l-0 border-r-0 border-b-0">
-            {renderDetail("Stream ID", true, selectedStream.id)}
+            {renderDetail("Stream ID", true, (selectedStream?.streamInfo).Id)}
             {renderDetail(
               "Stream Key",
               true,
-              (selectedStream as any).streamKey
+              (selectedStream?.streamInfo).StreamKey
             )}
             {renderDetail(
               "RTMP ingest URL",
               true,
-              (selectedStream as any).rtmpIngestUrl
+              "rtmp://rtmp.livepeer.com/live"
             )}
-            {renderDetail("Playback ID", true, selectedStream.playbackId)}
-            {renderDetail("Playback URL", true, selectedStream.playbackUrl)}
+            {renderDetail(
+              "Playback ID",
+              true,
+              (selectedStream?.streamInfo).PlayBackId
+            )}
+            {renderDetail(
+              "Playback URL",
+              true,
+              `https://livepeercdn.studio/hls/${selectedStream?.streamInfo.PlayBackId}/index.m3u8`
+            )}
             {renderDetail(
               "Created at",
               false,
-              new Date(selectedStream.createdAt).toLocaleString()
+              new Date((selectedStream?.streamInfo).CreatedAt).toLocaleString()
             )}
-            {renderDetail("Status", false, data?.isActive ? "Active" : selectedStream.status)}
+            {renderDetail(
+              "Status",
+              false,
+              (selectedStream?.streamInfo).IsActive ? "Active" : "Idle"
+            )}
           </div>
         </div>
       </div>
