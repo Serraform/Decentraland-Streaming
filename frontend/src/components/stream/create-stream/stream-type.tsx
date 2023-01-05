@@ -11,7 +11,7 @@ type Props = {
 const StreamType: React.FC<Props> = ({ handleSave, changeStep, close }) => {
   const handleOnSubmit = useCallback(
     (values: any) => {
-      handleSave(values.type);
+      handleSave(values.streamType);
       changeStep(1);
     },
     [handleSave, changeStep]
@@ -23,7 +23,7 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep, close }) => {
       </h1>
       <div className="flex flex-row flex-wrap justify-evenly items-baseline pt-[35px]">
         <Formik
-          initialValues={{type: ""}}
+          initialValues={{streamType: ""}}
           validationSchema={validationSchema}
           onSubmit={(values) => handleOnSubmit(values)}
         >
@@ -35,7 +35,7 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep, close }) => {
                     type="radio"
                     onChange={handleChange}
                     id={"vod"}
-                    name="type"
+                    name="streamType"
                     value={"vod"}
                   />
                   <label htmlFor={"vod"}>
@@ -48,7 +48,7 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep, close }) => {
                     type="radio"
                     onChange={handleChange}
                     id={"live-stream"}
-                    name="type"
+                    name="streamType"
                     value={"live-stream"}
                   />
                   <label htmlFor={"live-stream"}>Live Streaming</label>
@@ -58,7 +58,7 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep, close }) => {
                     type="radio"
                     onChange={handleChange}
                     id={"twitch"}
-                    name="type"
+                    name="streamType"
                     value={"twitch"}
                   />
                   <label htmlFor={"twitch"}>Twitch</label>
@@ -74,7 +74,7 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep, close }) => {
               <button
                 onClick={() => handleOnSubmit(values)}
                 className="mt-[30px] btn-secondary"
-                disabled={values.type === ""}
+                disabled={values.streamType === ""}
                 >
                 Next
               </button>

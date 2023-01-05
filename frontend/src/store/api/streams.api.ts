@@ -8,18 +8,28 @@ export const streamsApi = createApi({
   endpoints: (builder) => ({
     fetchStreamsByWalletId: builder.query<any[], string>({
       query: (walletID) => ({
-        url: `Stream/GetStreamsByWalletId/${walletID}`,
+        url: `Stream/GetStreamByWalletId/${walletID}`,
         method: "get",
       }),
     }),
     createLiveStream: builder.mutation<any, any>({
-      query: ({ walletID, streamName }) => ({
-        url: `Stream/CreateStream/${walletID}`,
-        method: "post",
-        body: {
-          streamName: streamName,
-        },
-      }),
+      query: ({ walletID, streamValues }) => {
+        const { name, attendees, streamStartDate, streamEndDate, streamType } = streamValues;
+        return {
+          url: `Stream/CreateStream`,
+          method: "POST",
+          data: {
+            name: name,
+            steamLP: {},
+            streamType: streamType,
+            WalletId: walletID,
+            streamDuration: "",
+            streamStartDate: streamStartDate.toISOString(),
+            streamEndDate: streamEndDate.toISOString(),
+            attendees: attendees,
+          },
+        };
+      },
     }),
     suspendLiveStream: builder.mutation<any, any>({
       query: ({ streamId, walletID }) => ({

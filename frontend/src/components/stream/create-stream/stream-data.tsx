@@ -12,43 +12,38 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 import { useToasts } from "react-toast-notifications";
 import { RootState } from "store/configStore";
-import  useCreateLiveStream  from "hooks/useCreateLiveStream";
-// import { useCreateLiveStreamMutation } from "store/api/streams.api";
+import { useCreateLiveStreamMutation } from "store/api/streams.api";
+import { string } from "yup";
 const StreamInfo: React.FC<IStreamCreation> = ({
   streamType,
   selectedStream,
   close,
 }) => {
-  const [streamNameForLivepeer, setStreamNameLivepeer] = useState<string>("");
-  const { stream, isLoading } = useCreateLiveStream(streamNameForLivepeer, null);
   const [streamValues, setStreamValues] = useState<ILiveStream | IStreamVOD>();
-  // const { walletID } = useSelector((state: RootState) => state.accountData);
-  // const [createLiveStream, { isLoading, data: stream }] =
-  //   useCreateLiveStreamMutation();
+  const { walletID } = useSelector((state: RootState) => state.accountData);
+  const [createLiveStream, { isLoading, data: stream, isSuccess }] =
+    useCreateLiveStreamMutation();
   const { addToast } = useToasts();
 
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
   useEffect(() => {
-    if (stream) {
-      const {
-        createdAt,
-        id,
-        playbackId,
-        playbackUrl,
-        rtmpIngestUrl,
-        streamKey,
-      } = stream;
-      console.log(stream);
+    if (isSuccess) {
       const newStream = {
         ...streamValues,
-        status: stream.isActive,
-        createdAt,
-        id,
-        playbackId,
-        playbackUrl,
-        rtmpIngestUrl,
-        streamKey,
+        streamInfo: JSON.stringify({
+          Name: streamValues?.name,
+          CreatedAt: 0,
+          Id: "",
+          IsActive: false,
+          PlayBackId: "",
+          Profiles: [],
+          Record: false,
+          StreamKey: "",
+          Suspended: false,
+          playbackUrl: string,
+          rtmpIngestUrl: string,
+        }),
       };
       dispatch(uploadStream(newStream));
       addToast("Stream created", {
@@ -56,12 +51,11 @@ const StreamInfo: React.FC<IStreamCreation> = ({
         autoDismiss: true,
       });
     }
-  }, [stream, streamValues]);
+  }, [streamValues, isSuccess]);
 
   const handleSave = useCallback((values: any) => {
-    if (values.type === "live-stream") {
-      // createLiveStream({walletID: walletID, streamName: values.name});
-      setStreamNameLivepeer(values.name)
+    if (values.streamType === "live-stream") {
+      createLiveStream({ walletID: walletID, streamValues: values });
     }
     setStreamValues(values);
   }, []);

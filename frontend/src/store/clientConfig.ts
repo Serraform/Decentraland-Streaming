@@ -8,6 +8,7 @@ export const client = axios.create({
   timeout: 50000,
   headers: {
     Authorization: `Bearer ${jwtToken}`,
+    "content-type": "application/json"
   },
 });
 
@@ -26,6 +27,7 @@ export const axiosBaseQuery =
   > =>
   async ({ url, method, data, params }) => {
     try {
+      
       const result = await client({ url: baseUrl + url, method, data, params });
       return { data: result.data };
     } catch (axiosError) {

@@ -36,7 +36,7 @@ const EditStream: React.FC<Props> = ({ selectedStream, setFullSide, close }) => 
     dispatch(estimateCost(values));
   };
   const renderStreamForm = () => {
-    switch (selectedStream.type.toLowerCase()) {
+    switch (selectedStream.streamType.toLowerCase()) {
       case "vod":
         return (
           <StreamVOD

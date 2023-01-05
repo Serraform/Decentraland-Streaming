@@ -3,13 +3,22 @@ interface IStream {
   name: string;
   status: boolean;
   attendees: string;
-  startDate: Date | undefined;
-  endDate: Date | undefined;
-  type: string;
-  createdAt: number;
-  id: string; 
-  playbackId: string;
-  playbackUrl: string;
+  streamType: string;
+  streamStartDate: Date | undefined;
+  streamEndDate: Date | undefined;
+  streamInfo: {
+    Name:string;
+    CreatedAt: number;
+    Id: string;
+    IsActive: false;
+    PlayBackId: string;
+    Profiles: [];
+    Record: boolean;
+    StreamKey: string;
+    Suspended: false;
+    playbackUrl: string;
+    rtmpIngestUrl: string;
+  },
   
 }
 
@@ -32,20 +41,20 @@ type ILiveStream = IStream & {
 
 
 const initialInfoState = {
-  type: "",
+  streamType: "",
   name: "",
   status: false,
   attendees: "",
-  startDate: Date.now(),
-  endDate: Date.now(),
+  streamStartDate: Date.now(),
+  streamEndDate: Date.now(),
 };
 
 const validationSchema = Yup.object().shape({
-  type: Yup.string().required(),
+  streamType: Yup.string().required(),
   name: Yup.string().required(),
   attendees: Yup.string().required(),
-  startDate: Yup.date().required(),
-  endDate: Yup.date().required(),
+  streamStartDate: Yup.date().required(),
+  streamEndDate: Yup.date().required(),
 });
 
 export { initialInfoState, validationSchema };

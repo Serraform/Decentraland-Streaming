@@ -34,7 +34,7 @@ const LiveStream: React.FC<Props> = ({
   const handleOnSubmit = useCallback(
     (values: any) => {
       const valuesToSend = {
-        ...values, type: "live-stream"
+        ...values, streamType: "live-stream"
       }
       handleSave(valuesToSend);
     },
@@ -44,8 +44,8 @@ const LiveStream: React.FC<Props> = ({
     return (
       values.name === "" ||
       values.attendees === "" ||
-      values.startDate === undefined ||
-      values.endDate === undefined
+      values.streamStartDate === undefined ||
+      values.streamEndDate === undefined
     );
   };
   return (

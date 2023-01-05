@@ -11,40 +11,30 @@ type InitialState = {
 };
 
 const initialState: InitialState = {
-  // streams: [],
-  streams: [
-    {
-      name:"Testing Live stream2",
-      status:false,
-      attendees:"12",
-      startDate:new Date("2022-12-29T03:00:00.000Z"),
-      endDate:new Date("2022-12-31T03:00:00.000Z"),
-      type:"live-stream",
-      video:"",
-      videoSize:"",
-      videoLenght:"",
-      createdAt:1672330083298,
-      id:"e5ffacff-2f64-4f29-b5d8-3f46c163edd0",
-      playbackId:"e5fflg5ysneh7t4w",
-      playbackUrl:"https://livepeercdn.com/hls/e5fflg5ysneh7t4w/index.m3u8",
-      rtmpIngestUrl:"rtmp://rtmp.livepeer.com/live/e5ff-cz4e-tg49-1q9f",
-      streamKey:"e5ff-cz4e-tg49-1q9f"
-    },
-  ],
+  streams: [],
   selectedStream: {
     name: "",
     status: false,
     attendees: "",
-    startDate: undefined,
-    endDate: undefined,
-    type: "",
+    streamType:"",
     video: "",
     videoSize: "",
     videoLenght: "",
-    createdAt: 0,
-    id: "",
-    playbackId: "",
-    playbackUrl: "",
+    streamStartDate: undefined,
+    streamEndDate: undefined,
+    streamInfo: {
+      Name: "",
+      CreatedAt: 0,
+      Id: "",
+      IsActive: false,
+      PlayBackId: "",
+      Profiles: [],
+      Record: false,
+      StreamKey: "",
+      Suspended: false,
+      playbackUrl: "",
+      rtmpIngestUrl: "",
+    },
   },
   isNewStream: true,
   openModal: false,
@@ -67,7 +57,7 @@ const streamSlice = createSlice({
   reducers: {
     selectStream(state: any, payload) {
       return {
-        ...initialState,
+        ...state,
         selectedStream: {
           ...payload.payload.setSelectedStream,
           index: payload.payload.index,
@@ -76,29 +66,36 @@ const streamSlice = createSlice({
         isNewStream: false,
       };
     },
-    handleOpenModal() {
-      return { ...initialState, openModal: true };
+    handleOpenModal(state) {
+      return { ...state, openModal: true };
     },
-    handleCloseModal() {
-      return { ...initialState, openModal: false };
+    handleCloseModal(state) {
+      return { ...state, openModal: false };
     },
     uploadStream(state: any, payload) {
       const streamToAdd = { ...payload.payload };
-      let newData = initialState.streams.map((item) => Object.assign({}, item));
+      let newData = state.streams.map((item: any) => Object.assign({}, item));
       newData.push(streamToAdd);
       return {
-        ...initialState,
+        ...state,
         openModal: false,
         streams: newData,
       };
     },
+    updateStreams(state: any, payload) {
+      return {
+        ...state,
+        openModal: false,
+        streams: payload.payload,
+      };
+    },
     editStream(state: any, payload) {
       const streamToAdd = { ...payload.payload };
-      let newData = initialState.streams.map((item) => Object.assign({}, item));
+      let newData = state.streams.map((item: any) => Object.assign({}, item));
       newData.splice(payload.payload.index, 1);
       newData = insert(newData, payload.payload.index, streamToAdd);
       return {
-        ...initialState,
+        ...state,
         openModal: false,
         streams: newData,
       };
@@ -112,6 +109,7 @@ export const {
   handleCloseModal,
   uploadStream,
   editStream,
+  updateStreams
 } = streamSlice.actions;
 
 export default streamSlice.reducer;

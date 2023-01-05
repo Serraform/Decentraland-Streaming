@@ -26,22 +26,22 @@ const CommonForm: React.FC<Props> = ({
   close,
 }) => {
   const timeStartInputProps = useDateInput({
-    date: values.startDate,
+    date: values.streamStartDate,
     format: "HH:mm",
     locale: enGB,
     onDateChange: (e: any) =>
       handleChange({
-        target: { name: "startDate", value: e },
+        target: { name: "streamStartDate", value: e },
       }),
   });
 
   const timeEndInputProps = useDateInput({
-    date: values.endDate,
+    date: values.streamEndDate,
     format: "HH:mm",
     locale: enGB,
     onDateChange: (e: any) =>
       handleChange({
-        target: { name: "endDate", value: e },
+        target: { name: "streamEndDate", value: e },
       }),
   });
 
@@ -82,15 +82,15 @@ const CommonForm: React.FC<Props> = ({
       </div>
       <div>
         <DateRangePicker
-          startDate={values.startDate}
-          endDate={values.endDate}
+          startDate={values.streamStartDate}
+          endDate={values.streamEndDate}
           onStartDateChange={(e: any) =>
             handleChange({
-              target: { name: "startDate", value: e },
+              target: { name: "streamStartDate", value: e },
             })
           }
           onEndDateChange={(e: any) =>
-            handleChange({ target: { name: "endDate", value: e } })
+            handleChange({ target: { name: "streamEndDate", value: e } })
           }
           minimumDate={new Date()}
           minimumLength={1}
