@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, useCallback } from "react";
 import {
   IStreamCreation,
@@ -21,7 +22,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
 }) => {
   const [streamValues, setStreamValues] = useState<ILiveStream | IStreamVOD>();
   const { walletID } = useSelector((state: RootState) => state.accountData);
-  const [createLiveStream, { isLoading, data: stream, isSuccess }] =
+  const [createLiveStream, { isLoading, isSuccess }] =
     useCreateLiveStreamMutation();
   const { addToast } = useToasts();
 

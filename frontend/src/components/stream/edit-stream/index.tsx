@@ -22,7 +22,7 @@ const EditStream: React.FC<Props> = ({ selectedStream, setFullSide, close }) => 
   const { addToast } = useToasts();
   useEffect(() => {
     setFullSide(true);
-  }, []);
+  }, [setFullSide]);
   const handleSave = (values: any) => {
     dispatch(editStream({ ...values }));
     addToast("Stream edited", {
