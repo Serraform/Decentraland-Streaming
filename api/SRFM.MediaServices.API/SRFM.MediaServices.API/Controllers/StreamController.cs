@@ -44,20 +44,20 @@ namespace SRFM.MediaServices.API.Controllers
         }
 
         [HttpPost]
-        [Route("CreateStream/{walletId}")]
-        public async Task<HttpResponseMessage> CreateStream([FromBody] StreamDB streamProps, string walletId)
+        [Route("CreateStream/{streamName}/{walletId}")]
+        public async Task<HttpResponseMessage> CreateStream(string streamName, string walletId)
         {
-            if (streamProps != null)
+            if (streamName != null)
             {
-                if (string.IsNullOrEmpty(streamProps.Name))
+                if (string.IsNullOrEmpty(streamName))
                 {
                     throw new CustomException("Name Required");
                 }
                 try
                 {
-                    streamProps.StreamLP.Name = streamProps.Name;
+                    //streamProps.StreamLP = new StreamLP { Name = streamProps.Name };
 
-                    var response = await _process.CreateNewStream(streamProps, walletId);
+                    var response = await _process.CreateNewStream(streamName, walletId);
 
                     string jsonString = JsonSerializer.Serialize(response);
                     return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
