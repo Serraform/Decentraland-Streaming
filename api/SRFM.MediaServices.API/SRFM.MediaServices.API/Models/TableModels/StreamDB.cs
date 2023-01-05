@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace SRFM.MediaServices.API
 {
-    public class StreamDB : TableEntity 
+    public class StreamDB : TableEntity
     {
 
-       
         public string Name { get; set; }
 
         public string StreamID { get; set; }
@@ -19,21 +18,21 @@ namespace SRFM.MediaServices.API
 
         public string StreamInfo { get; set; }
 
-        public string WalletId { get; set; }         
+        public string WalletId { get; set; }
 
-        public string StreamFrom { get; set; }       
+        //public string StreamFrom { get; set; }       
 
         public string StreamType { get; set; }
 
         public string StreamDuration { get; set; }
 
-        public string StreamStartDate { get; set; }
+        public DateTime StreamStartDate { get; set; }
 
-        public string StreamEndDate { get; set; }
+        public DateTime StreamEndDate { get; set; }
 
-        public string Attendees { get; set; }       
+        public string Attendees { get; set; }
 
-        public string VideoDescription { get; set; }       
+        //public string VideoDescription { get; set; }       
 
         public string SuspendStatus { get; set; }
 

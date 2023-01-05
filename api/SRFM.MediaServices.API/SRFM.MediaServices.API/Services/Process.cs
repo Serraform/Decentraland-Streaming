@@ -199,14 +199,13 @@ namespace SRFM.MediaServices.API
             return httpStatus;
         }
 
-        public async Task<StreamLP> CreateNewStream(string streamName, string walletId)
+        public async Task<StreamLP> CreateNewStream(StreamDB streamProps, string walletId)
         {
 
             var checkUser = await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", walletId);
             if (checkUser != null)
             {
-                StreamLP streamLPProps = new StreamLP { Name = streamName };
-                var streamStatus = await _assetManager.CreateNewStream(streamLPProps);
+                var streamStatus = await _assetManager.CreateNewStream(streamProps.StreamLP);
 
                 string jsonStreamString = JsonConvert.SerializeObject(streamStatus);
 
@@ -216,19 +215,16 @@ namespace SRFM.MediaServices.API
                 {
                     //TODO : Create Stream
 
-                    StreamDB stream = new StreamDB
-                    {
-                        PartitionKey = "USA",
-                        StreamID = streamStatus.Id,
-                        RowKey = streamStatus.Id,
-                        WalletId = walletId,
-                        Name = streamStatus.Name,
-                        StreamInfo = jsonStreamString,
-                        SuspendStatus = streamStatus.Suspended? "Suspended": "Normal" ,
-                        Active = true
-                    };
+                    streamProps.PartitionKey = "USA";
+                    streamProps.StreamID = streamStatus.Id;
+                    streamProps.RowKey = streamStatus.Id;
+                    streamProps.WalletId = walletId;
+                    streamProps.Name = streamStatus.Name;
+                    streamProps.StreamInfo = jsonStreamString;
+                    streamProps.SuspendStatus = streamStatus.Suspended ? "Suspended" : "Normal";
+                    streamProps.Active = true;
 
-                    var createStream = await _tableWriter.AddAsync("Stream", stream);
+                    var createStream = await _tableWriter.AddAsync("Stream", streamProps);
                 }
 
                 return streamStatus;
