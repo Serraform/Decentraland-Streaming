@@ -199,10 +199,10 @@ namespace SRFM.MediaServices.API
             return httpStatus;
         }
 
-        public async Task<StreamLP> CreateNewStream(StreamDB streamProps, string walletId)
+        public async Task<StreamLP> CreateNewStream(StreamDB streamProps)
         {
 
-            var checkUser = await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", walletId);
+            var checkUser = await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", streamProps.WalletId);
             if (checkUser != null)
             {
                 var streamStatus = await _assetManager.CreateNewStream(streamProps.StreamLP);
@@ -217,8 +217,7 @@ namespace SRFM.MediaServices.API
 
                     streamProps.PartitionKey = "USA";
                     streamProps.StreamID = streamStatus.Id;
-                    streamProps.RowKey = streamStatus.Id;
-                    streamProps.WalletId = walletId;
+                    streamProps.RowKey = streamStatus.Id;                    
                     streamProps.Name = streamStatus.Name;
                     streamProps.StreamInfo = jsonStreamString;
                     streamProps.SuspendStatus = streamStatus.Suspended ? "Suspended" : "Normal";

@@ -36,7 +36,7 @@ namespace SRFM.MediaServices.API
 
         public Task<HttpResponseMessage> UnSuspendStream(string streamId, string walletId);
 
-        public Task<StreamLP> CreateNewStream(StreamDB streamName, string walletId);
+        public Task<StreamLP> CreateNewStream(StreamDB streamName);
 
         public Task<HttpResponseMessage> DeleteStream(StreamDB streamProps);
 
