@@ -1,6 +1,3 @@
-import DeleteIcon from "assets/icons/Delete";
-import EditIcon from "assets/icons/Edit";
-import PreviewIcon from "assets/icons/Preview";
 import ReactTooltip from "react-tooltip";
 export const columnsDefinition = (
   columnHelper: any,
@@ -11,67 +8,71 @@ export const columnsDefinition = (
   columnHelper.accessor("status", {
     id: "status",
     header: () => <span className="font-montserratbold">Status</span>,
-    cell: (info: any) => {
-      switch (info.getValue()) {
-        case "idle":
-          return (
-            <div className="flex justify-center flex-row items-center">
-              <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-gray-600" />
-              <span className="text-[13px]">Idle</span>
-            </div>
-          );
-        case "loading":
-          return (
-            <div className="flex justify-center flex-row items-center">
-              <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-blue-600" />
-              <span className="text-[13px]">Loading</span>{" "}
-            </div>
-          );
-        case "success":
-          return (
-            <div className="flex justify-center flex-row items-center">
-              <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-green-600" />
-              <span className="text-[13px]">Live</span>
-            </div>
-          );
-        case "error":
-          return (
-            <div className="flex justify-center flex-row items-center">
-              <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
-              <span className="text-[13px]">Live</span>
-            </div>
-          );
-      }
-    },
+    cell: (info: any) =>
+    JSON.parse(info.row.original.streamInfo).IsActive ? (
+        <div className="mx-auto w-4 h-4 rounded-full bg-green-600" />
+      ) : (
+        <div className="mx-auto w-4 h-4 rounded-full bg-red-600" />
+      ),
   }),
-  columnHelper.accessor("type", {
-    id: "type",
+  // case "idle":
+  //         return (
+  //           <div className="flex justify-center flex-row items-center">
+  //             <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-gray-600" />
+  //             <span className="text-[13px]">Idle</span>
+  //           </div>
+  //         );
+  //       case "loading":
+  //         return (
+  //           <div className="flex justify-center flex-row items-center">
+  //             <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-blue-600" />
+  //             <span className="text-[13px]">Loading</span>{" "}
+  //           </div>
+  //         );
+  //       case "success":
+  //         return (
+  //           <div className="flex justify-center flex-row items-center">
+  //             <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-green-600" />
+  //             <span className="text-[13px]">Live</span>
+  //           </div>
+  //         );
+  //       case "error":
+  //         return (
+  //           <div className="flex justify-center flex-row items-center">
+  //             <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
+  //             <span className="text-[13px]">Live</span>
+  //           </div>
+  //         );
+  columnHelper.accessor("streamType", {
+    id: "streamType",
     header: () => <span className="font-montserratbold">Type</span>,
     cell: (info: any) => info.getValue(),
   }),
   columnHelper.accessor("playbackUrl", {
     id: "playbackUrl",
     header: () => <span className="font-montserratbold">Playback URL</span>,
-    cell: (info: any) => (
+    cell: (info: any) => {
+      const playbackId = JSON.parse(info.row.original.streamInfo).PlayBackId;
+      const playbackUrl = `https://livepeercdn.studio/hls/${playbackId}/index.m3u8`;
+      return (
       <>
         <ReactTooltip id="main" place="top" type={"dark"} effect={"float"} />
         <div
           data-for="main"
           className="flex flex-row items-center justify-between hover:cursor-pointer hover:bg-gray-300 hover:text-gray-800 hover:transition hover:ease-linear w-fit mx-auto p-1 rounded-sm"
-          onClick={(e) => {
-            e.stopPropagation();
-            navigator.clipboard.writeText(info.getValue());
+          onClick={() => {
+            navigator.clipboard.writeText(playbackUrl);
             setCopy(true);
           }}
           data-tip={`${copySuccess ? "Copied!" : "Copy link"}`}
           data-iscapture="true"
         >
-          <span className="font-montserratregular text-[14.5px]">
-            {info.getValue().slice(8, 25)}...
+          <span className="font-montserratregular text-[18px]">
+            {playbackUrl.slice(0, 10)}...
           </span>
         </div>
       </>
-    ),
+    )},
   }),
   columnHelper.accessor("name", {
     id: "name",
@@ -87,9 +88,9 @@ export const columnsDefinition = (
     header: () => <span className="font-montserratbold">Dates</span>,
     cell: (info: any) => {
       return (
-        <span className="font-montserratregular text-[14.5px]">
-          {info.row.original.startDate.toDateString()}-
-          {info.row.original.endDate.toDateString()}
+        <span className="font-montserratregular text-[18px]">
+          {new Date(info.row.original.streamStartDate).toDateString()}-
+          {new Date(info.row.original.streamEndDate).toDateString()}
         </span>
       );
     },

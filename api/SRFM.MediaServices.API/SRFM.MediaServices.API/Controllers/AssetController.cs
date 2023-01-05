@@ -27,15 +27,12 @@ namespace SRFM.MediaServices.API.Controllers
         {
             _process = process;
             _logger = logger;
-        }
-
-        // GET: api/<AssetController>
+        }        
 
         [HttpGet]
         [Route("ListAsset")]
         public async Task<List<AssetDB>> ListAsset()
-        {
-            // query TableStorage - Asset Table to get all assets by walletId
+        {            
             List<AssetDB> asset = await _process.ListAssets();
             return asset;
         }
@@ -59,8 +56,8 @@ namespace SRFM.MediaServices.API.Controllers
         }
 
         [HttpGet]
-        [Route("GetAssetStatus/{assetId}/{walletId}")]
-        public async Task<AssetStatusLP> GetAssetStatus(string assetId, string walletId)
+        [Route("GetAssetStatus/{assetId}")]
+        public async Task<AssetStatusLP> GetAssetStatus(string assetId)
         {
             var status = await _process.GetAssetUploadStatus(assetId);
             return status;
@@ -77,65 +74,28 @@ namespace SRFM.MediaServices.API.Controllers
         [HttpGet]
         [Route("GetAssetsByWalletId/{walletId}")]
         public async Task<IEnumerable<AssetDB>> GetAssetsByWalletId(string walletId)
-        {
-            // query TableStorage - Asset Table to get all assets by walletId
+        {            
             var assets = await _process.GetAssetByWalletId(walletId);
-            return assets;
-
-            //  return new List<AssetDB>() { new AssetDB() { AssetId = "MyAssetId", WalletId = "xyzabc" } };
+            return assets;          
         }
 
-        [HttpDelete]
-        [Route("DeleteAssetByAssetId/{assetId}")]
-        public async Task<IActionResult> DeleteUserByWalletId(string assetId)
-        {
-            // Add new userDB object to Table Storage >> need to check Status code 201/204 by "Prefer header"
+        //-- NOTE: If you wish for the asset to be completely removed from our storage, please contact us at contact@livepeer.org
+        //[HttpDelete]
+        //[Route("DeleteAssetByAssetId/{assetId}")]
+        //public async Task<IActionResult> DeleteAssetByAssetId(string assetId)
+        //{       
 
-            AssetDB asset = await _process.GetAssetByAssetId(assetId);
+        //    AssetDB asset = await _process.GetAssetByAssetId(assetId);
 
-            if (asset != null)
-            {
-                var statusCode = await _process.DeleteAsset(asset);
-                var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
-                return ret;
+        //    if (asset != null)
+        //    {
+        //        asset.Active = false;
+        //        var statusCode = await _process.DeleteAsset(asset);
+        //        var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
+        //        return ret;
 
-            }
-            throw new CustomException("WalletId not correct");
-        }
-
-        // PUT api/<AssetController>/5
-
-
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    _process.GetAssetByWalletId("test");
-        //    return new string[] { "value1", "value2" };
-        //}
-
-        //// GET api/<AssetController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
-
-        //// POST api/<AssetController>
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
-
-        //// PUT api/<AssetController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
-
-        //// DELETE api/<AssetController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        //    }
+        //    throw new CustomException("WalletId not correct");
+        //}        
     }
 }

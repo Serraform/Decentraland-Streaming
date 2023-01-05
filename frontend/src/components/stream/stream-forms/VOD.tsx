@@ -40,8 +40,8 @@ const StreamVOD: React.FC<Props> = ({
       values.attendees === "" ||
       values.video === "" ||
       values.videoSize === "" ||
-      values.startDate === undefined ||
-      values.endDate === undefined
+      values.streamStartDate === undefined ||
+      values.streamEndDate === undefined
     );
   };
   return (

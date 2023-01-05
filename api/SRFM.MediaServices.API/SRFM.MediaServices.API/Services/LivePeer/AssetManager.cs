@@ -73,7 +73,14 @@ namespace SRFM.MediaServices.API
         public async Task<StreamLP> CreateNewStream(StreamLP streamProps)
         {
             string jsonString = JsonSerializer.Serialize(streamProps);
-            var payload = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+            var payLoadStream = new
+            {
+                name = streamProps.Name
+            };
+
+
+            var payload = new StringContent(JsonSerializer.Serialize(payLoadStream), Encoding.UTF8, "application/json");
 
             return await _livePeerService.CreateNewStream(payload);
         }
@@ -83,10 +90,14 @@ namespace SRFM.MediaServices.API
             return await _livePeerService.GetUploadStatus(assetId);
         }
 
-        // live peer operations here.
+        public async Task<HttpResponseMessage> DeleteStream(string streamId)
+        {
+            return await _livePeerService.DeleteStream(streamId);
+        }
+            // live peer operations here.
 
 
 
 
-    }
+        }
 }

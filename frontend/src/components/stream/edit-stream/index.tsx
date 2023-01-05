@@ -33,7 +33,7 @@ const EditStream: React.FC<Props> = ({
   const { addToast } = useToasts();
   useEffect(() => {
     setFullSide(true);
-  }, []);
+  }, [setFullSide]);
   const handleSave = (values: any) => {
     dispatch(editStream({ ...values }));
     addToast("Stream edited", {
@@ -49,7 +49,7 @@ const EditStream: React.FC<Props> = ({
   debugger;
 
   const renderStreamForm = () => {
-    switch (selectedStream.type.toLowerCase()) {
+    switch (selectedStream.streamType.toLowerCase()) {
       case "vod":
         return (
           <StreamVOD

@@ -1,10 +1,11 @@
-import { useMemo, useState, useCallback } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useMemo, useState, useCallback, useEffect } from "react";
 import {
   createColumnHelper,
 } from "@tanstack/react-table";
 import { columnsDefinition } from "components/streams/definitions/columns";
 import { IStream } from "components/stream/definitions";
-import { selectStream } from "store/slices/stream.slice";
+import { selectStream,updateStreams } from "store/slices/stream.slice";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 import { RootState } from "store/configStore";
@@ -13,15 +14,23 @@ import StreamTable from "components/streams/stream-table";
 import { useFetchStreamsByWalletIdQuery } from "store/api/streams.api";
 
 const Streams = () => {
+  const useAppDispatch = () => useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const { walletID } = useSelector((state: RootState) => state.accountData);
   const { streams } = useSelector((state: RootState) => state.streamData);
   const {
-    // data: streams,
+    data,
     error,
+    isSuccess,
     isLoading: loading,
   } = useFetchStreamsByWalletIdQuery(walletID, { skip: walletID === "" });
-  const useAppDispatch = () => useDispatch<AppDispatch>();
-  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if(isSuccess){
+      dispatch(updateStreams(data))
+    }
+  }, [isSuccess])
+
   const [copySuccess, setCopy] = useState(false);
 
   const columnHelper = createColumnHelper<IStream>();
@@ -48,7 +57,7 @@ const Streams = () => {
         </div>
       </div>
     );
-  if (false)
+  if (error)
     return (
       <div className="container pt-10">
         <h1 className="font-montserratbold text-primary text-center pt-20 pb-20 border-third border-r-0 border-t-0">
