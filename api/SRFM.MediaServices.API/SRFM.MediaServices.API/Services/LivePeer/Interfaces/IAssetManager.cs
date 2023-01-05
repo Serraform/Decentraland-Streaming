@@ -18,5 +18,7 @@ namespace SRFM.MediaServices.API
         public Task<HttpResponseMessage> UnSuspendStream(string streamId);
 
         public Task<StreamLP> CreateNewStream(StreamLP streamProps);
+
+        public Task<HttpResponseMessage> DeleteStream(string streamId);
     }
 }

@@ -15,7 +15,7 @@ namespace SRFM.MediaServices.API
 
         public string PhoneNumber { get; set; }
 
-        public string Active { get; set; }
+        public bool Active { get; set; }
 
         // PartitionKey - USA
         // RowKey - GUID (customerId)

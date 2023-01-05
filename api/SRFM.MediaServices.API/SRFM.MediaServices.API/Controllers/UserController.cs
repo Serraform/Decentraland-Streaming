@@ -1,10 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SRFM.MediaServices.API.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -28,8 +33,7 @@ namespace SRFM.MediaServices.API.Controllers
         [HttpGet]
         [Route("ListUsers")]
         public async Task<List<UserDB>> ListUsers()
-        {
-            // query TableStorage - Asset Table to get all assets by walletId
+        {            
             List<UserDB> user = await _process.ListUsers();
             return user;
         }
@@ -37,9 +41,7 @@ namespace SRFM.MediaServices.API.Controllers
         [HttpGet]
         [Route("GetUserDetailsByWalletId/{walletId}")]
         public async Task<UserDB> GetUserDetailsByWalletId(string walletId)
-        {
-            // query TableStorage - Asset Table to get all assets by walletId
-
+        {  
             if (walletId != null)
             {
                 UserDB user = await _process.GetUserByWalletId(walletId);
@@ -54,14 +56,24 @@ namespace SRFM.MediaServices.API.Controllers
         {
             if (entity != null)
             {
-                entity.PartitionKey = "USA";
-                entity.WalletId = Guid.NewGuid().ToString();
-                entity.RowKey = entity.WalletId;
+                UserDB user = await _process.GetUserByWalletId(entity.WalletId);
 
-                // Add new userDB object to Table Storage >> need to check Status code 201/204 by "Prefer header"
-                var ret = await _process.CreateNewUser(entity);
-                //var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
-                return ret;
+                if (user == null)
+                {
+                    entity.PartitionKey = "USA";                   
+                    entity.RowKey = entity.WalletId;
+                   
+                    var ret = await _process.CreateNewUser(entity);
+                    //var ret = new ObjectResult(ret) { StatusCode = StatusCodes.Status204NoContent };
+                    return ret;
+                    
+                }
+                else
+                {
+                    //throw new CustomException("WalletId already present. Please try again with new wallet Id.");
+                    var responseMsg = new ResponseMessage { ErrorMsg = "WalletId already present. Please try again with new wallet Id." };
+                    return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(JsonSerializer.Serialize(responseMsg), System.Text.Encoding.UTF8, "application/json") };                    
+                }
             }
             throw new CustomException("User inputs Required");
         }
@@ -81,8 +93,7 @@ namespace SRFM.MediaServices.API.Controllers
                     entity.PartitionKey = "USA";
                     entity.RowKey = user.WalletId;
                     entity.ETag = user.ETag;
-
-                    // Add new userDB object to Table Storage >> need to check Status code 201/204 by "Prefer header"
+                    
                     var statusCode = await _process.UpdateUser(entity);
                     var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
                     return ret;
@@ -95,18 +106,15 @@ namespace SRFM.MediaServices.API.Controllers
         [HttpDelete]
         [Route("DeleteUserByWalletId/{walletId}")]
         public async Task<IActionResult> DeleteUserByWalletId(string walletId)
-        {
-            // Add new userDB object to Table Storage >> need to check Status code 201/204 by "Prefer header"
-
+        {  
             UserDB user = await _process.GetUserByWalletId(walletId);
 
             if (user != null)
             {
-
-                var statusCode = await _process.DeleteUser(user);
+                user.Active = false;
+                var statusCode = await _process.UpdateUser(user);
                 var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
                 return ret;
-
             }
             throw new CustomException("WalletId not correct");
         }
