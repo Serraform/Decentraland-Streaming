@@ -199,13 +199,14 @@ namespace SRFM.MediaServices.API
             return httpStatus;
         }
 
-        public async Task<StreamLP> CreateNewStream(StreamDB streamProps, string walletId)
+        public async Task<StreamLP> CreateNewStream(string streamName, string walletId)
         {
 
             var checkUser = await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", walletId);
             if (checkUser != null)
             {
-                var streamStatus = await _assetManager.CreateNewStream(streamProps.StreamLP);
+                StreamLP streamLPProps = new StreamLP { Name = streamName };
+                var streamStatus = await _assetManager.CreateNewStream(streamLPProps);
 
                 string jsonStreamString = JsonConvert.SerializeObject(streamStatus);
 
@@ -215,7 +216,6 @@ namespace SRFM.MediaServices.API
                 {
                     //TODO : Create Stream
 
-
                     StreamDB stream = new StreamDB
                     {
                         PartitionKey = "USA",
@@ -224,7 +224,7 @@ namespace SRFM.MediaServices.API
                         WalletId = walletId,
                         Name = streamStatus.Name,
                         StreamInfo = jsonStreamString,
-                        SuspendStatus = "Normal",
+                        SuspendStatus = streamStatus.Suspended? "Suspended": "Normal" ,
                         Active = true
                     };
 
