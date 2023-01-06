@@ -25,8 +25,14 @@ const CommonForm: React.FC<Props> = ({
   disabledEstimateCost,
   close,
 }) => {
+  const returnAsDate = (date: any) => {
+    if(typeof date === "string"){
+      return new Date(date)
+    }
+    return date;
+  }
   const timeStartInputProps = useDateInput({
-    date: values.streamStartDate,
+    date: returnAsDate(values.streamStartDate),
     format: "HH:mm",
     locale: enGB,
     onDateChange: (e: any) =>
@@ -36,7 +42,7 @@ const CommonForm: React.FC<Props> = ({
   });
 
   const timeEndInputProps = useDateInput({
-    date: values.streamEndDate,
+    date: returnAsDate(values.streamEndDate),
     format: "HH:mm",
     locale: enGB,
     onDateChange: (e: any) =>
@@ -44,12 +50,6 @@ const CommonForm: React.FC<Props> = ({
         target: { name: "streamEndDate", value: e },
       }),
   });
-  const returnAsDate = (date: any) => {
-    if(typeof date === "string"){
-      return new Date(date)
-    }
-    return date;
-  }
   const modifiersClassNames = {
     highlight: "-highlight",
   };

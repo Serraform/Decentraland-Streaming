@@ -47,7 +47,7 @@ const LiveStream: React.FC<Props> = ({
       values.streamEndDate === undefined
     );
   };
-  debugger;
+  
   return (
     <Formik
       initialValues={liveStreamVideo}
@@ -55,7 +55,7 @@ const LiveStream: React.FC<Props> = ({
       onSubmit={(values) => handleOnSubmit(values)}
     >
       {({ handleChange, values }) => {
-        debugger;
+        
         return (
           <>
             <Form

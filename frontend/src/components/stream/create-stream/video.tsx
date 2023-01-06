@@ -51,17 +51,28 @@ const Video: React.FC<Props> = ({ values, video, handleChange }) => {
       reader.readAsArrayBuffer(file);
     }
   }
+  const renderStatus = () => {
+   return (values.streamInfo.Suspended ? (
+      <div className="flex justify-center flex-row items-center absolute bullet-status">
+        <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
+        <span className="text-[14px]">Suspended</span>
+      </div>
+    ) : values.streamInfo.IsActive ? (
+      <div className="flex justify-center flex-row items-center absolute bullet-status">
+        <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-green-600" />
+        <span className="text-[14px]">Live</span>
+      </div>
+    ) : (
+      <div className="flex justify-center flex-row items-center absolute bullet-status">
+        <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-gray-600" />
+        <span className="text-[14px]">Idle</span>
+      </div>
+    ))
+  }
   return (
     <div className="flex flex-col w-[40%] relative">
       {video ? (
-        // values?.status !== "success" ? (
-        //   <Player
-        //     title={values.name}
-        //     playbackId={""}
-        //     src={""}
-        //     showLoadingSpinner={false}
-        //   />
-        // ) :
+       <>
         <ReactHlsPlayer
           src={video}
           autoPlay={true}
@@ -69,7 +80,10 @@ const Video: React.FC<Props> = ({ values, video, handleChange }) => {
           width="100%"
           height="auto"
           playerRef={playerRef as any}
+          
         />
+        {renderStatus()}
+        </>
       ) : localVideo ? (
         <video
           key={localVideo}

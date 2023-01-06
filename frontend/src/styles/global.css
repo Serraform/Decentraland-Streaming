@@ -27,6 +27,11 @@
     @apply  px-6 py-2 rounded font-montserratbold text-primary  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third;
   }
 
+  .bullet-status{
+   background-color: rgba(193, 193, 193, 0.8);
+    @apply  px-3 py-1 rounded ml-3 mt-3;
+  }
+
   table{
     box-shadow: 0px 0px 10px rgba(193, 193, 193, 0.5);
     overflow: hidden;
