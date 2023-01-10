@@ -17,7 +17,7 @@ import { fetchFunds, fundWallet } from "store/slices/account.slice";
 import { useToasts } from "react-toast-notifications";
 const Funds = () => {
   const [balanceInput, setBalanceInput] = useState("")
-  const { walletID, loading, balance } = useSelector(
+  const { walletID, loading, balance , isSubscribed} = useSelector(
     (state: RootState) => state.accountData
   );
   const {addToast} = useToasts();
@@ -34,7 +34,7 @@ const Funds = () => {
       <div className={`${balanceStyle} rounded`}>
         <p className="font-montserratmedium">Total Balance</p>
         <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem]">
-          0 USDC
+        {parseFloat(balance.toString()) / 1e18} USDC
         </h3>
       </div>
       <p className="font-montserratmedium mt-[24px]">
@@ -55,12 +55,14 @@ const Funds = () => {
               fundWallet({
                 amountToFund: balanceInput,
                 addToast: addToast,
+                isSubscribed: isSubscribed
               })
             )
           }
-          className={`${buttonStyle} bg-primary rounded rounded-t-none`}
+          className={`${buttonStyle} bg-primary rounded rounded-t-none flex justify-center`}
         >
-          Send transaction
+           {loading ?  <div className="basic"/> :  <>Send transaction</>}
+         
         </button>
       </div>
     </div>

@@ -3,13 +3,40 @@ import { createAccount } from "store/services/account.service";
 import jazzicon from "jazzicon-ts";
 import { ethers } from "ethers";
 import smartcontractABI from "utils/abi/smartcontractABI.json";
+import usdcABI from "utils/abi/usdcAbi.json";
 const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
+const USDC_CONTRACT_ADDRESS = process.env.REACT_APP_USDC_CONTRACT_ADDRESS;
 const initialState = {
   walletID: "",
   avatar: undefined,
   balance: 0,
   loading: false,
   error: null,
+  isSubscribed: false,
+};
+
+const approvePulling = async (
+  signer: any,
+  funds: any,
+  provider: any,
+  account: string,
+  addToast: any
+) => {
+  const USDCContract = new ethers.Contract(
+    USDC_CONTRACT_ADDRESS as string,
+    usdcABI,
+    provider
+  );
+  const pullFundsApproval = await USDCContract.connect(signer).approve(
+    CONTRACT_ADDRESS,
+    funds
+  );
+
+  addToast("Waiting for pulling approval", {
+    autoDismiss: true,
+  });
+  const pullFundsApprovalReceipt = await pullFundsApproval.wait();
+  return pullFundsApprovalReceipt.status === 1;
 };
 
 export const requestConnectWallet = createAsyncThunk(
@@ -19,6 +46,7 @@ export const requestConnectWallet = createAsyncThunk(
     if (!ethereum) {
       return;
     }
+
     const accounts = await ethereum.request({
       method: "eth_requestAccounts",
     });
@@ -50,7 +78,10 @@ export const fetchFunds = createAsyncThunk(
         signer
       );
       const accountInfo = await contract.sub_info(walletID);
-      return { balance: Number(accountInfo.balance._hex) as any };
+      return {
+        balance: Number(accountInfo.balance._hex) as any,
+        isSubscribed: accountInfo.subscribed,
+      };
     } catch (e) {
       console.log(e);
     }
@@ -60,7 +91,7 @@ export const fetchFunds = createAsyncThunk(
 export const fundWallet = createAsyncThunk(
   "fund-wallet",
   async (props: any) => {
-    const { amountToFund, addToast} = props;
+    const { amountToFund, addToast, isSubscribed } = props;
     try {
       const { ethereum } = window as any;
       if (!ethereum) {
@@ -74,26 +105,47 @@ export const fundWallet = createAsyncThunk(
         smartcontractABI,
         signer
       );
-      const deposit = ethers.utils.parseEther(amountToFund)
-      const tx = await contract.createSubscription(deposit);
-      addToast("Waiting for Metamask confirmation", {
-        appearance: "pending",
-        autoDismiss: true,
+      const account = await ethereum.request({
+        method: "eth_requestAccounts",
       });
-      const receipt = await tx.wait();
-      if (receipt.status === 1) {
-        addToast("Balance Updated", {
-          appearance: "success",
+      const deposit = ethers.utils.parseEther(amountToFund);
+      const isApprovedToPull = await approvePulling(
+        signer,
+        deposit,
+        provider,
+        account[0],
+        addToast
+      );
+      if (isApprovedToPull) {
+        let tx = null;
+        if (isSubscribed) {
+          tx = await contract.deposit(deposit);
+        } else {
+          tx = await contract.createSubscription(deposit);
+        }
+        addToast("Waiting for funding approval", {
           autoDismiss: true,
         });
-        return { balance: amountToFund as any };
+        const receipt = await tx.wait();
+        if (receipt.status === 1) {
+          addToast("Balance Updated", {
+            appearance: "success",
+            autoDismiss: true,
+          });
+          const accountInfo = await contract.sub_info(account[0]);
+          return {
+            balance: Number(accountInfo.balance._hex) as any,
+          };
+        }
+      } else {
+        throw new Error();
       }
     } catch (e) {
-       addToast("We couldn't update your balance", {
-          appearance: "error",
-          autoDismiss: true,
-        });
-      console.log(e);
+      addToast("We couldn't update your balance", {
+        appearance: "error",
+        autoDismiss: true,
+      });
+      throw new Error();
     }
   }
 );
@@ -120,6 +172,7 @@ const accountSlice = createSlice({
     builder.addCase(fetchFunds.fulfilled, (state, action) => {
       state.loading = false;
       state.balance = action.payload?.balance;
+      state.isSubscribed = action.payload?.isSubscribed;
     });
     builder.addCase(fetchFunds.rejected, (state, action) => {
       state.loading = false;
