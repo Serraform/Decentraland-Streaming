@@ -72,6 +72,26 @@ namespace SRFM.MediaServices.API.Services.LivePeer
             return response;
         }
 
+        public async Task<StreamLP> GetStream(string streamId)
+        {
+            HttpResponseMessage response = await Client.GetAsync($"stream/{streamId}");
+
+            string responseJson = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<StreamLP>(responseJson);
+            
+        }
+
+        public async Task<List<StreamLP>> GetStreamSession(string streamId)
+        {
+            HttpResponseMessage response = await Client.GetAsync($"stream/{streamId}/sessions");
+
+            string responseJson = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject<List<StreamLP>>(responseJson);
+
+        }
+
 
 
 

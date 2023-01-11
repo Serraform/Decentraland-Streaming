@@ -151,14 +151,32 @@ namespace SRFM.MediaServices.API
         }
 
         public async Task<List<StreamDB>> GetStreamsByWalletId(string walletId)
-        {
-            //TODO get streams by walletId;
+        {            
             return await _tableReader.ListItemsByWalletIdAsync<StreamDB>("Stream", walletId);
+        }
+
+        public async Task<List<StreamLP>> GetStreamSessionByStreamId(string streamId)
+        {
+            //Need to discuss from where to show Stream detail to user , from LP or from DB or update StreamLP every time
+            var httpStatus = await _assetManager.GetStreamSession(streamId);
+
+            var getStream = await _tableReader.GetItemsByRowKeyAsync<StreamDB>("Stream", streamId);
+
+            getStream.StreamInfo = JsonConvert.SerializeObject(httpStatus);
+
+            return httpStatus;
         }
 
         public async Task<StreamDB> GetStreamByStreamId(string streamId)
         {
-            return await _tableReader.GetItemsByRowKeyAsync<StreamDB>("Stream", streamId);
+            //Need to discuss from where to show Stream detail to user , from LP or from DB or update StreamLP every time
+            var httpStatus = await _assetManager.GetStream(streamId);
+
+            var getStream = await _tableReader.GetItemsByRowKeyAsync<StreamDB>("Stream", streamId);
+
+            getStream.StreamInfo = JsonConvert.SerializeObject(httpStatus);
+
+            return getStream;
         }
 
         public async Task<HttpResponseMessage> SuspendStream(string streamId, string walletId)
@@ -205,7 +223,9 @@ namespace SRFM.MediaServices.API
             var checkUser = await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", streamProps.WalletId);
             if (checkUser != null)
             {
-                var streamStatus = await _assetManager.CreateNewStream(streamProps.StreamLP);
+                StreamLP  streamLP= new StreamLP { Name = streamProps.Name };
+
+                var streamStatus = await _assetManager.CreateNewStream(streamLP);
 
                 string jsonStreamString = JsonConvert.SerializeObject(streamStatus);
 
@@ -220,6 +240,7 @@ namespace SRFM.MediaServices.API
                     streamProps.RowKey = streamStatus.Id;                    
                     streamProps.Name = streamStatus.Name;
                     streamProps.StreamInfo = jsonStreamString;
+                    streamProps.PlayBackId = streamStatus.PlayBackId;                   
                     streamProps.SuspendStatus = streamStatus.Suspended ? "Suspended" : "Normal";
                     streamProps.Active = true;
 
@@ -242,7 +263,7 @@ namespace SRFM.MediaServices.API
 
             return httpStatus;
         }
-
+    
         #endregion
     }
 }

@@ -54,8 +54,7 @@ namespace SRFM.MediaServices.API.Controllers
                     throw new CustomException("Name Required");
                 }
                 try
-                {
-                    streamProps.StreamLP = new StreamLP { Name = streamProps.Name };
+                {                  
 
                     var response = await _process.CreateNewStream(streamProps);
 
@@ -94,9 +93,25 @@ namespace SRFM.MediaServices.API.Controllers
         [HttpGet]
         [Route("GetStreamByWalletId/{walletId}")]
         public async Task<IEnumerable<StreamDB>> GetStreamByWalletId(string walletId)
-        {
-            // query TableStorage - Asset Table to get all assets by walletId
+        {          
             var streams = await _process.GetStreamsByWalletId(walletId);
+            return streams;
+        }
+
+        [HttpGet]
+        [Route("GetStreamByStreamId/{streamId}")]
+        public async Task<StreamDB> GetStreamByStreamId(string streamId)
+        {           
+            var streams = await _process.GetStreamByStreamId(streamId);
+            return streams;
+        }
+
+
+        [HttpGet]
+        [Route("GetStreamSessionByStreamId/{streamId}")]
+        public async Task<List<StreamLP>> GetStreamSessionByStreamId(string streamId)
+        {            
+            var streams = await _process.GetStreamSessionByStreamId(streamId);
             return streams;
         }
 

@@ -44,5 +44,7 @@ namespace SRFM.MediaServices.API
 
         public Task<List<StreamDB>> GetStreamsByWalletId(string WalletId);
 
+        public Task<List<StreamLP>> GetStreamSessionByStreamId(string StreamId);
+
     }
 }
