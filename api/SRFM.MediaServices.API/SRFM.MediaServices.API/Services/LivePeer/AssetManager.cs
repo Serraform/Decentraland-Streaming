@@ -31,6 +31,11 @@ namespace SRFM.MediaServices.API
             var apikey = _livepeerConfig.ApiKey;
         }
 
+        public async Task<AssetStatusLP> GetAssetUploadStatus(string assetId)
+        {
+            return await _livePeerService.GetUploadStatus(assetId);
+        }
+
         public async Task<RequestUpload> RequestUploadURL(string fileName)
         {
             var json = new
@@ -85,19 +90,25 @@ namespace SRFM.MediaServices.API
             return await _livePeerService.CreateNewStream(payload);
         }
 
-        public async Task<AssetStatusLP> GetAssetUploadStatus(string assetId)
-        {           
-            return await _livePeerService.GetUploadStatus(assetId);
-        }
+     
 
         public async Task<HttpResponseMessage> DeleteStream(string streamId)
         {
             return await _livePeerService.DeleteStream(streamId);
         }
-            // live peer operations here.
 
-
-
-
+        public async Task<StreamLP> GetStream(string streamId)
+        {
+            return await _livePeerService.GetStream(streamId);
         }
+
+        public async Task<List<StreamLP>> GetStreamSession(string streamId)
+        {
+            return await _livePeerService.GetStreamSession(streamId);
+        }
+
+
+
+
+    }
 }
