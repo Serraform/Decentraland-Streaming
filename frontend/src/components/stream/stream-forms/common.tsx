@@ -142,8 +142,8 @@ const CommonForm: React.FC<Props> = ({
       </div>
       <div className="mt-auto flex flex-col justify-end items-end">
       {cost !== 0 && !loading && (
-        <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem]">
-          The cost for upload will be: ${cost} USDT
+       <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem]">
+          The cost for upload will be: ${cost} USDC
         </h2>
       )}
       <div className="flex">
