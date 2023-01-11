@@ -11,6 +11,8 @@ type Props = {
   selectedStream: IStreamVOD;
   isNewStream: boolean;
   handleEstimateCost: Function;
+  close: Function;
+  isLoading: boolean;
 };
 
 const StreamVOD: React.FC<Props> = ({
@@ -18,11 +20,14 @@ const StreamVOD: React.FC<Props> = ({
   selectedStream,
   isNewStream,
   handleEstimateCost,
+  close,
+  isLoading
+
 }) => {
   const [streamInfoVOD] = useState<IStreamVOD>({
     ...selectedStream,
   });
-  const { cost, loading } = useSelector(
+  const { cost } = useSelector(
     (state: RootState) => state.transactionData
   );
 
@@ -38,8 +43,8 @@ const StreamVOD: React.FC<Props> = ({
       values.attendees === "" ||
       values.video === "" ||
       values.videoSize === "" ||
-      values.startDate === undefined ||
-      values.endDate === undefined
+      values.streamStartDate === undefined ||
+      values.streamEndDate === undefined
     );
   };
   return (
@@ -66,10 +71,11 @@ const StreamVOD: React.FC<Props> = ({
                 values={values}
                 handleChange={handleChange}
                 cost={cost}
-                loading={loading}
+                loading={isLoading}
                 handleEstimateCost={handleEstimateCost}
                 handleSave={handleSave}
                 disabledEstimateCost={disabledEstimateCost}
+                close={close}
               />
             </div>
           </Form>

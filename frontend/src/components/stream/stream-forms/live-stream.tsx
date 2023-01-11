@@ -11,6 +11,8 @@ type Props = {
   selectedStream: ILiveStream;
   isNewStream: boolean;
   handleEstimateCost: Function;
+  close: Function;
+  isLoading: boolean;
 };
 
 const LiveStream: React.FC<Props> = ({
@@ -18,8 +20,10 @@ const LiveStream: React.FC<Props> = ({
   selectedStream,
   isNewStream,
   handleEstimateCost,
+  close,
+  isLoading
 }) => {
-  const { cost, loading } = useSelector(
+  const { cost } = useSelector(
     (state: RootState) => state.transactionData
   );
 
@@ -29,7 +33,10 @@ const LiveStream: React.FC<Props> = ({
 
   const handleOnSubmit = useCallback(
     (values: any) => {
-      handleSave(values);
+      const valuesToSend = {
+        ...values, streamType: "live-stream"
+      }
+      handleSave(valuesToSend);
     },
     [handleSave]
   );
@@ -37,8 +44,8 @@ const LiveStream: React.FC<Props> = ({
     return (
       values.name === "" ||
       values.attendees === "" ||
-      values.startDate === undefined ||
-      values.endDate === undefined
+      values.streamStartDate === undefined ||
+      values.streamEndDate === undefined
     );
   };
   return (
@@ -55,10 +62,11 @@ const LiveStream: React.FC<Props> = ({
                 values={values}
                 handleChange={handleChange}
                 cost={cost}
-                loading={loading}
+                loading={isLoading}
                 handleEstimateCost={handleEstimateCost}
-                handleSave={handleSave}
+                handleSave={handleOnSubmit}
                 disabledEstimateCost={disabledEstimateCost}
+                close={close}
               />
             </div>
           </Form>

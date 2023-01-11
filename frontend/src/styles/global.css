@@ -18,13 +18,13 @@
   }
 
   .btn-primary{
-    @apply bg-white px-8 py-3 rounded font-montserratbold text-primary hover:text-secondary hover:transition hover:ease-linear disabled:bg-third disabled:text-white;
+    @apply bg-white px-6 py-2 rounded font-montserratbold text-primary hover:text-secondary hover:transition hover:ease-linear disabled:bg-third disabled:text-white;
   }
   .btn-secondary{
-    @apply bg-primary px-8 py-3 rounded font-montserratbold text-white  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third;
+    @apply bg-primary px-6 py-2 rounded font-montserratbold text-white  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third;
   }
   .btn-third{
-    @apply  px-8 py-3 rounded font-montserratbold text-primary  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third;
+    @apply  px-6 py-2 rounded font-montserratbold text-primary  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third;
   }
 
   table{
@@ -242,3 +242,24 @@ input{
 .nice-dates-popover{
   width: 60%!important;
 }
+
+.basic:before {
+  content: '';
+  display: block;
+  height: 20px;
+  width: 20px;
+  -webkit-animation: spin .8s infinite linear;
+          animation: spin .8s infinite linear;
+  border: 4px white solid;
+  border-left-color: #2B70E4;
+  border-radius: 100%; }
+
+@-webkit-keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg); } }
+
+@keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg); } }
