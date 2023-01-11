@@ -1,5 +1,6 @@
 ﻿using Microsoft.WindowsAzure.Storage.Table;
 using SRFM.MediaServices.API.Models;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SRFM.MediaServices.API

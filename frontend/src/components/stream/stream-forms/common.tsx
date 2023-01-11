@@ -1,6 +1,6 @@
 import { Field } from "formik";
 import "react-nice-dates/build/style.css";
-import { DateRangePicker,useDateInput  } from 'react-nice-dates'
+import { DateRangePicker, useDateInput } from "react-nice-dates";
 
 import { enGB } from "date-fns/locale";
 
@@ -12,6 +12,7 @@ type Props = {
   disabledEstimateCost: (values: any) => boolean;
   handleEstimateCost: Function;
   handleSave: Function;
+  close: Function;
 };
 
 const CommonForm: React.FC<Props> = ({
@@ -22,27 +23,27 @@ const CommonForm: React.FC<Props> = ({
   handleEstimateCost,
   handleSave,
   disabledEstimateCost,
+  close,
 }) => {
   const timeStartInputProps = useDateInput({
-    date: values.startDate,
-    format: 'HH:mm',
+    date: values.streamStartDate,
+    format: "HH:mm",
     locale: enGB,
     onDateChange: (e: any) =>
-    handleChange({
-      target: { name: "startDate", value: e },
-    })
-  })
+      handleChange({
+        target: { name: "streamStartDate", value: e },
+      }),
+  });
 
   const timeEndInputProps = useDateInput({
-    date: values.endDate,
-    format: 'HH:mm',
+    date: values.streamEndDate,
+    format: "HH:mm",
     locale: enGB,
     onDateChange: (e: any) =>
-    handleChange({
-      target: { name: "endDate", value: e },
-    })
-  })
-
+      handleChange({
+        target: { name: "streamEndDate", value: e },
+      }),
+  });
 
   const modifiersClassNames = {
     highlight: "-highlight",
@@ -81,15 +82,15 @@ const CommonForm: React.FC<Props> = ({
       </div>
       <div>
         <DateRangePicker
-          startDate={values.startDate}
-          endDate={values.endDate}
+          startDate={values.streamStartDate}
+          endDate={values.streamEndDate}
           onStartDateChange={(e: any) =>
             handleChange({
-              target: { name: "startDate", value: e },
+              target: { name: "streamStartDate", value: e },
             })
           }
           onEndDateChange={(e: any) =>
-            handleChange({ target: { name: "endDate", value: e } })
+            handleChange({ target: { name: "streamEndDate", value: e } })
           }
           minimumDate={new Date()}
           minimumLength={1}
@@ -105,54 +106,77 @@ const CommonForm: React.FC<Props> = ({
                 </h2>
                 <div className="flex flex-row items-baseline">
                   <input
-                    className={`mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border ${(focus === "startDate" ? ' -focused' : '')} border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
+                    className={`mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border ${
+                      focus === "startDate" ? " -focused" : ""
+                    } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
                     {...startDateInputProps}
                     placeholder="Start date"
                   />
-                    <input  className={`mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border ${(focus === "startDate" ? ' -focused' : '')} border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`} style={{ marginLeft: 16, width: 80 }} {...timeStartInputProps} />
-                  -
-                  {" "}
+                  <input
+                    className={`mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border ${
+                      focus === "startDate" ? " -focused" : ""
+                    } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
+                    style={{ marginLeft: 16, width: 80 }}
+                    {...timeStartInputProps}
+                  />
+                  -{" "}
                   <input
                     {...endDateInputProps}
                     placeholder="End date"
-                    className={`mb-[20px] mt-[10px] m-2 ml-2 w-[100%] border ${(focus === "endDate" ? ' -focused' : '')} border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
+                    className={`mb-[20px] mt-[10px] m-2 ml-2 w-[100%] border ${
+                      focus === "endDate" ? " -focused" : ""
+                    } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
                   />
-                   <input   className={`mb-[20px] mt-[10px] m-2 ml-2 w-[100%] border ${(focus === "endDate" ? ' -focused' : '')} border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`} style={{ marginLeft: 16, width: 80 }} {...timeEndInputProps} />
+                  <input
+                    className={`mb-[20px] mt-[10px] m-2 ml-2 w-[100%] border ${
+                      focus === "endDate" ? " -focused" : ""
+                    } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
+                    style={{ marginLeft: 16, width: 80 }}
+                    {...timeEndInputProps}
+                  />
                 </div>
               </div>
             );
           }}
         </DateRangePicker>
       </div>
+      <div className="mt-auto flex flex-col justify-end items-end">
       {cost !== 0 && !loading && (
-        <h2 className="font-montserratbold text-black text-[15px] mt-auto">
+       <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem]">
           The cost for upload will be: ${cost} USDC
         </h2>
       )}
-      {cost === 0 && (
+      <div className="flex">
+
         <button
-          onClick={() => handleEstimateCost(values)}
-          className=" btn-secondary mt-auto"
-          disabled={disabledEstimateCost(values) || loading}
+        onClick={() => close()}
+        className=" btn-third mt-auto ml-0"
         >
-          Estimate Cost
+          Cancel
         </button>
-      )}
-      {cost !== 0 && !loading && (
-        <button
+
+        {cost === 0 && (
+          <button
+            onClick={() => handleEstimateCost(values)}
+            className=" btn-secondary mt-auto"
+            disabled={disabledEstimateCost(values) || loading}
+          >
+            Estimate Cost
+          </button>
+        )}
+        {cost !== 0 && (
+          <button
           onClick={() => handleSave(values)}
-          className="btn-secondary"
+          className="btn-secondary flex flex-row items-center"
           disabled={disabledEstimateCost(values) || loading}
-        >
-          Upload Asset
-        </button>
-      )}
-      {loading && (
-        <div className="preloader">
-          <span></span>
-          <span></span>
+          >
+          {loading &&  <div className="basic mr-[1rem]"/>}
+            Upload Asset
+          </button>
+        )}
         </div>
-      )}
+      </div>
+      
     </>
   );
 };

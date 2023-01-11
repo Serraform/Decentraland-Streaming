@@ -1,23 +1,30 @@
-//import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { IStreamVOD, ILiveStream } from "components/stream/definitions";
 import StreamVOD from "components/stream/stream-forms/VOD";
 import LiveStream from "components/stream/stream-forms/live-stream";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "store/configStore";
-import { estimateCost,finishTransaction } from "store/slices/transaction.slice";
+import {
+  estimateCost,
+  finishTransaction,
+} from "store/slices/transaction.slice";
 
 import { editStream } from "store/slices/stream.slice";
 import { useToasts } from "react-toast-notifications";
 type Props = {
   selectedStream: IStreamVOD | ILiveStream;
+  setFullSide: Function;
+  close: Function;
 };
-const EditStream: React.FC<Props> = ({ selectedStream }) => {
+const EditStream: React.FC<Props> = ({ selectedStream, setFullSide, close }) => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
   const { addToast } = useToasts();
-
+  useEffect(() => {
+    setFullSide(true);
+  }, [setFullSide]);
   const handleSave = (values: any) => {
-    dispatch(editStream({...values}));
+    dispatch(editStream({ ...values }));
     addToast("Stream edited", {
       appearance: "success",
       autoDismiss: true,
@@ -25,12 +32,11 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
     dispatch(finishTransaction());
   };
 
-
   const handleEstimateCost = (values: any) => {
     dispatch(estimateCost(values));
   };
   const renderStreamForm = () => {
-    switch (selectedStream.type.toLowerCase()) {
+    switch (selectedStream.streamType.toLowerCase()) {
       case "vod":
         return (
           <StreamVOD
@@ -38,6 +44,9 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
             selectedStream={selectedStream as IStreamVOD}
             isNewStream={false}
             handleEstimateCost={handleEstimateCost}
+            close={close}
+
+            isLoading={false}
           />
         );
       case "live-stream":
@@ -47,6 +56,8 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
             selectedStream={selectedStream as ILiveStream}
             isNewStream={false}
             handleEstimateCost={handleEstimateCost}
+            close={close}
+            isLoading={false}
           />
         );
       default:

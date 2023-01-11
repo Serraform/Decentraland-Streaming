@@ -44,18 +44,19 @@ namespace SRFM.MediaServices.API.Controllers
         }
 
         [HttpPost]
-        [Route("CreateStream/{walletId}")]
-        public async Task<HttpResponseMessage> CreateStream([FromBody] StreamLP streamProps, string walletId)
+        [Route("CreateStream")]
+        public async Task<HttpResponseMessage> CreateStream(StreamDB streamProps)
         {
             if (streamProps != null)
             {
-                if (string.IsNullOrEmpty(streamProps.Name))
+                if (string.IsNullOrEmpty(streamProps.Name) || string.IsNullOrEmpty(streamProps.WalletId))
                 {
                     throw new CustomException("Name Required");
                 }
                 try
-                {
-                    var response = await _process.CreateNewStream(streamProps, walletId);
+                {                  
+
+                    var response = await _process.CreateNewStream(streamProps);
 
                     string jsonString = JsonSerializer.Serialize(response);
                     return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
@@ -70,15 +71,48 @@ namespace SRFM.MediaServices.API.Controllers
 
         }
 
-        [HttpGet]
-        [Route("GetStreamsByWalletId/{walletId}")]
-        public async Task<IEnumerable<StreamDB>> GetAssetsByWalletId(string walletId)
+        [HttpDelete]
+        [Route("DeleteStreamByStreamId/{streamId}")]
+        public async Task<IActionResult> DeleteStreamByStreamId(string streamId)
         {
-            // query TableStorage - Asset Table to get all assets by walletId
+            // Add new userDB object to Table Storage >> need to check Status code 201/204 by "Prefer header"
+
+            StreamDB stream = await _process.GetStreamByStreamId(streamId);
+
+            if (stream != null)
+            {
+                stream.Active = false;
+                var statusCode = await _process.DeleteStream(stream);
+                var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
+                return ret;
+
+            }
+            throw new CustomException("Stream id not correct");
+        }
+
+        [HttpGet]
+        [Route("GetStreamByWalletId/{walletId}")]
+        public async Task<IEnumerable<StreamDB>> GetStreamByWalletId(string walletId)
+        {          
             var streams = await _process.GetStreamsByWalletId(walletId);
             return streams;
+        }
 
-            //  return new List<AssetDB>() { new AssetDB() { AssetId = "MyAssetId", WalletId = "xyzabc" } };
+        [HttpGet]
+        [Route("GetStreamByStreamId/{streamId}")]
+        public async Task<StreamDB> GetStreamByStreamId(string streamId)
+        {           
+            var streams = await _process.GetStreamByStreamId(streamId);
+            return streams;
+        }
+
+
+        [HttpGet]
+        [Route("GetStreamSessionByStreamId/{streamId}")]
+        public async Task<List<StreamLP>> GetStreamSessionByStreamId(string streamId)
+        {            
+            var streams = await _process.GetStreamSessionByStreamId(streamId);
+            return streams;
         }
 
     }

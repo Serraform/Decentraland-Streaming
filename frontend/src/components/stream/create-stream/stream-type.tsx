@@ -5,24 +5,25 @@ import {
 } from "components/stream/definitions";
 type Props = {
   handleSave: Function,
-  changeStep: Function
+  changeStep: Function,
+  close: Function
 }
-const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
+const StreamType: React.FC<Props> = ({ handleSave, changeStep, close }) => {
   const handleOnSubmit = useCallback(
     (values: any) => {
-      handleSave(values.type);
+      handleSave(values.streamType);
       changeStep(1);
     },
     [handleSave, changeStep]
   );
   return (
-    <div className="px-[5rem] py-[20px] items-center flex flex-col justify-center w-100">
-      <h1 className="font-montserratbold text-black text-center pb-[40px]">
+    <div className="px-[5rem] py-[20px] items-start flex flex-col justify-start w-100">
+      <h1 className="font-montserratbold text-black text-start b-[40px]">
         Please select which type of streaming you wish to upload
       </h1>
-      <div className="flex flex-row flex-wrap justify-evenly items-baseline pt-[20px]">
+      <div className="flex flex-row flex-wrap justify-evenly items-baseline pt-[35px]">
         <Formik
-          initialValues={{type: ""}}
+          initialValues={{streamType: ""}}
           validationSchema={validationSchema}
           onSubmit={(values) => handleOnSubmit(values)}
         >
@@ -34,7 +35,7 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
                     type="radio"
                     onChange={handleChange}
                     id={"vod"}
-                    name="type"
+                    name="streamType"
                     value={"vod"}
                   />
                   <label htmlFor={"vod"}>
@@ -47,7 +48,7 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
                     type="radio"
                     onChange={handleChange}
                     id={"live-stream"}
-                    name="type"
+                    name="streamType"
                     value={"live-stream"}
                   />
                   <label htmlFor={"live-stream"}>Live Streaming</label>
@@ -57,19 +58,27 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
                     type="radio"
                     onChange={handleChange}
                     id={"twitch"}
-                    name="type"
+                    name="streamType"
                     value={"twitch"}
                   />
                   <label htmlFor={"twitch"}>Twitch</label>
                 </div>
               </Form>
+              <div className="w-full flex flex-row justify-end">
+              <button
+                onClick={() => close()}
+                className="mt-[30px] btn-third"
+                >
+                Cancel
+              </button>
               <button
                 onClick={() => handleOnSubmit(values)}
-                className="mt-[40px] btn-secondary"
-                disabled={values.type === ""}
-              >
+                className="mt-[30px] btn-secondary"
+                disabled={values.streamType === ""}
+                >
                 Next
               </button>
+                </div>
             </>
           )}
         </Formik>

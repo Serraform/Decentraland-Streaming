@@ -13,6 +13,8 @@ namespace SRFM.MediaServices.API
 
         public string AssetName { get; set; }
 
+        public string AssetInfo { get; set; }
+
         public string WalletId { get; set; }
 
         public string StreamId { get; set; }
@@ -26,6 +28,10 @@ namespace SRFM.MediaServices.API
         public string VideoDescription { get; set; }
 
         public AssetUploadStatus UploadStatus { get; set; }
+
+        public string UploadAssetStatus { get; set; }
+
+        public bool Active { get; set; }
         //PartitionKey - USA
         // RowKey - AssetId(guid)
         // AssetId

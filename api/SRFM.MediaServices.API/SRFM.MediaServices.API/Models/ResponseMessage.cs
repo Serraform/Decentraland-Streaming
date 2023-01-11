@@ -7,5 +7,6 @@ namespace SRFM.MediaServices.API.Models
 {
     public class ResponseMessage
     {
+        public string ErrorMsg { get; set; }
     }
 }
