@@ -10,8 +10,9 @@ import {
 } from "store/slices/transaction.slice";
 import FileCopyIcon from "assets/icons/FileCopy";
 import { editStream } from "store/slices/stream.slice";
+import { useFetchStreamDetailsQuery } from "store/api/streams.api";
 import { useToasts } from "react-toast-notifications";
-import { useStream } from "@livepeer/react";
+
 
 type Props = {
   selectedStream: IStreamVOD | ILiveStream;
@@ -25,6 +26,11 @@ const EditStream: React.FC<Props> = ({
 }) => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
+  const {
+    data,
+    isSuccess,
+  } = useFetchStreamDetailsQuery(selectedStream.streamInfo.Id, {  pollingInterval: 6000 });
+
   const { addToast } = useToasts();
   useEffect(() => {
     setFullSide(true);
@@ -64,8 +70,8 @@ const EditStream: React.FC<Props> = ({
               streamInfo: {
                 ...selectedStream?.streamInfo,
                 playbackUrl: `https://livepeercdn.studio/hls/${selectedStream?.streamInfo.PlayBackId}/index.m3u8`,
+                IsActive: isSuccess ? JSON.parse((data as any).streamInfo).IsActive :  (selectedStream?.streamInfo).IsActive,
               },
-              status: (selectedStream?.streamInfo).IsActive,
             }}
             isNewStream={false}
             handleEstimateCost={handleEstimateCost}
@@ -138,7 +144,7 @@ const EditStream: React.FC<Props> = ({
             {renderDetail(
               "Status",
               false,
-              (selectedStream?.streamInfo).IsActive ? "Active" : "Idle"
+              isSuccess && JSON.parse((data as any).streamInfo).IsActive  ? "Live" : "Idle"
             )}
           </div>
         </div>

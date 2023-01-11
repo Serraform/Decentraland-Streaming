@@ -52,17 +52,23 @@ const StreamVOD: React.FC<Props> = ({
     >
       {({ handleChange, values }) => (
         <>
-          <Form
-            className={`flex flex-row"justify-between" w-[100%] h-[40vh]`}
-          >
+          <Form className={`flex flex-row"justify-between" w-[100%] h-[40vh]`}>
             {isNewStream ? (
               <Video
+                status={false}
                 values={values}
+                suspended={false}
                 video={values.video}
                 handleChange={handleChange}
               />
             ) : (
-              <Video values={values} video={values.video} handleChange={() => null}/>
+              <Video
+                values={values}
+                suspended={false}
+                status={false}
+                video={values.video}
+                handleChange={() => null}
+              />
             )}
             <div
               className="flex flex-col justify-top w-[50%]"

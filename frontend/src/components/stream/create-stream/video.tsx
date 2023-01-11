@@ -1,13 +1,14 @@
 import React, { useState, useRef } from "react";
 import { Buffer } from "buffer";
-import { Player } from "@livepeer/react";
 import ReactHlsPlayer from "react-hls-player";
 type Props = {
   video: string;
   handleChange: Function;
   values: any;
+  status: boolean;
+  suspended: boolean;
 };
-const Video: React.FC<Props> = ({ values, video, handleChange }) => {
+const Video: React.FC<Props> = ({ values, video, handleChange, status, suspended }) => {
   const [localVideo, setLocalVideo] = useState();
   const inputFileRef: any = useRef();
   const playerRef = useRef();
@@ -52,12 +53,12 @@ const Video: React.FC<Props> = ({ values, video, handleChange }) => {
     }
   }
   const renderStatus = () => {
-   return (values.streamInfo.Suspended ? (
+   return (suspended ? (
       <div className="flex justify-center flex-row items-center absolute bullet-status">
         <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
         <span className="text-[14px]">Suspended</span>
       </div>
-    ) : values.streamInfo.IsActive ? (
+    ) : status ? (
       <div className="flex justify-center flex-row items-center absolute bullet-status">
         <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-green-600" />
         <span className="text-[14px]">Live</span>
@@ -78,7 +79,6 @@ const Video: React.FC<Props> = ({ values, video, handleChange }) => {
           autoPlay={true}
           controls={true}
           width="100%"
-          height="auto"
           playerRef={playerRef as any}
           
         />
