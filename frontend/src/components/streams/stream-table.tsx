@@ -8,12 +8,13 @@ import { IStreamVOD, ILiveStream } from "components/stream/definitions";
 type Props = {
   columns: any;
   streams: (IStreamVOD | ILiveStream)[];
+  handleSelectStream: Function;
 };
 const StreamTable: React.FC<Props> = ({
   columns,
-  streams
+  streams,
+  handleSelectStream,
 }) => {
-
   const table = useReactTable({
     data: streams,
     columns,
@@ -22,7 +23,7 @@ const StreamTable: React.FC<Props> = ({
   });
   return (
     <div className="container pt-10">
-     <table className="border-third  border rounded w-[100%]">
+      <table className="border-third  border rounded w-[100%]">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -41,7 +42,11 @@ const StreamTable: React.FC<Props> = ({
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="my-2 py-2 h-20 rounded">
+            <tr
+              key={row.id}
+              className="my-2 py-2 h-20 rounded  hover:opacity-2 hover:bg-[#f7f9fa] hover:cursor-pointer hover:transition-transform"
+              onClick={(e) => handleSelectStream(row.original)}
+            >
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}
@@ -54,11 +59,14 @@ const StreamTable: React.FC<Props> = ({
           ))}
         </tbody>
       </table>
-      {table.getRowModel().rows.length === 0  && (
-        <h1 className="font-montserratbold text-primary text-center pt-40 pb-40" style={{
-          boxShadow: "0px 0px 10px rgba(193, 193, 193, 0.5)",
-    overflow: "hidden"
-        }}>
+      {table.getRowModel().rows.length === 0 && (
+        <h1
+          className="font-montserratbold text-primary text-center pt-40 pb-40"
+          style={{
+            boxShadow: "0px 0px 10px rgba(193, 193, 193, 0.5)",
+            overflow: "hidden",
+          }}
+        >
           You don’t have anything yet click on <br />
           “Add new stream”
         </h1>

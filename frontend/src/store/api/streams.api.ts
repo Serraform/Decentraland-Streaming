@@ -12,6 +12,12 @@ export const streamsApi = createApi({
         method: "get",
       }),
     }),
+    fetchStreamDetails: builder.query<any[], string>({
+      query: (streamID) => ({
+        url: `Stream/GetStreamByStreamId/${streamID}`,
+        method: "get",
+      }),
+    }),
     createLiveStream: builder.mutation<any, any>({
       query: ({ walletID, streamValues }) => {
         const { name, attendees, streamStartDate, streamEndDate, streamType } = streamValues;
@@ -51,4 +57,5 @@ export const {
   useCreateLiveStreamMutation,
   useSuspendLiveStreamMutation,
   useUnSuspendLiveStreamMutation,
+  useFetchStreamDetailsQuery
 } = streamsApi;

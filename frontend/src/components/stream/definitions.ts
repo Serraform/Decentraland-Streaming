@@ -10,12 +10,12 @@ interface IStream {
     Name:string;
     CreatedAt: number;
     Id: string;
-    IsActive: false;
+    IsActive: boolean;
     PlayBackId: string;
     Profiles: [];
     Record: boolean;
     StreamKey: string;
-    Suspended: false;
+    Suspended: boolean;
     playbackUrl: string;
     rtmpIngestUrl: string;
   },

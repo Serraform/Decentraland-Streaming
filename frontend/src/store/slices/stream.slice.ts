@@ -83,10 +83,12 @@ const streamSlice = createSlice({
       };
     },
     updateStreams(state: any, payload) {
+      const streamsToAdd = payload.payload as any;
+
       return {
         ...state,
         openModal: false,
-        streams: payload.payload,
+        streams: streamsToAdd.map((stream: any) => ({ ...stream, streamInfo: JSON.parse(stream.streamInfo)})),
       };
     },
     editStream(state: any, payload) {

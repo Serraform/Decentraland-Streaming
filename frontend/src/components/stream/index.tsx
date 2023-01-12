@@ -46,6 +46,7 @@ const Stream: React.FC<Props> = ({
           <CreateStream selectedStream={selectedStream} setFullSide={setFullSide} close={close}/>
         ) : (
           <EditStream selectedStream={selectedStream} setFullSide={setFullSide} close={close}/>
+          
         )}
       </Modal>
     </>
