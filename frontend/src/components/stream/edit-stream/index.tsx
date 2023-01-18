@@ -12,7 +12,8 @@ import FileCopyIcon from "assets/icons/FileCopy";
 import { editStream } from "store/slices/stream.slice";
 import { useFetchStreamDetailsQuery } from "store/api/streams.api";
 import { useToasts } from "react-toast-notifications";
-
+import { useSelector } from "react-redux";
+import { RootState } from "store/configStore";
 
 type Props = {
   selectedStream: IStreamVOD | ILiveStream;
@@ -24,6 +25,7 @@ const EditStream: React.FC<Props> = ({
   setFullSide,
   close,
 }) => {
+  const { cost } = useSelector((state: RootState) => state.transactionData);
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
   const {
@@ -77,6 +79,7 @@ const EditStream: React.FC<Props> = ({
             handleEstimateCost={handleEstimateCost}
             close={close}
             isLoading={false}
+            cost={cost}
           />
         );
       default:

@@ -7,20 +7,24 @@ import {
 } from "components/stream/definitions";
 import StreamVOD from "components/stream/stream-forms/VOD";
 import LiveStream from "components/stream/stream-forms/live-stream";
-import { estimateCost } from "store/slices/transaction.slice";
+import { estimateCost, lockFunds } from "store/slices/transaction.slice";
 import { uploadStream } from "store/slices/stream.slice";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 import { useToasts } from "react-toast-notifications";
 import { RootState } from "store/configStore";
 import { useCreateLiveStreamMutation } from "store/api/streams.api";
-import { string } from "yup";
+import { differenceInHours } from 'date-fns'
+
 const StreamInfo: React.FC<IStreamCreation> = ({
   streamType,
   selectedStream,
   close,
 }) => {
   const [streamValues, setStreamValues] = useState<ILiveStream | IStreamVOD>();
+  const { cost, loading: isTransactionLoading, receipt } = useSelector(
+    (state: RootState) => state.transactionData
+  );
   const { walletID } = useSelector((state: RootState) => state.accountData);
   const [createLiveStream, { isLoading, isSuccess }] =
     useCreateLiveStreamMutation();
@@ -42,8 +46,8 @@ const StreamInfo: React.FC<IStreamCreation> = ({
           Record: false,
           StreamKey: "",
           Suspended: false,
-          playbackUrl: string,
-          rtmpIngestUrl: string,
+          playbackUrl: "",
+          rtmpIngestUrl: "",
         }),
       };
       dispatch(uploadStream(newStream));
@@ -54,12 +58,25 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     }
   }, [streamValues, isSuccess]);
 
+  useEffect(() => {
+    if(receipt&& receipt.status === 1){
+      // createLiveStream({ walletID: walletID, streamValues: streamValues });
+    }
+  }, [receipt])
+
   const handleSave = useCallback((values: any) => {
+    const duration = differenceInHours(values.streamEndDate, Date.now())
     if (values.streamType === "live-stream") {
-      createLiveStream({ walletID: walletID, streamValues: values });
+      dispatch(
+        lockFunds({
+          addToast,
+          duration: duration,
+          amountToBeLock: cost,
+        })
+      );
     }
     setStreamValues(values);
-  }, []);
+  }, [cost]);
   const handleEstimateCost = (values: any) => {
     dispatch(estimateCost(values));
   };
@@ -79,12 +96,13 @@ const StreamInfo: React.FC<IStreamCreation> = ({
       case "live-stream":
         return (
           <LiveStream
-            isLoading={isLoading}
+            isLoading={isLoading || isTransactionLoading}
             handleSave={handleSave}
             selectedStream={selectedStream as ILiveStream}
             isNewStream={true}
             handleEstimateCost={handleEstimateCost}
             close={close}
+            cost={cost}
           />
         );
       default:

@@ -13,6 +13,7 @@ const initialState = {
   loading: false,
   error: null,
   isSubscribed: false,
+  locked_balance: 0
 };
 
 const approvePulling = async (
@@ -78,9 +79,11 @@ export const fetchFunds = createAsyncThunk(
         signer
       );
       const accountInfo = await contract.sub_info(walletID);
+      
       return {
         balance: Number(accountInfo.balance._hex) as any,
         isSubscribed: accountInfo.subscribed,
+        locked_balance: Number(accountInfo.locked_balance._hex) as any
       };
     } catch (e) {
       console.log(e);
@@ -173,6 +176,7 @@ const accountSlice = createSlice({
       state.loading = false;
       state.balance = action.payload?.balance;
       state.isSubscribed = action.payload?.isSubscribed;
+      state.locked_balance = action.payload?.locked_balance;
     });
     builder.addCase(fetchFunds.rejected, (state, action) => {
       state.loading = false;

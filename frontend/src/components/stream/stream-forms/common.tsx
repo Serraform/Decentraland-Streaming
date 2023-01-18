@@ -98,7 +98,6 @@ const CommonForm: React.FC<Props> = ({
             handleChange({ target: { name: "streamEndDate", value: e } })
           }
           minimumDate={new Date()}
-          minimumLength={1}
           format="dd MMM yyyy"
           modifiersClassNames={modifiersClassNames}
           locale={enGB}

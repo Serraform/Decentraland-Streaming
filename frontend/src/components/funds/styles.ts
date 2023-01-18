@@ -5,6 +5,28 @@ export const balanceStyle = css`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding-top:0.5rem;
+  padding-bottom:0.5rem;
+  .lock-funds{
+    display: block;
+    transition: all 0.5s ease-in-out;
+  }
+  .read-more{
+    display: none;
+    transition: all 0.5s ease-in-out;
+  }
+  height: 80px;
+  &:hover{
+    cursor:pointer;
+    .locked-funds {
+      display: none;
+    }
+    .read-more{
+      visibility: visible;
+      display: block;
+    
+    }
+  }
 `;
 
 export const container = css`

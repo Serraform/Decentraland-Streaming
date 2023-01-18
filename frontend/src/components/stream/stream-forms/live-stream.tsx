@@ -3,8 +3,7 @@ import { ILiveStream } from "components/stream/definitions";
 import React, { useCallback, useState } from "react";
 import { validationSchema } from "components/stream/definitions";
 import CommonForm from "components/stream/stream-forms/common";
-import { useSelector } from "react-redux";
-import { RootState } from "store/configStore";
+
 import Video from "components/stream/create-stream/video";
 type Props = {
   handleSave: Function;
@@ -13,6 +12,7 @@ type Props = {
   handleEstimateCost: Function;
   close: Function;
   isLoading: boolean;
+  cost: number;
 };
 
 const LiveStream: React.FC<Props> = ({
@@ -22,8 +22,9 @@ const LiveStream: React.FC<Props> = ({
   handleEstimateCost,
   close,
   isLoading,
+  cost
 }) => {
-  const { cost } = useSelector((state: RootState) => state.transactionData);
+  
 
   const [liveStreamVideo] = useState<ILiveStream>({
     ...selectedStream,
