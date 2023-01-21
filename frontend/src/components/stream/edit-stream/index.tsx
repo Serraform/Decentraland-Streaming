@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { IStreamVOD, ILiveStream } from "components/stream/definitions";
 import StreamVOD from "components/stream/stream-forms/VOD";
@@ -12,17 +13,13 @@ import FileCopyIcon from "assets/icons/FileCopy";
 import { editStream } from "store/slices/stream.slice";
 import { useFetchStreamDetailsQuery } from "store/api/streams.api";
 import { useToasts } from "react-toast-notifications";
-
+import {useNavigate}from 'react-router-dom';
 
 type Props = {
   selectedStream: IStreamVOD | ILiveStream;
-  setFullSide: Function;
-  close: Function;
 };
 const EditStream: React.FC<Props> = ({
   selectedStream,
-  setFullSide,
-  close,
 }) => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
@@ -30,11 +27,9 @@ const EditStream: React.FC<Props> = ({
     data,
     isSuccess,
   } = useFetchStreamDetailsQuery(selectedStream.streamInfo.Id, {  pollingInterval: 6000 });
-
+  const navigate = useNavigate();
   const { addToast } = useToasts();
-  useEffect(() => {
-    setFullSide(true);
-  }, [setFullSide]);
+  
   const handleSave = (values: any) => {
     dispatch(editStream({ ...values }));
     addToast("Stream edited", {
@@ -43,6 +38,12 @@ const EditStream: React.FC<Props> = ({
     });
     dispatch(finishTransaction());
   };
+
+  useEffect(() => {
+    if(selectedStream.name===""){
+      navigate("/");
+    }
+  }, [selectedStream])
 
   const handleEstimateCost = (values: any) => {
     dispatch(estimateCost(values));
@@ -57,7 +58,6 @@ const EditStream: React.FC<Props> = ({
             selectedStream={selectedStream as IStreamVOD}
             isNewStream={false}
             handleEstimateCost={handleEstimateCost}
-            close={close}
             isLoading={false}
           />
         );
@@ -75,7 +75,6 @@ const EditStream: React.FC<Props> = ({
             }}
             isNewStream={false}
             handleEstimateCost={handleEstimateCost}
-            close={close}
             isLoading={false}
           />
         );
@@ -107,7 +106,7 @@ const EditStream: React.FC<Props> = ({
     );
   };
   return (
-    <div className="px-[5rem] pt-[20px] pb-[5rem]">
+    <div className="container pt-[20px] pb-[5rem]">
       <div className="flex flex-col">
         <div className="flex flex-row flex-wrap justify-evenly items-baseline pt-[20px]">
           {renderStreamForm()}
