@@ -18,7 +18,7 @@
   }
 
   .btn-primary{
-    @apply bg-white px-6 py-2 rounded font-montserratbold text-primary hover:text-secondary hover:transition hover:ease-linear disabled:bg-third disabled:text-white;
+    @apply bg-white dark:bg-[#151719] px-6 py-2 rounded font-montserratbold text-primary hover:text-secondary hover:transition hover:ease-linear disabled:bg-third disabled:text-white;
   }
   .btn-secondary{
     @apply bg-primary px-6 py-2 rounded font-montserratbold text-white  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third;
@@ -33,8 +33,10 @@
   }
 
   table{
+    @apply dark:text-white;
     box-shadow: 0px 0px 10px rgba(193, 193, 193, 0.5);
     overflow: hidden;
+    
 
   }
   .nice-dates-day.-selected {
@@ -46,7 +48,8 @@
   background-color: #2561C5!important;
 }
 body {
-  background-color: #fdfdfd;
+  @apply dark:bg-[#151719] bg-[#fdfdfd];
+
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -130,8 +133,8 @@ code {
   width: 420px;
   z-index: 90;
   height: 100%;
-  background: rgb(255, 255, 255);
-  border: 1px solid rgb(229, 232, 235);
+
+  @apply dark:bg-[#1a1d1e] bg-white border border-[#e5e8eb] dark:border-r-0 dark:border-t-0 dark:border-b-0 dark:border-[#323739];
   overflow: auto;
   filter: drop-shadow(rgba(0, 0, 0, 0.25) 0px 4px 4px);
   transition: transform 1s ease 0s, opacity 0.3s ease 0s;
@@ -141,11 +144,16 @@ code {
   transform: translate(100%, 0);
 }
 
+@media (prefers-color-scheme: dark) {
+.ReactModal__Overlay{
+    background-color:#000000bf!important;
+  }
+}
+
 .wallet-list{
   border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
     border-bottom: none;
-    background-color: rgb(255, 255, 255);
     border: 1px solid rgb(229, 232, 235);
     border-radius: 10px;
     margin: 0px;
@@ -155,16 +163,16 @@ code {
 }
 
 .wallet-item{
-  border-bottom: 1px solid #e5e8eb;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   width: 100%;
 }
 
 .wallet-option{
-  -webkit-appearance: button;
-  background-color: transparent;
+  @apply dark:text-white dark:hover:bg-[#151719] dark:border-none;
   background-image: none;
+  border-radius: 10px;
+  border:none;
   cursor: pointer;
   width: 100%;
   display: flex;
@@ -174,9 +182,6 @@ code {
 }
 
 .wallet-option:hover{
-  transition: all 0.2s ease 0s;
-  box-shadow: rgb(4 17 29 / 25%) 0px 0px 8px 0px;
-  background-color: rgb(251, 253, 255);
 }
 
 .radio-item {
@@ -191,7 +196,7 @@ code {
 }
 
 .radio-item label {
-  @apply font-montserratregular text-black;
+  @apply font-montserratregular text-black  dark:text-white;
   font-weight: normal;
   cursor: pointer;
 }
@@ -226,7 +231,7 @@ code {
 }
 
 input{
-  @apply rounded;
+  @apply rounded dark:bg-inherit;
 }
 
 
@@ -252,6 +257,7 @@ input{
 .basic:before {
   content: '';
   display: block;
+
   height: 20px;
   width: 20px;
   -webkit-animation: spin .8s infinite linear;
@@ -269,3 +275,16 @@ input{
   to {
     -webkit-transform: rotate(360deg);
             transform: rotate(360deg); } }
+
+.day-icon-inner{
+  @apply fill-sky-400/20 stroke-sky-500;
+}
+
+.day-icon-outside{
+
+  @apply stroke-sky-500;
+}
+
+.dark-icon{
+  @apply fill-slate-400 dark:fill-slate-500;
+}

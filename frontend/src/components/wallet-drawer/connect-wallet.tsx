@@ -8,7 +8,7 @@ const ConnectWallet: React.FC<Prop> = ({ requestConnectWallet }) => {
   return (
     <div className=" p-[20px]">
       <div className="flex flex-col items-start">
-        <span className="font-montserratregular tracking-[0.1rem] text-[1rem]">
+        <span className="font-montserratregular tracking-[0.1rem] text-[1rem] dark:text-white">
           Connect with one of our available wallet providers or create a new
           one.
         </span>
