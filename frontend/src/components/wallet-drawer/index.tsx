@@ -6,7 +6,6 @@ import CloseIcon from "assets/icons/Close";
 import useConnectWallet from "hooks/useConnectWallet";
 import DarkModeIcon from "assets/icons/Dark";
 import LightModeIcon from "assets/icons/Light";
-import {useState} from 'react'
 type Props = {
   openDrawer: boolean;
   setOpenDrawer: (state: boolean) => void;
@@ -14,8 +13,6 @@ type Props = {
 
 const WalletDrawer: React.FC<Props> = ({ openDrawer, setOpenDrawer }) => {
   const { walletID, connectWallet } = useConnectWallet();
-  const [theme, setTheme] = useState(localStorage.theme);
-  const colorTheme = theme === "dark" ? "light" : "dark";
   return (
     <div
       className="wallet-drawer"
