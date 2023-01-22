@@ -11,6 +11,7 @@ const customStyles = {
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
     backgroundColor: "#fcfcfc",
+    padding:"0"
   },
 };
 type Props = {
@@ -35,8 +36,10 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
       style={{ content: { ...customStyles.content } }}
       contentLabel="Example Modal"
     >
-      <div className="px-[5rem] py-[20px] items-start flex flex-col justify-start w-100">
-        <h1 className="font-montserratbold text-black text-start b-[40px]">
+      <div className="items-start flex flex-col justify-start w-100 dark:bg-[#1a1d1e]">
+        <div className="px-[5rem] py-[20px]">
+
+        <h1 className="font-montserratbold text-black text-start b-[40px] dark:text-white">
           Please select which type of streaming you wish to upload
         </h1>
         <div className="flex flex-row flex-wrap justify-evenly items-baseline pt-[35px]">
@@ -102,6 +105,8 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
           </Formik>
         </div>
       </div>
+      </div>
+
     </Modal>
   );
 };

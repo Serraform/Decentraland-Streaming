@@ -32,22 +32,22 @@ const Funds = () => {
   return (
     <div className={container}>
       <div className={`${balanceStyle} rounded`}>
-        <p className="font-montserratmedium">Total Balance</p>
-        <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem]">
+        <p className="font-montserratmedium dark:text-white">Total Balance</p>
+        <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem] dark:text-white">
         {parseFloat(balance.toString()) / 1e18} USDC
         </h3>
       </div>
-      <p className="font-montserratmedium mt-[24px]">
+      <p className="font-montserratmedium mt-[24px] dark:text-white">
         In order to upload your video, you must fund your account
       </p>
       <div className={bottomFormStyle}>
-        <p className={`${labelStyle} font-montserratbold tracking-[0.1rem] `}>
+        <p className={`${labelStyle} font-montserratbold tracking-[0.1rem] dark:text-white`}>
           Fund Account
         </p>
         <input
           placeholder="amount"
           onChange={(e) => setBalanceInput(e.target.value)}
-          className={`text-primary ${inputStyle} rounded rounded-b-none`}
+          className={`text-primary ${inputStyle} rounded rounded-b-none  dark:border-primary dark:border  dark:text-white`}
         />
         <button
           onClick={(e) =>

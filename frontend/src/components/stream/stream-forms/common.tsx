@@ -56,7 +56,7 @@ const CommonForm: React.FC<Props> = ({
     <>
       <div className="flex flex-row justify-between">
         <div className="mb-2 w-full mr-3">
-          <h2 className="font-montserratbold text-black text-[15px]">
+          <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
             Stream name
           </h2>
           <Field
@@ -70,7 +70,7 @@ const CommonForm: React.FC<Props> = ({
           />
         </div>
         <div className="mb-2 w-full ml-3">
-          <h2 className="font-montserratbold text-black text-[15px]">
+          <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
             Max estimated number of attendees
           </h2>
           <Field
@@ -105,7 +105,7 @@ const CommonForm: React.FC<Props> = ({
           {({ startDateInputProps, endDateInputProps, focus }) => {
             return (
               <div className="date-range">
-                <h2 className="font-montserratbold text-black text-[15px]">
+                <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
                   Select Start and End Date of Stream
                 </h2>
                 <div className="flex flex-row items-baseline">

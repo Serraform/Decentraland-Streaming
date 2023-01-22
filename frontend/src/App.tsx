@@ -10,11 +10,17 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
   const { connectWallet } = useConnectWallet();
   const token = localStorage.getItem("token");
+  const theme = localStorage.getItem("theme");
   const dontConnectWallet =
     token === "" || token === undefined || token === null;
   useEffect(() => {
     getToken();
   }, []);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.add(theme as string);
+  }, [])
 
   useEffect(() => {
     if (!dontConnectWallet) {

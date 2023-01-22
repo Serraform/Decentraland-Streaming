@@ -85,10 +85,10 @@ const EditStream: React.FC<Props> = ({
   const renderDetail = (title: string, hasCopy: boolean, value: any) => {
     return (
       <div className="my-2 flex flex-row">
-        <h5 className="font-montserratbold mr-2 text-[14px]">{title}</h5>
+        <h5 className="font-montserratbold mr-2 text-[14px] dark:text-white">{title}</h5>
         {hasCopy ? (
           <span
-            className="font-montserratlight text-[13px] flex flex-row items-center hover:bg-[#f7f9fa] hover:cursor-pointer"
+            className="font-montserratlight text-[13px] flex flex-row items-center hover:bg-[#f7f9fa] hover:cursor-pointer dark:text-white dark:hover:bg-[#1a1d1e]"
             onClick={(e) => {
               e.stopPropagation();
               navigator.clipboard.writeText(value);
@@ -100,7 +100,7 @@ const EditStream: React.FC<Props> = ({
             </div>
           </span>
         ) : (
-          <span className="font-montserratlight text-[13px]">{value} </span>
+          <span className="font-montserratlight text-[13px] dark:text-white">{value} </span>
         )}
       </div>
     );
@@ -112,8 +112,8 @@ const EditStream: React.FC<Props> = ({
           {renderStreamForm()}
         </div>
         <div className=" mt-[40px]">
-          <h3 className="font-montserratbold">Details</h3>
-          <div className="flex flex-col justify-between border-t-third border mt-1 border-l-0 border-r-0 border-b-0">
+          <h3 className="font-montserratbold dark:text-white">Details</h3>
+          <div className="flex flex-col justify-between border-t-third border mt-1 border-l-0 border-r-0 border-b-0 dark:border-t-[#323739]">
             {renderDetail("Stream ID", true, (selectedStream?.streamInfo).Id)}
             {renderDetail(
               "Stream Key",
