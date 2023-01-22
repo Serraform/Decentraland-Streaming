@@ -1,25 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Suspense, useEffect } from "react";
 import Home from "pages/home";
+import Stream from "pages/stream";
 import Layout from "layout/index";
 import { getToken } from "store/services/token.service";
 import { ToastProvider } from "react-toast-notifications";
 import useConnectWallet from "hooks/useConnectWallet";
-import {
-  createReactClient,
-  studioProvider,
-  LivepeerConfig,
-  ThemeConfig
-} from "@livepeer/react";
-
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
-  const client = createReactClient({
-    provider: studioProvider({
-      apiKey: "b37fb1af-fde8-437e-8473-5e423eb72500",
-    }),
-  });
   const { connectWallet } = useConnectWallet();
   const token = localStorage.getItem("token");
+  const theme = localStorage.getItem("theme");
   const dontConnectWallet =
     token === "" || token === undefined || token === null;
   useEffect(() => {
@@ -27,36 +18,50 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.add(theme as string);
+  }, [])
+
+  useEffect(() => {
     if (!dontConnectWallet) {
       connectWallet();
     }
   }, [dontConnectWallet]);
 
-  const livepeerTheme: ThemeConfig = {
-    colors: {
-      accent: 'rgb(0, 145, 255)',
-      containerBorderColor: 'rgba(0, 145, 255, 0.9)',
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: (
+        <Layout>
+          <Home />
+        </Layout>
+      ),
     },
-  };
+    {
+      path: "/stream/:id",
+      element: (
+        <Layout>
+          <Stream />
+        </Layout>
+      ),
+    },
+  ]);
+
   return (
-    <LivepeerConfig client={client} theme={livepeerTheme}>
-      <ToastProvider placement="bottom-center">
-        <Suspense
-          fallback={
-            <div className="preloader-wrapper">
-              <div className="preloader">
-                <span></span>
-                <span></span>
-              </div>
+    <ToastProvider placement="bottom-center">
+      <Suspense
+        fallback={
+          <div className="preloader-wrapper">
+            <div className="preloader">
+              <span></span>
+              <span></span>
             </div>
-          }
-        >
-          <Layout>
-            <Home />
-          </Layout>
-        </Suspense>
-      </ToastProvider>
-    </LivepeerConfig>
+          </div>
+        }
+      >
+        <RouterProvider router={router} />
+      </Suspense>
+    </ToastProvider>
   );
 }
 

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { IStreamVOD, ILiveStream } from "components/stream/definitions";
 import StreamVOD from "components/stream/stream-forms/VOD";
@@ -14,16 +15,13 @@ import { useFetchStreamDetailsQuery } from "store/api/streams.api";
 import { useToasts } from "react-toast-notifications";
 import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
+import {useNavigate}from 'react-router-dom';
 
 type Props = {
   selectedStream: IStreamVOD | ILiveStream;
-  setFullSide: Function;
-  close: Function;
 };
 const EditStream: React.FC<Props> = ({
   selectedStream,
-  setFullSide,
-  close,
 }) => {
   const { cost } = useSelector((state: RootState) => state.transactionData);
   const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -32,11 +30,9 @@ const EditStream: React.FC<Props> = ({
     data,
     isSuccess,
   } = useFetchStreamDetailsQuery(selectedStream.streamInfo.Id, {  pollingInterval: 6000 });
-
+  const navigate = useNavigate();
   const { addToast } = useToasts();
-  useEffect(() => {
-    setFullSide(true);
-  }, [setFullSide]);
+  
   const handleSave = (values: any) => {
     dispatch(editStream({ ...values }));
     addToast("Stream edited", {
@@ -45,6 +41,12 @@ const EditStream: React.FC<Props> = ({
     });
     dispatch(finishTransaction());
   };
+
+  useEffect(() => {
+    if(selectedStream.name===""){
+      navigate("/");
+    }
+  }, [selectedStream])
 
   const handleEstimateCost = (values: any) => {
     dispatch(estimateCost(values));
@@ -59,7 +61,6 @@ const EditStream: React.FC<Props> = ({
             selectedStream={selectedStream as IStreamVOD}
             isNewStream={false}
             handleEstimateCost={handleEstimateCost}
-            close={close}
             isLoading={false}
           />
         );
@@ -77,7 +78,6 @@ const EditStream: React.FC<Props> = ({
             }}
             isNewStream={false}
             handleEstimateCost={handleEstimateCost}
-            close={close}
             isLoading={false}
             cost={cost}
           />
@@ -89,10 +89,10 @@ const EditStream: React.FC<Props> = ({
   const renderDetail = (title: string, hasCopy: boolean, value: any) => {
     return (
       <div className="my-2 flex flex-row">
-        <h5 className="font-montserratbold mr-2 text-[14px]">{title}</h5>
+        <h5 className="font-montserratbold mr-2 text-[14px] dark:text-white">{title}</h5>
         {hasCopy ? (
           <span
-            className="font-montserratlight text-[13px] flex flex-row items-center hover:bg-[#f7f9fa] hover:cursor-pointer"
+            className="font-montserratlight text-[13px] flex flex-row items-center hover:bg-[#f7f9fa] hover:cursor-pointer dark:text-white dark:hover:bg-[#1a1d1e]"
             onClick={(e) => {
               e.stopPropagation();
               navigator.clipboard.writeText(value);
@@ -104,20 +104,20 @@ const EditStream: React.FC<Props> = ({
             </div>
           </span>
         ) : (
-          <span className="font-montserratlight text-[13px]">{value} </span>
+          <span className="font-montserratlight text-[13px] dark:text-white">{value} </span>
         )}
       </div>
     );
   };
   return (
-    <div className="px-[5rem] pt-[20px] pb-[5rem]">
+    <div className="container pt-[20px] pb-[5rem]">
       <div className="flex flex-col">
         <div className="flex flex-row flex-wrap justify-evenly items-baseline pt-[20px]">
           {renderStreamForm()}
         </div>
         <div className=" mt-[40px]">
-          <h3 className="font-montserratbold">Details</h3>
-          <div className="flex flex-col justify-between border-t-third border mt-1 border-l-0 border-r-0 border-b-0">
+          <h3 className="font-montserratbold dark:text-white">Details</h3>
+          <div className="flex flex-col justify-between border-t-third border mt-1 border-l-0 border-r-0 border-b-0 dark:border-t-[#323739]">
             {renderDetail("Stream ID", true, (selectedStream?.streamInfo).Id)}
             {renderDetail(
               "Stream Key",

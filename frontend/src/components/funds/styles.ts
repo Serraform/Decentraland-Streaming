@@ -50,7 +50,6 @@ export const bottomFormStyle = css`
 export const inputStyle = css`
   padding: 12px 20px;
   font-family: Montserratbold;
-  border: none;
   outline: none;
   background-color: rgba(0, 0, 0, 0.08);
   width: 100%;

@@ -18,38 +18,37 @@ const Header: React.FC<Props> = ({ openNewStream }) => {
   }, [avatar !== undefined]);
   const [openDrawer, setOpenDrawer] = useState(false);
   return (
-    <div className="border-b">
-
-    <div className="container  flex flex-row justify-between items-center pt-[10px] pb-[10px]">
-      <WalletDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} />
-      <img
-        src={"/images/logo/logo.png"}
-        className="object-contain"
-        alt="logo"
-      />
-      {walletID !== "" && avatar ? (
-        <div className="flex flex-row">
-          <button
-          onClick={() => openNewStream()}
-            disabled={walletID === ""}
-            className="btn-third"
-          >
-            Add new stream
+    <div className="border-b dark:border-[#323739]">
+      <div className="container  flex flex-row justify-between items-center pt-[10px] pb-[10px]">
+        <WalletDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} />
+        <img
+          src={"/images/logo/logo.png"}
+          className="object-contain"
+          alt="logo"
+        />
+        {walletID !== "" && avatar ? (
+          <div className="flex flex-row">
+            <button
+              onClick={() => openNewStream()}
+              disabled={walletID === ""}
+              className="btn-third"
+            >
+              Add new stream
+            </button>
+            <button
+              className="border-2 rounded-full p-[0.2rem] border-primary flex justify-center items-center flex-row"
+              onClick={() => setOpenDrawer(true)}
+            >
+              <div id="#jazzicon" className="flex" />
+            </button>
+          </div>
+        ) : (
+          <button onClick={() => setOpenDrawer(true)}>
+            <WalletIcon />
           </button>
-          <button
-            className="border-2 rounded-full p-[0.2rem] border-primary flex justify-center items-center flex-row"
-            onClick={() => setOpenDrawer(true)}
-          >
-            <div id="#jazzicon" className="flex" />
-          </button>
-        </div>
-      ) : (
-        <button onClick={() => setOpenDrawer(true)}>
-          <WalletIcon />
-        </button>
-      )}
-    </div>
+        )}
       </div>
+    </div>
   );
 };
 

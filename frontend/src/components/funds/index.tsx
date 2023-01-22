@@ -31,35 +31,35 @@ const Funds = () => {
   return (
     <div className={container}>
       <div className={`${balanceStyle} rounded`}>
-        <p className="font-montserratmedium">Funds</p>
-        <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem]">
+        <p className="font-montserratmedium dark:text-white">Funds</p>
+        <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem] dark:text-white">
           {balance ? parseFloat(balance.toString()) / 1e18 : 0} USDC
         </h3>
       </div>
       {locked_balance && locked_balance !== 0 && (
         <div className={`${balanceStyle} rounded mt-5 bg-slate-100`}>
           <div className="text-center locked-funds">
-            <p className="font-montserratmedium">Locked Funds</p>
-            <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem]">
+            <p className="font-montserratmedium dark:text-white">Locked Funds</p>
+            <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem] dark:text-white">
               {parseFloat(locked_balance.toString()) / 1e18} USDC
             </h3>
           </div>
-          <p className="font-montserratbold tracking-[0.1rem] text-[1rem] text-center hidden read-more">
+          <p className="font-montserratbold tracking-[0.1rem] text-[1rem] text-center hidden read-more dark:text-white">
             To read more about locked funds, click here
           </p>
         </div>
       )}
-      <p className="font-montserratmedium mt-[24px]">
+      <p className="font-montserratmedium mt-[24px] dark:text-white">
         In order to upload your video, you must fund your account
       </p>
       <div className={bottomFormStyle}>
-        <p className={`${labelStyle} font-montserratbold tracking-[0.1rem] `}>
+        <p className={`${labelStyle} font-montserratbold tracking-[0.1rem] dark:text-white`}>
           Fund Account
         </p>
         <input
           placeholder="amount"
           onChange={(e) => setBalanceInput(e.target.value)}
-          className={`text-primary ${inputStyle} rounded rounded-b-none`}
+          className={`text-primary ${inputStyle} rounded rounded-b-none  dark:border-primary dark:border  dark:text-white`}
         />
         <button
           onClick={(e) =>

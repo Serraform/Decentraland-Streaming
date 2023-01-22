@@ -44,7 +44,8 @@ const StreamTable: React.FC<Props> = ({
           {table.getRowModel().rows.map((row) => (
             <tr
               key={row.id}
-              className="my-2 py-2 h-20 rounded  hover:opacity-2 hover:bg-[#f7f9fa] hover:cursor-pointer hover:transition-transform"
+         
+              className="my-2 py-2 h-20 rounded  hover:opacity-2 hover:bg-[#f7f9fa] hover:cursor-pointer hover:transition-transform dark:hover:bg-[#1a1d1e]"
               onClick={(e) => handleSelectStream(row.original)}
             >
               {row.getVisibleCells().map((cell) => (
@@ -74,20 +75,20 @@ const StreamTable: React.FC<Props> = ({
       <div className="h-4" />
       <div className="flex items-center gap-2">
         <button
-          className="border rounded p-1"
+          className="border rounded p-1 dark:text-white dark:border-none"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
           {"<"}
         </button>
         <button
-          className="border rounded p-1"
+          className="border rounded p-1  dark:text-white dark:border-none"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
           {">"}
         </button>
-        <span className="flex items-center gap-1">
+        <span className="flex items-center gap-1 dark:text-white">
           <div>Page</div>
           <strong>
             {table.getState().pagination.pageIndex + 1} of{" "}

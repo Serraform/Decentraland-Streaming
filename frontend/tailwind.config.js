@@ -4,6 +4,7 @@ module.exports = {
       './src/pages/**/*.{js,ts,jsx,tsx}',
       './src/components/**/*.{js,ts,jsx,tsx}',
   ],
+  darkMode: 'class',
   theme: {
       extend: {
           colors: {
@@ -58,10 +59,10 @@ module.exports = {
           padding: '15px',
           screens: {
               sm: '480px',
-              lm: '575px',
-              md: '768px',
-              lg: '992px',
-              xl: '1200px',
+              lm: '705px',
+              md: '995px',
+              lg: '1200px',
+              xl: '1500px',
           },
       },
       screens: {

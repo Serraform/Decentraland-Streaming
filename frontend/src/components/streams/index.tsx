@@ -1,23 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useMemo, useState, useCallback, useEffect } from "react";
-import {
-  createColumnHelper,
-} from "@tanstack/react-table";
+import { createColumnHelper } from "@tanstack/react-table";
 import { columnsDefinition } from "components/streams/definitions/columns";
 import { IStream } from "components/stream/definitions";
-import { selectStream,updateStreams } from "store/slices/stream.slice";
+import { selectStream, updateStreams } from "store/slices/stream.slice";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 import { RootState } from "store/configStore";
 import StreamTable from "components/streams/stream-table";
 
 import { useFetchStreamsByWalletIdQuery } from "store/api/streams.api";
-
+import { useNavigate } from "react-router-dom";
 const Streams = () => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
   const { walletID } = useSelector((state: RootState) => state.accountData);
   const { streams } = useSelector((state: RootState) => state.streamData);
+  const navigate = useNavigate();
   const {
     data,
     error,
@@ -26,10 +25,10 @@ const Streams = () => {
   } = useFetchStreamsByWalletIdQuery(walletID, { skip: walletID === "" });
 
   useEffect(() => {
-    if(isSuccess){
-      dispatch(updateStreams(data))
+    if (isSuccess) {
+      dispatch(updateStreams(data));
     }
-  }, [isSuccess])
+  }, [isSuccess]);
 
   const [copySuccess, setCopy] = useState(false);
 
@@ -38,9 +37,11 @@ const Streams = () => {
   const handleSelectStream = useCallback(
     (selectedStream: IStream, index: number) => {
       const setSelectedStream = { ...selectedStream } as any;
+      const navigateTo = `/stream/${setSelectedStream.streamInfo.Id}`;
+      navigate(navigateTo);
       dispatch(selectStream({ setSelectedStream, index }));
     },
-    [dispatch]
+    [dispatch, navigate]
   );
   const columns = useMemo(
     () =>
@@ -66,7 +67,13 @@ const Streams = () => {
         </h1>
       </div>
     );
-  return <StreamTable columns={columns} streams={streams as any} handleSelectStream={handleSelectStream} />;
+  return (
+    <StreamTable
+      columns={columns}
+      streams={streams as any}
+      handleSelectStream={handleSelectStream}
+    />
+  );
 };
 
 export default Streams;

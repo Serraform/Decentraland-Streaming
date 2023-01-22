@@ -16,10 +16,11 @@ import { RootState } from "store/configStore";
 import { useCreateLiveStreamMutation } from "store/api/streams.api";
 import { differenceInHours } from 'date-fns'
 
+import { string } from "yup";
+import { useNavigate } from "react-router-dom";
 const StreamInfo: React.FC<IStreamCreation> = ({
   streamType,
   selectedStream,
-  close,
 }) => {
   const [streamValues, setStreamValues] = useState<ILiveStream | IStreamVOD>();
   const { cost, loading: isTransactionLoading, receipt } = useSelector(
@@ -30,6 +31,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     useCreateLiveStreamMutation();
   const { addToast } = useToasts();
 
+  const navigate = useNavigate();
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -55,6 +57,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
         appearance: "success",
         autoDismiss: true,
       });
+      navigate("/");
     }
   }, [streamValues, isSuccess]);
 
@@ -89,7 +92,6 @@ const StreamInfo: React.FC<IStreamCreation> = ({
             selectedStream={selectedStream as IStreamVOD}
             isNewStream={true}
             handleEstimateCost={handleEstimateCost}
-            close={close}
             isLoading={isLoading}
           />
         );
@@ -101,7 +103,6 @@ const StreamInfo: React.FC<IStreamCreation> = ({
             selectedStream={selectedStream as ILiveStream}
             isNewStream={true}
             handleEstimateCost={handleEstimateCost}
-            close={close}
             cost={cost}
           />
         );
