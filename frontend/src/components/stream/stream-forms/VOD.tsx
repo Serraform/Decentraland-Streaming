@@ -11,7 +11,6 @@ type Props = {
   selectedStream: IStreamVOD;
   isNewStream: boolean;
   handleEstimateCost: Function;
-  close: Function;
   isLoading: boolean;
 };
 
@@ -20,7 +19,6 @@ const StreamVOD: React.FC<Props> = ({
   selectedStream,
   isNewStream,
   handleEstimateCost,
-  close,
   isLoading,
 }) => {
   const [streamInfoVOD] = useState<IStreamVOD>({
@@ -84,7 +82,6 @@ const StreamVOD: React.FC<Props> = ({
                 handleEstimateCost={handleEstimateCost}
                 handleSave={handleSave}
                 disabledEstimateCost={disabledEstimateCost}
-                close={close}
               />
             </div>
           </Form>

@@ -4,22 +4,16 @@ import StreamData from "components/stream/create-stream/stream-data";
 import { IStream } from "components/stream/definitions";
 type Props = {
   selectedStream: IStream;
-  setFullSide: Function;
-  close: Function;
 };
 const CreateStream: React.FC<Props> = ({
   selectedStream,
-  setFullSide,
-  close,
 }) => {
   const [step, setStep] = useState(0);
   const [streamType, setStreamType] = useState("");
 
   const changeStep = (index: number) => {
     setStep(index);
-    if (index === 1) {
-      setFullSide(true);
-    }
+   
   };
 
   const renderSteps = () => {
@@ -29,7 +23,6 @@ const CreateStream: React.FC<Props> = ({
           <StreamType
             handleSave={setStreamType}
             changeStep={changeStep}
-            close={close}
           />
         );
       case 1:
@@ -37,7 +30,6 @@ const CreateStream: React.FC<Props> = ({
           <StreamData
             streamType={streamType}
             selectedStream={selectedStream}
-            close={close}
           />
         );
       default:

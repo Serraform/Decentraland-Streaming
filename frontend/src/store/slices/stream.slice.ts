@@ -6,8 +6,6 @@ type InitialState = {
   selectedStream: IStreamVOD | ILiveStream;
   searchText: string;
   message: string;
-  openModal: boolean;
-  isNewStream: boolean;
 };
 
 const initialState: InitialState = {
@@ -36,8 +34,6 @@ const initialState: InitialState = {
       rtmpIngestUrl: "",
     },
   },
-  isNewStream: true,
-  openModal: false,
   searchText: "",
   message: "",
 };
@@ -62,23 +58,21 @@ const streamSlice = createSlice({
           ...payload.payload.setSelectedStream,
           index: payload.payload.index,
         },
-        openModal: true,
-        isNewStream: false,
       };
     },
-    handleOpenModal(state) {
-      return { ...state, openModal: true };
+    clearSelectStream(state: any) {
+      return {
+        ...state,
+        selectedStream: initialState.selectedStream,
+      };
     },
-    handleCloseModal(state) {
-      return { ...state, openModal: false };
-    },
+    
     uploadStream(state: any, payload) {
       const streamToAdd = { ...payload.payload };
       let newData = state.streams.map((item: any) => Object.assign({}, item));
       newData.push(streamToAdd);
       return {
         ...state,
-        openModal: false,
         streams: newData,
       };
     },
@@ -87,7 +81,6 @@ const streamSlice = createSlice({
 
       return {
         ...state,
-        openModal: false,
         streams: streamsToAdd.map((stream: any) => ({ ...stream, streamInfo: JSON.parse(stream.streamInfo)})),
       };
     },
@@ -98,7 +91,6 @@ const streamSlice = createSlice({
       newData = insert(newData, payload.payload.index, streamToAdd);
       return {
         ...state,
-        openModal: false,
         streams: newData,
       };
     },
@@ -107,11 +99,10 @@ const streamSlice = createSlice({
 
 export const {
   selectStream,
-  handleOpenModal,
-  handleCloseModal,
   uploadStream,
   editStream,
-  updateStreams
+  updateStreams,
+  clearSelectStream
 } = streamSlice.actions;
 
 export default streamSlice.reducer;

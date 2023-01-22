@@ -1,7 +1,7 @@
 import { Field } from "formik";
 import "react-nice-dates/build/style.css";
 import { DateRangePicker, useDateInput } from "react-nice-dates";
-
+import { useNavigate } from "react-router-dom";
 import { enGB } from "date-fns/locale";
 
 type Props = {
@@ -12,7 +12,6 @@ type Props = {
   disabledEstimateCost: (values: any) => boolean;
   handleEstimateCost: Function;
   handleSave: Function;
-  close: Function;
 };
 
 const CommonForm: React.FC<Props> = ({
@@ -23,14 +22,14 @@ const CommonForm: React.FC<Props> = ({
   handleEstimateCost,
   handleSave,
   disabledEstimateCost,
-  close,
 }) => {
+  const navigate = useNavigate();
   const returnAsDate = (date: any) => {
-    if(typeof date === "string"){
-      return new Date(date)
+    if (typeof date === "string") {
+      return new Date(date);
     }
     return date;
-  }
+  };
   const timeStartInputProps = useDateInput({
     date: returnAsDate(values.streamStartDate),
     format: "HH:mm",
@@ -146,42 +145,40 @@ const CommonForm: React.FC<Props> = ({
         </DateRangePicker>
       </div>
       <div className="mt-auto flex flex-col justify-end items-end">
-      {cost !== 0 && !loading && (
-       <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem]">
-          The cost for upload will be: ${cost} USDC
-        </h2>
-      )}
-      <div className="flex">
-
-        <button
-        onClick={() => close()}
-        className=" btn-third mt-auto ml-0"
-        >
-          Cancel
-        </button>
-
-        {cost === 0 && (
-          <button
-            onClick={() => handleEstimateCost(values)}
-            className=" btn-secondary mt-auto"
-            disabled={disabledEstimateCost(values) || loading}
-          >
-            Estimate Cost
-          </button>
+        {cost !== 0 && !loading && (
+          <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem]">
+            The cost for upload will be: ${cost} USDC
+          </h2>
         )}
-        {cost !== 0 && (
+        <div className="flex">
           <button
-          onClick={() => handleSave(values)}
-          className="btn-secondary flex flex-row items-center"
-          disabled={disabledEstimateCost(values) || loading}
+            onClick={() => navigate("/")}
+            className=" btn-third mt-auto ml-0"
           >
-          {loading &&  <div className="basic mr-[1rem]"/>}
-            Upload Asset
+            Cancel
           </button>
-        )}
+
+          {cost === 0 && (
+            <button
+              onClick={() => handleEstimateCost(values)}
+              className=" btn-secondary mt-auto"
+              disabled={disabledEstimateCost(values) || loading}
+            >
+              Estimate Cost
+            </button>
+          )}
+          {cost !== 0 && (
+            <button
+              onClick={() => handleSave(values)}
+              className="btn-secondary flex flex-row items-center"
+              disabled={disabledEstimateCost(values) || loading}
+            >
+              {loading && <div className="basic mr-[1rem]" />}
+              Upload Asset
+            </button>
+          )}
         </div>
       </div>
-      
     </>
   );
 };
