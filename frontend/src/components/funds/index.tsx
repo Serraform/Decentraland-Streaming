@@ -37,7 +37,7 @@ const Funds = () => {
         </h3>
       </div>
       {locked_balance && locked_balance !== 0 && (
-        <div className={`${balanceStyle} rounded mt-5 bg-slate-100`}>
+        <div className={`${balanceStyle} rounded mt-5 bg-slate-100 dark:bg-[#151719]`}>
           <div className="text-center locked-funds">
             <p className="font-montserratmedium dark:text-white">Locked Funds</p>
             <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem] dark:text-white">
@@ -59,7 +59,7 @@ const Funds = () => {
         <input
           placeholder="amount"
           onChange={(e) => setBalanceInput(e.target.value)}
-          className={`text-primary ${inputStyle} rounded rounded-b-none  dark:border-primary dark:border  dark:text-white`}
+          className={`text-primary ${inputStyle} rounded rounded-b-none  dark:border-primary dark:border  dark:text-white `}
         />
         <button
           onClick={(e) =>
@@ -71,7 +71,7 @@ const Funds = () => {
               })
             )
           }
-          className={`${buttonStyle} bg-primary rounded rounded-t-none flex justify-center`}
+          className={`${buttonStyle} bg-primary rounded rounded-t-none flex justify-center dark:hover:bg-transparent dark:border-primary dark:border`}
         >
           {loading ? <div className="basic" /> : <>Send transaction</>}
         </button>

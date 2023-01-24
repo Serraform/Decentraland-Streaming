@@ -59,14 +59,12 @@ export const inputStyle = css`
 export const buttonStyle = css`
   color: white;
   padding: 12px 40px;
-  border: none;
+
   font-weight: 700;
   width: 100%;
   transition: all 0.35s;
   cursor: pointer;
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.75);
-  }
+  
 `;
 
 export const labelStyle = css`

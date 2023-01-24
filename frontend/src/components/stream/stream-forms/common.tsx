@@ -3,6 +3,8 @@ import "react-nice-dates/build/style.css";
 import { DateRangePicker, useDateInput } from "react-nice-dates";
 import { useNavigate } from "react-router-dom";
 import { enGB } from "date-fns/locale";
+import { useCallback } from "react";
+import { isBefore, isAfter } from "date-fns";
 
 type Props = {
   values: any;
@@ -24,13 +26,21 @@ const CommonForm: React.FC<Props> = ({
   disabledEstimateCost,
 }) => {
   const navigate = useNavigate();
-  const returnAsDate = (date: any) => {
+  const returnAsDate = useCallback((date: any) => {
     if (typeof date === "string") {
       return new Date(date);
     }
     return date;
-  };
-  const timeStartInputProps = useDateInput({
+  }, []);
+
+  const streamIsBeingCreated = values.streamInfo.CreatedAt === 0;
+
+  const streamIsHappeningOrHasHappened = !streamIsBeingCreated &&(
+    (isAfter(Date.now(), returnAsDate(values.streamStartDate)) &&
+      isBefore(Date.now(), returnAsDate(values.streamEndDate))) ||
+    isAfter(Date.now(), returnAsDate(values.streamEndDate)) || values.streamInfo.Suspended);
+
+    const timeStartInputProps = useDateInput({
     date: returnAsDate(values.streamStartDate),
     format: "HH:mm",
     locale: enGB,
@@ -56,7 +66,7 @@ const CommonForm: React.FC<Props> = ({
     <>
       <div className="flex flex-row justify-between">
         <div className="mb-2 w-full mr-3">
-          <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
+          <h2 className="font-montserratbold text-black text-[14px] dark:text-white">
             Stream name
           </h2>
           <Field
@@ -64,19 +74,21 @@ const CommonForm: React.FC<Props> = ({
             value={values.name}
             name="name"
             required
+            disabled={streamIsHappeningOrHasHappened}
             onChange={handleChange}
             placeholder="Name"
             className="mb-[20px] mt-[10px] w-[100%] border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
           />
         </div>
         <div className="mb-2 w-full ml-3">
-          <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
+          <h2 className="font-montserratbold text-black text-[14px] dark:text-white">
             Max estimated number of attendees
           </h2>
           <Field
             type="text"
             required
             value={values.attendees}
+            disabled={streamIsHappeningOrHasHappened}
             name="attendees"
             onChange={handleChange}
             placeholder="Attendees"
@@ -104,7 +116,7 @@ const CommonForm: React.FC<Props> = ({
           {({ startDateInputProps, endDateInputProps, focus }) => {
             return (
               <div className="date-range">
-                <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
+                <h2 className="font-montserratbold text-black text-[14px] dark:text-white">
                   Select Start and End Date of Stream
                 </h2>
                 <div className="flex flex-row items-baseline">
@@ -113,6 +125,12 @@ const CommonForm: React.FC<Props> = ({
                       focus === "startDate" ? " -focused" : ""
                     } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
                     {...startDateInputProps}
+                    value={
+                      startDateInputProps.value === ""
+                        ? returnAsDate(values.streamStartDate)
+                        : startDateInputProps.value
+                    }
+                    disabled={streamIsHappeningOrHasHappened}
                     placeholder="Start date"
                   />
                   <input
@@ -120,12 +138,19 @@ const CommonForm: React.FC<Props> = ({
                       focus === "startDate" ? " -focused" : ""
                     } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
                     style={{ marginLeft: 16, width: 80 }}
+                    disabled={streamIsHappeningOrHasHappened}
                     {...timeStartInputProps}
                   />
                   -{" "}
                   <input
                     {...endDateInputProps}
                     placeholder="End date"
+                    value={
+                      endDateInputProps.value === ""
+                        ? returnAsDate(values.streamEndDate)
+                        : endDateInputProps.value
+                    }
+                    disabled={streamIsHappeningOrHasHappened}
                     className={`mb-[20px] mt-[10px] m-2 ml-2 w-[100%] border ${
                       focus === "endDate" ? " -focused" : ""
                     } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
@@ -136,6 +161,7 @@ const CommonForm: React.FC<Props> = ({
                     } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
                     style={{ marginLeft: 16, width: 80 }}
                     {...timeEndInputProps}
+                    disabled={streamIsHappeningOrHasHappened}
                   />
                 </div>
               </div>
@@ -145,7 +171,7 @@ const CommonForm: React.FC<Props> = ({
       </div>
       <div className="mt-auto flex flex-col justify-end items-end">
         {cost !== 0 && !loading && (
-          <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem]">
+          <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem] dark:text-white">
             The cost for upload will be: ${cost} USDC
           </h2>
         )}
@@ -161,7 +187,11 @@ const CommonForm: React.FC<Props> = ({
             <button
               onClick={() => handleEstimateCost(values)}
               className=" btn-secondary mt-auto"
-              disabled={disabledEstimateCost(values) || loading}
+              disabled={
+                disabledEstimateCost(values) ||
+                loading ||
+                streamIsHappeningOrHasHappened
+              }
             >
               Estimate Cost
             </button>
@@ -170,7 +200,11 @@ const CommonForm: React.FC<Props> = ({
             <button
               onClick={() => handleSave(values)}
               className="btn-secondary flex flex-row items-center"
-              disabled={disabledEstimateCost(values) || loading}
+              disabled={
+                disabledEstimateCost(values) ||
+                loading ||
+                streamIsHappeningOrHasHappened
+              }
             >
               {loading && <div className="basic mr-[1rem]" />}
               Upload Asset

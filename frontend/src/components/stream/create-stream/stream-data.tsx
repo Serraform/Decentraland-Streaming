@@ -63,7 +63,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
 
   useEffect(() => {
     if(receipt&& receipt.status === 1){
-      createLiveStream({ walletID: walletID, streamValues: streamValues });
+      // createLiveStream({ walletID: walletID, streamValues: streamValues });
     }
   }, [receipt])
 
