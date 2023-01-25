@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { IStreamVOD, ILiveStream } from "components/stream/definitions";
 import StreamVOD from "components/stream/stream-forms/VOD";
 import LiveStream from "components/stream/stream-forms/live-stream";
@@ -33,14 +33,14 @@ const EditStream: React.FC<Props> = ({
   const navigate = useNavigate();
   const { addToast } = useToasts();
   
-  const handleSave = (values: any) => {
+  const handleSave = useCallback((values: any) => {
     dispatch(editStream({ ...values }));
     addToast("Stream edited", {
       appearance: "success",
       autoDismiss: true,
     });
     dispatch(finishTransaction());
-  };
+  },[]);
 
   useEffect(() => {
     if(selectedStream.name===""){

@@ -3,9 +3,10 @@ import "react-nice-dates/build/style.css";
 import { DateRangePicker, useDateInput } from "react-nice-dates";
 import { useNavigate } from "react-router-dom";
 import { enGB } from "date-fns/locale";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { isBefore, isAfter } from "date-fns";
-
+import TrashIcon from "assets/icons/Trash";
+import SuspendModal from "components/stream/stream-forms/suspend-modal";
 type Props = {
   values: any;
   handleChange: Function;
@@ -25,6 +26,7 @@ const CommonForm: React.FC<Props> = ({
   handleSave,
   disabledEstimateCost,
 }) => {
+  const [openSuspendModal, setOpenSuspendModal] = useState(false);
   const navigate = useNavigate();
   const returnAsDate = useCallback((date: any) => {
     if (typeof date === "string") {
@@ -35,12 +37,14 @@ const CommonForm: React.FC<Props> = ({
 
   const streamIsBeingCreated = values.streamInfo.CreatedAt === 0;
 
-  const streamIsHappeningOrHasHappened = !streamIsBeingCreated &&(
-    (isAfter(Date.now(), returnAsDate(values.streamStartDate)) &&
+  const streamIsHappeningOrHasHappened =
+    !streamIsBeingCreated &&
+    ((isAfter(Date.now(), returnAsDate(values.streamStartDate)) &&
       isBefore(Date.now(), returnAsDate(values.streamEndDate))) ||
-    isAfter(Date.now(), returnAsDate(values.streamEndDate)) || values.streamInfo.Suspended);
+      isAfter(Date.now(), returnAsDate(values.streamEndDate)) ||
+      values.streamInfo.Suspended);
 
-    const timeStartInputProps = useDateInput({
+  const timeStartInputProps = useDateInput({
     date: returnAsDate(values.streamStartDate),
     format: "HH:mm",
     locale: enGB,
@@ -64,6 +68,7 @@ const CommonForm: React.FC<Props> = ({
   };
   return (
     <>
+      <SuspendModal isOpen={openSuspendModal} />
       <div className="flex flex-row justify-between">
         <div className="mb-2 w-full mr-3">
           <h2 className="font-montserratbold text-black text-[14px] dark:text-white">
@@ -178,10 +183,32 @@ const CommonForm: React.FC<Props> = ({
         <div className="flex">
           <button
             onClick={() => navigate("/")}
-            className=" btn-third mt-auto ml-0"
+            className=" btn-third mt-auto ml-0 mr-1"
           >
             Cancel
           </button>
+          {!streamIsBeingCreated && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenSuspendModal(true);
+              }}
+              type="button"
+              className=" btn-cancel flex flex-row items-center mt-auto ml-0 mr-5"
+              // disabled={
+              //   disabledEstimateCost(values) ||
+              //   loading ||
+              //   streamIsHappeningOrHasHappened
+              // }
+            >
+              {loading ? (
+                <div className="basic mr-[1rem] before:border-l-red-600" />
+              ) : (
+                <TrashIcon />
+              )}
+              Suspend
+            </button>
+          )}
 
           {cost === 0 && (
             <button
