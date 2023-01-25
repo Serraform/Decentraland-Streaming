@@ -22,14 +22,15 @@ const Streams = () => {
     error,
     isSuccess,
     isLoading: loading,
-  } = useFetchStreamsByWalletIdQuery(walletID, { skip: walletID === "" });
+    isFetching
+  } = useFetchStreamsByWalletIdQuery(walletID, { skip: walletID === "",  refetchOnMountOrArgChange: true, });
 
   useEffect(() => {
-    if (isSuccess) {
+    if (!isFetching && isSuccess) {
       dispatch(updateStreams(data));
     }
   }, [isSuccess]);
-
+  
   const [copySuccess, setCopy] = useState(false);
 
   const columnHelper = createColumnHelper<IStream>();
@@ -48,7 +49,7 @@ const Streams = () => {
       columnsDefinition(columnHelper, setCopy, copySuccess, handleSelectStream),
     [columnHelper, copySuccess, handleSelectStream]
   );
-  if ((loading || !streams) && !error)
+  if ((loading || !data) && !error)
     return (
       <div className="container pt-10">
         <div className="preloader">
@@ -70,7 +71,7 @@ const Streams = () => {
   return (
     <StreamTable
       columns={columns}
-      streams={streams as any}
+      streams={data?.map((stream: any) => ({ ...stream, streamInfo: JSON.parse(stream.streamInfo)})) as any}
       handleSelectStream={handleSelectStream}
     />
   );

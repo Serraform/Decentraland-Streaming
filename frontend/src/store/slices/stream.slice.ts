@@ -69,6 +69,7 @@ const streamSlice = createSlice({
     
     uploadStream(state: any, payload) {
       const streamToAdd = { ...payload.payload };
+      
       let newData = state.streams.map((item: any) => Object.assign({}, item));
       newData.push(streamToAdd);
       return {
