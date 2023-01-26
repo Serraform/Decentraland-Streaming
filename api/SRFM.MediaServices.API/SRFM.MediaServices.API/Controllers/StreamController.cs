@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -71,6 +72,27 @@ namespace SRFM.MediaServices.API.Controllers
 
         }
 
+        [HttpPut]
+        [Route("ExtendStream/{streamId}/{walletId}/{streamStartDate}/{streamEndDate}")]
+        public async Task<HttpResponseMessage> ExtendStream(string streamId, string walletId, DateTime streamStartDate, DateTime streamEndDate)
+        {
+
+            StreamDB getStream = await _process.GetStreamByStreamId(streamId);
+
+            if (getStream != null)
+            {
+                getStream.StreamStartDate = streamStartDate;
+                getStream.StreamEndDate = streamEndDate;
+
+                var response = await _process.UpdateStream(getStream);
+
+                string jsonString = JsonSerializer.Serialize(response);
+                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+            }
+            throw new CustomException("Stream inputs Required");
+
+        }
+
         [HttpDelete]
         [Route("DeleteStreamByStreamId/{streamId}")]
         public async Task<IActionResult> DeleteStreamByStreamId(string streamId)
@@ -88,6 +110,20 @@ namespace SRFM.MediaServices.API.Controllers
 
             }
             throw new CustomException("Stream id not correct");
+        }
+
+        [HttpGet]
+        [Route("CalculateStreamCost/{streamStartDate}/{streamEndDate}")]
+        public async Task<StreamCost> CalculateStreamCost(DateTime streamStartDate, DateTime streamEndDate)
+        {
+            TimeSpan ts = streamEndDate - streamStartDate;
+
+            var cost= String.Concat(ts.Hours,".", ts.Minutes);
+
+            var number = Math.Ceiling(Convert.ToDecimal(cost));
+            
+            StreamCost streamCost = new StreamCost { Cost = number.ToString() };
+            return streamCost;
         }
 
         [HttpGet]
