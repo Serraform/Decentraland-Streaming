@@ -38,6 +38,8 @@ namespace SRFM.MediaServices.API
 
         public Task<StreamLP> CreateNewStream(StreamDB streamName);
 
+        public Task<object> UpdateStream(StreamDB streamProps);
+
         public Task<HttpResponseMessage> DeleteStream(StreamDB streamProps);
 
         public Task<StreamDB> GetStreamByStreamId(string StreamId);

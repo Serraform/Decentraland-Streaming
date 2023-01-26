@@ -37,6 +37,8 @@ namespace SRFM.MediaServices.API
 
         public DateTime StreamEndDate { get; set; }
 
+        public string Cost { get; set; }
+
         public string Attendees { get; set; }           
 
         public string SuspendStatus { get; set; }
