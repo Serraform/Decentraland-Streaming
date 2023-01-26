@@ -51,6 +51,7 @@ namespace SRFM.MediaServices.API
 
             services.AddSingleton<ITableReader, TableReader>();   //ITableWriter
             services.AddSingleton<ITableWriter, TableWriter>();
+            services.AddSingleton<IQueuesWriter, QueuesWriter>();
             services.AddSingleton<IAssetManager, AssetManager>();
             services.AddSingleton<IProcess, Process>();
 

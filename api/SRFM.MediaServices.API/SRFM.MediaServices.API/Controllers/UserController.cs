@@ -60,7 +60,7 @@ namespace SRFM.MediaServices.API.Controllers
 
                 if (user == null)
                 {
-                    entity.PartitionKey = "USA";                   
+                    entity.PartitionKey = StorageAccount.PartitionKey;                   
                     entity.RowKey = entity.WalletId;
                    
                     var ret = await _process.CreateNewUser(entity);
@@ -90,7 +90,7 @@ namespace SRFM.MediaServices.API.Controllers
             {
                 if (entity != null)
                 {
-                    entity.PartitionKey = "USA";
+                    entity.PartitionKey = StorageAccount.PartitionKey;
                     entity.RowKey = user.WalletId;
                     entity.ETag = user.ETag;
                     

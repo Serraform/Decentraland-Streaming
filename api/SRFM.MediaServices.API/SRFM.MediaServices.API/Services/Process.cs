@@ -16,14 +16,16 @@ namespace SRFM.MediaServices.API
     {
         private readonly ITableReader _tableReader;
         private readonly ITableWriter _tableWriter;
+        private readonly IQueuesWriter _queuesWriter;
         private readonly IAssetManager _assetManager;
         private readonly ILogger<Process> _logger;
 
 
-        public Process(ITableReader tableReader, ITableWriter tablewriter, IAssetManager assetManager, ILogger<Process> logger)
+        public Process(ITableReader tableReader, ITableWriter tablewriter, IQueuesWriter queueswriter, IAssetManager assetManager, ILogger<Process> logger)
         {
             _tableReader = tableReader;
             _tableWriter = tablewriter;
+            _queuesWriter = queueswriter;
             _logger = logger;
             _assetManager = assetManager;
         }
@@ -50,7 +52,7 @@ namespace SRFM.MediaServices.API
                     var AssetID = reqUpload.Asset.Id;
                     AssetDB asset = new AssetDB
                     {
-                        PartitionKey = "USA",
+                        PartitionKey = StorageAccount.PartitionKey,
                         AssetId = AssetID,
                         RowKey = AssetID,
                         WalletId = walletId,
@@ -95,7 +97,7 @@ namespace SRFM.MediaServices.API
         // Below are test methods
         public async Task<List<AssetDB>> ListAssets()
         {
-            return await _tableReader.ListItemsAsync<AssetDB>("Asset", "USA");
+            return await _tableReader.ListItemsAsync<AssetDB>("Asset", StorageAccount.PartitionKey);
         }
 
         public async Task<List<AssetDB>> GetAssetByWalletId(string walletId)
@@ -131,7 +133,7 @@ namespace SRFM.MediaServices.API
 
         public async Task<List<UserDB>> ListUsers()
         {
-            return await _tableReader.ListItemsAsync<UserDB>("User", "USA");
+            return await _tableReader.ListItemsAsync<UserDB>("User", StorageAccount.PartitionKey);
         }
 
         public async Task<UserDB> GetUserByWalletId(string walletId)
@@ -147,7 +149,7 @@ namespace SRFM.MediaServices.API
 
         public async Task<List<StreamDB>> ListStream()
         {
-            return await _tableReader.ListItemsAsync<StreamDB>("Stream", "USA");
+            return await _tableReader.ListItemsAsync<StreamDB>("Stream", StorageAccount.PartitionKey);
         }
 
         public async Task<List<StreamDB>> GetStreamsByWalletId(string walletId)
@@ -229,28 +231,49 @@ namespace SRFM.MediaServices.API
 
                 string jsonStreamString = JsonConvert.SerializeObject(streamStatus);
 
+                var payLoadStreamQueues = new
+                {
+                    walletId = streamProps.WalletId,
+                    streamId= streamStatus.Id,
+                    StartDateTime =streamProps.StreamStartDate,
+                    EndDateTime = streamProps.StreamEndDate
+                };
+
+                string jsonStreamQueuesString = JsonConvert.SerializeObject(payLoadStreamQueues);
+
                 //TODO update table storage with stream
 
                 if (!string.IsNullOrEmpty(streamStatus.Id))
                 {
                     //TODO : Create Stream
 
-                    streamProps.PartitionKey = "USA";
+                    streamProps.PartitionKey = StorageAccount.PartitionKey;
                     streamProps.StreamID = streamStatus.Id;
                     streamProps.RowKey = streamStatus.Id;                    
                     streamProps.Name = streamStatus.Name;
                     streamProps.StreamInfo = jsonStreamString;
-                    streamProps.PlayBackId = streamStatus.PlayBackId;                   
-                    streamProps.SuspendStatus = streamStatus.Suspended ? "Suspended" : "Normal";
+                    streamProps.PlayBackId = streamStatus.PlayBackId;
+                    streamProps.SuspendStatus = "Suspended"; //streamStatus.Suspended ? "Suspended" : "Normal";
                     streamProps.Active = true;
 
                     var createStream = await _tableWriter.AddAsync("Stream", streamProps);
+
+                    //Suspend Stream
+                    var suspendStream = await this.SuspendStream(streamStatus.Id, streamProps.WalletId);
+
+                    await _queuesWriter.AddQueuesMessageAsync("queue-livestream", jsonStreamQueuesString);
+
                 }
 
                 return streamStatus;
             }
             throw new CustomException("Wrong wallet id for stream creation.");
 
+        }
+
+        public async Task<object> UpdateStream(StreamDB streamProp)
+        {
+            return await _tableWriter.UpdateAsync("Stream", streamProp);
         }
 
         public async Task<HttpResponseMessage> DeleteStream(StreamDB streamProp)
