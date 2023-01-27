@@ -15,7 +15,6 @@ const Streams = () => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
   const { walletID } = useSelector((state: RootState) => state.accountData);
-  const { streams } = useSelector((state: RootState) => state.streamData);
   const navigate = useNavigate();
   const {
     data,
