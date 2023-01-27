@@ -22,7 +22,7 @@ const Header: React.FC<Props> = ({ openNewStream }) => {
       <div className="container  flex flex-row justify-between items-center pt-[10px] pb-[10px]">
         <WalletDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} />
         <img
-          src={"/images/logo/logo.png"}
+          src={"/images/logo/logo.svg"}
           className="object-contain"
           alt="logo"
         />
