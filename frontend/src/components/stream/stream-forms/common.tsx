@@ -1,9 +1,7 @@
 import { Field } from "formik";
 import "react-nice-dates/build/style.css";
-import { DateRangePicker, useDateInput } from "react-nice-dates";
 import { useNavigate } from "react-router-dom";
-import { enGB } from "date-fns/locale";
-
+import Calendar from 'components/stream/stream-forms/calendar'
 type Props = {
   values: any;
   handleChange: Function;
@@ -24,34 +22,7 @@ const CommonForm: React.FC<Props> = ({
   disabledEstimateCost,
 }) => {
   const navigate = useNavigate();
-  const returnAsDate = (date: any) => {
-    if (typeof date === "string") {
-      return new Date(date);
-    }
-    return date;
-  };
-  const timeStartInputProps = useDateInput({
-    date: returnAsDate(values.streamStartDate),
-    format: "HH:mm",
-    locale: enGB,
-    onDateChange: (e: any) =>
-      handleChange({
-        target: { name: "streamStartDate", value: e },
-      }),
-  });
 
-  const timeEndInputProps = useDateInput({
-    date: returnAsDate(values.streamEndDate),
-    format: "HH:mm",
-    locale: enGB,
-    onDateChange: (e: any) =>
-      handleChange({
-        target: { name: "streamEndDate", value: e },
-      }),
-  });
-  const modifiersClassNames = {
-    highlight: "-highlight",
-  };
   return (
     <>
       <div className="flex flex-row justify-between">
@@ -84,66 +55,7 @@ const CommonForm: React.FC<Props> = ({
           />
         </div>
       </div>
-      <div>
-        <DateRangePicker
-          startDate={returnAsDate(values.streamStartDate)}
-          endDate={returnAsDate(values.streamEndDate)}
-          onStartDateChange={(e: any) =>
-            handleChange({
-              target: { name: "streamStartDate", value: e },
-            })
-          }
-          onEndDateChange={(e: any) =>
-            handleChange({ target: { name: "streamEndDate", value: e } })
-          }
-          minimumDate={new Date()}
-          minimumLength={1}
-          format="dd MMM yyyy"
-          modifiersClassNames={modifiersClassNames}
-          locale={enGB}
-        >
-          {({ startDateInputProps, endDateInputProps, focus }) => {
-            return (
-              <div className="date-range">
-                <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
-                  Select Start and End Date of Stream
-                </h2>
-                <div className="flex flex-row items-baseline">
-                  <input
-                    className={`mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border ${
-                      focus === "startDate" ? " -focused" : ""
-                    } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
-                    {...startDateInputProps}
-                    placeholder="Start date"
-                  />
-                  <input
-                    className={`mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border ${
-                      focus === "startDate" ? " -focused" : ""
-                    } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
-                    style={{ marginLeft: 16, width: 80 }}
-                    {...timeStartInputProps}
-                  />
-                  -{" "}
-                  <input
-                    {...endDateInputProps}
-                    placeholder="End date"
-                    className={`mb-[20px] mt-[10px] m-2 ml-2 w-[100%] border ${
-                      focus === "endDate" ? " -focused" : ""
-                    } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
-                  />
-                  <input
-                    className={`mb-[20px] mt-[10px] m-2 ml-2 w-[100%] border ${
-                      focus === "endDate" ? " -focused" : ""
-                    } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
-                    style={{ marginLeft: 16, width: 80 }}
-                    {...timeEndInputProps}
-                  />
-                </div>
-              </div>
-            );
-          }}
-        </DateRangePicker>
-      </div>
+      <Calendar values={values} handleChange={handleChange} />
       <div className="mt-auto flex flex-col justify-end items-end">
         {cost !== 0 && !loading && (
           <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem]">
