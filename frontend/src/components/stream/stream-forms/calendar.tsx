@@ -1,8 +1,8 @@
 import React from "react";
 import "react-nice-dates/build/style.css";
 import { DateRangePicker, useDateInput } from "react-nice-dates";
-import {  enUS } from "date-fns/locale";
-import { differenceInHours } from 'date-fns'
+import { enUS } from "date-fns/locale";
+import { differenceInHours } from "date-fns";
 type Props = {
   values: any;
   handleChange: Function;
@@ -56,7 +56,6 @@ const Calendar: React.FC<Props> = ({ values, handleChange }) => {
         locale={enUS}
       >
         {({ startDateInputProps, endDateInputProps, focus }) => {
-          debugger;
           return (
             <div className="date-range">
               <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
@@ -95,9 +94,20 @@ const Calendar: React.FC<Props> = ({ values, handleChange }) => {
                   placeholder="HH"
                 />
               </div>
-      <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
-       {values.streamStartDate && values.streamEndDate ? <>Duration of the Stream: {differenceInHours(returnAsDate(values.streamEndDate), returnAsDate(values.streamStartDate))} hrs</> : <></>}
-      </h2>
+              <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
+                {values.streamStartDate && values.streamEndDate ? (
+                  <>
+                    Duration of the Stream:{" "}
+                    {differenceInHours(
+                      returnAsDate(values.streamEndDate),
+                      returnAsDate(values.streamStartDate)
+                    )}{" "}
+                    hrs
+                  </>
+                ) : (
+                  <></>
+                )}
+              </h2>
             </div>
           );
         }}
