@@ -73,8 +73,8 @@ export const requestConnectWallet = createAsyncThunk(
         signature: sign,
       };
       const signatureVerified = await verifySignature(JSON.stringify(verifyData));
-      localStorage.setItem("token", signatureVerified as string);
-      await createAccount(accounts[0]);
+      localStorage.setItem("token", signatureVerified.data as string);
+      await createAccount(accounts[0], signatureVerified.data);
       const addr = accounts[0].slice(2, 10);
       const identicon = jazzicon(40, parseInt(addr, 20));
       return { walletID: accounts[0], avatar: identicon, balance: 0 };
