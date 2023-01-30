@@ -37,8 +37,19 @@ namespace SRFM.MediaServices.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
+            //    .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(AllowedOrigins,
+                                policy =>
+                                {
+                                    policy.WithOrigins("http://127.0.0.1:5500")
+                                                        .AllowAnyHeader()
+                                                        .AllowAnyMethod();
+                                });
+            });
 
             services.AddControllers();
             
