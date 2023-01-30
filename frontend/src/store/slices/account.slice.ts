@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { createAccount } from "store/services/account.service";
+import {
+  createAccount,
+  getSignatureChallenge,
+  verifySignature,
+} from "store/services/account.service";
 import jazzicon from "jazzicon-ts";
 import { ethers } from "ethers";
 import smartcontractABI from "utils/abi/smartcontractABI.json";
@@ -48,11 +52,30 @@ export const requestConnectWallet = createAsyncThunk(
       return;
     }
 
-    const accounts = await ethereum.request({
-      method: "eth_requestAccounts",
-    });
     try {
-      await createAccount(accounts[0]);
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      const walletAddress = accounts[0];
+      const chainId = await ethereum.request({ method: "eth_chainId" });
+      const network = await ethereum.request({ method: "net_version" });
+      const signatureChallenge = await getSignatureChallenge(
+        walletAddress,
+        network,
+        chainId[2]
+      );
+      const params = [(signatureChallenge as any).data.message, walletAddress];
+      const sign = await ethereum.request({
+        method: "personal_sign",
+        params: params,
+      });
+      const verifyData = {
+        message: (signatureChallenge as any).data.message,
+        signature: sign,
+      };
+      const signatureVerified = await verifySignature(JSON.stringify(verifyData));
+      localStorage.setItem("token", signatureVerified.data as string);
+      await createAccount(accounts[0], signatureVerified.data);
       const addr = accounts[0].slice(2, 10);
       const identicon = jazzicon(40, parseInt(addr, 20));
       return { walletID: accounts[0], avatar: identicon, balance: 0 };

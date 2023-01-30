@@ -3,7 +3,6 @@ import { Suspense, useEffect } from "react";
 import Home from "pages/home";
 import Stream from "pages/stream";
 import Layout from "layout/index";
-import { getToken } from "store/services/token.service";
 import { ToastProvider } from "react-toast-notifications";
 import useConnectWallet from "hooks/useConnectWallet";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -13,9 +12,7 @@ function App() {
   const theme = localStorage.getItem("theme");
   const dontConnectWallet =
     token === "" || token === undefined || token === null;
-  useEffect(() => {
-    getToken();
-  }, []);
+
 
   useEffect(() => {
     const root = window.document.documentElement;
