@@ -12,6 +12,7 @@ export const client = axios.create({
   },
 });
 
+
 export const axiosBaseQuery =
   (
     { baseUrl }: { baseUrl: string } = { baseUrl: "" }
