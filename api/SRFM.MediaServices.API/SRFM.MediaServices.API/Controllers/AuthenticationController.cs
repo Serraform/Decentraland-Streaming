@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 using SRFM.MediaServices.API;
 using System.Net.Http;
 
-namespace MoralisDemo.Controllers
+namespace SRFM.MediaServices.API
 {
     [ApiController]
     [Route("[controller]")]
