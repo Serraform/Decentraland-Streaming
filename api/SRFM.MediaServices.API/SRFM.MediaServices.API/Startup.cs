@@ -26,6 +26,8 @@ namespace SRFM.MediaServices.API
 {
     public class Startup
     {
+        private string AllowedOrigins = "_allowedOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -59,6 +61,7 @@ namespace SRFM.MediaServices.API
             });
 
             services.Configure<LivePeerConfig>(options => Configuration.GetSection("LivePeerConfig").Bind(options));
+            services.Configure<MoralisConfig>(options => Configuration.GetSection("MoralisConfig").Bind(options));
 
             services.AddSingleton<ITableReader, TableReader>();   //ITableWriter
             services.AddSingleton<ITableWriter, TableWriter>();
@@ -112,6 +115,9 @@ namespace SRFM.MediaServices.API
 
             app.UseHttpsRedirection();
 
+            // Enable CORS policy
+            app.UseCors(AllowedOrigins);
+
             app.UseRouting();
             
             app.UseCors(x => x
@@ -128,6 +134,11 @@ namespace SRFM.MediaServices.API
             {
                 endpoints.MapControllers();
             });
+
+            Moralis.MoralisClient.ConnectionData = new Moralis.Models.ServerConnectionData()
+            {
+                ApiKey = Configuration.GetValue<string>("MoralisConfig:ApiKey")
+            };
         }
     }
     internal static class StartupExtensions
