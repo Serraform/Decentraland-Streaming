@@ -1,4 +1,5 @@
 ﻿using Azure;
+using JwtServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SRFM.MediaServices.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class StreamController : ControllerBase
@@ -32,123 +33,219 @@ namespace SRFM.MediaServices.API.Controllers
         [Route("Suspend/{streamId}/{walletId}")]
         public async Task<HttpResponseMessage> SuspendStream(string streamId, string walletId, [FromBody] StreamLPStatus value)
         {
-            var response = await _process.SuspendStream(streamId, walletId);
-            return response;
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
+            {
+                var response = await _process.SuspendStream(streamId, walletId);
+                return response;
+            }
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
         }
 
         [HttpPut]
         [Route("UnSuspend/{streamId}/{walletId}")]
         public async Task<HttpResponseMessage> UnSuspendStream(string streamId, string walletId, [FromBody] StreamLPStatus value)
         {
-            var response = await _process.UnSuspendStream(streamId, walletId);
-            return response;
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
+            {
+                var response = await _process.UnSuspendStream(streamId, walletId);
+                return response;
+            }
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
         }
 
         [HttpPost]
         [Route("CreateStream")]
         public async Task<HttpResponseMessage> CreateStream(StreamDB streamProps)
         {
-            if (streamProps != null)
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
             {
-                if (string.IsNullOrEmpty(streamProps.Name) || string.IsNullOrEmpty(streamProps.WalletId))
+                if (streamProps != null)
                 {
-                    throw new CustomException("Name Required");
-                }
-                try
-                {                  
+                    if (string.IsNullOrEmpty(streamProps.Name) || string.IsNullOrEmpty(streamProps.WalletId))
+                    {
+                        throw new CustomException("Name Required");
+                    }
+                    try
+                    {
 
-                    var response = await _process.CreateNewStream(streamProps);
+                        var response = await _process.CreateNewStream(streamProps);
 
-                    string jsonString = JsonSerializer.Serialize(response);
-                    return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                        string jsonString = JsonSerializer.Serialize(response);
+                        return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
 
+                    }
+                    catch (Exception ex)
+                    {
+                        return new HttpResponseMessage(HttpStatusCode.InternalServerError);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    return new HttpResponseMessage(HttpStatusCode.InternalServerError);
-                }
+                throw new CustomException("Stream inputs Required");
             }
-            throw new CustomException("Stream inputs Required");
-
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
         }
 
         [HttpPut]
         [Route("ExtendStream/{streamId}/{walletId}/{streamStartDate}/{streamEndDate}")]
         public async Task<HttpResponseMessage> ExtendStream(string streamId, string walletId, DateTime streamStartDate, DateTime streamEndDate)
         {
-
-            StreamDB getStream = await _process.GetStreamByStreamId(streamId);
-
-            if (getStream != null)
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
             {
-                getStream.StreamStartDate = streamStartDate;
-                getStream.StreamEndDate = streamEndDate;
+                StreamDB getStream = await _process.GetStreamByStreamId(streamId);
 
-                var response = await _process.UpdateStream(getStream);
+                if (getStream != null)
+                {
+                    getStream.StreamStartDate = streamStartDate;
+                    getStream.StreamEndDate = streamEndDate;
 
-                string jsonString = JsonSerializer.Serialize(response);
-                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                    var response = await _process.UpdateStream(getStream);
+
+                    string jsonString = JsonSerializer.Serialize(response);
+                    return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                }
+                throw new CustomException("Stream inputs Required");
             }
-            throw new CustomException("Stream inputs Required");
-
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
         }
 
         [HttpDelete]
         [Route("DeleteStreamByStreamId/{streamId}")]
         public async Task<IActionResult> DeleteStreamByStreamId(string streamId)
         {
-            // Add new userDB object to Table Storage >> need to check Status code 201/204 by "Prefer header"
-
-            StreamDB stream = await _process.GetStreamByStreamId(streamId);
-
-            if (stream != null)
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
             {
-                stream.Active = false;
-                var statusCode = await _process.DeleteStream(stream);
-                var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
-                return ret;
+                // Add new userDB object to Table Storage >> need to check Status code 201/204 by "Prefer header"
 
+                StreamDB stream = await _process.GetStreamByStreamId(streamId);
+
+                if (stream != null)
+                {
+                    stream.Active = false;
+                    var statusCode = await _process.DeleteStream(stream);
+                    var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
+                    return ret;
+
+                }
+                throw new CustomException("Stream id not correct");
             }
-            throw new CustomException("Stream id not correct");
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
         }
 
         [HttpGet]
         [Route("CalculateStreamCost/{streamStartDate}/{streamEndDate}")]
         public async Task<StreamCost> CalculateStreamCost(DateTime streamStartDate, DateTime streamEndDate)
         {
-            TimeSpan ts = streamEndDate - streamStartDate;
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
+            {
+                TimeSpan ts = streamEndDate - streamStartDate;
 
-            var cost= String.Concat(ts.Hours,".", ts.Minutes);
+                var cost = String.Concat(ts.Hours, ".", ts.Minutes);
 
-            var number = Math.Ceiling(Convert.ToDecimal(cost));
-            
-            StreamCost streamCost = new StreamCost { Cost = number.ToString() };
-            return streamCost;
+                var number = Math.Ceiling(Convert.ToDecimal(cost));
+
+                StreamCost streamCost = new StreamCost { Cost = number.ToString() };
+                return streamCost;
+            }
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
         }
 
         [HttpGet]
         [Route("GetStreamByWalletId/{walletId}")]
         public async Task<IEnumerable<StreamDB>> GetStreamByWalletId(string walletId)
-        {          
-            var streams = await _process.GetStreamsByWalletId(walletId);
-            return streams;
+        {
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
+            {
+                var streams = await _process.GetStreamsByWalletId(walletId);
+                return streams;
+            }
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
         }
 
         [HttpGet]
         [Route("GetStreamByStreamId/{streamId}")]
         public async Task<StreamDB> GetStreamByStreamId(string streamId)
-        {           
-            var streams = await _process.GetStreamByStreamId(streamId);
-            return streams;
+        {
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
+            {
+                var streams = await _process.GetStreamByStreamId(streamId);
+                return streams;
+            }
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
         }
 
 
         [HttpGet]
         [Route("GetStreamSessionByStreamId/{streamId}")]
         public async Task<List<StreamLP>> GetStreamSessionByStreamId(string streamId)
-        {            
-            var streams = await _process.GetStreamSessionByStreamId(streamId);
-            return streams;
+        {
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
+            {
+                var streams = await _process.GetStreamSessionByStreamId(streamId);
+                return streams;
+            }
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
         }
 
     }
