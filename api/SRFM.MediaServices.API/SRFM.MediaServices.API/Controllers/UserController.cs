@@ -1,4 +1,6 @@
 ﻿using Azure;
+using JwtServices;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -33,7 +36,23 @@ namespace SRFM.MediaServices.API.Controllers
         [HttpGet]
         [Route("ListUsers")]
         public async Task<List<UserDB>> ListUsers()
-        {            
+        {
+            //Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            //var tokenWithBearer = headerValue.ToString();
+            //var token = tokenWithBearer.Split(" ")[1];
+            //bool isValidToken = TokenManager.ValidateToken(token);
+            //if (isValidToken)
+            //{
+            
+            //}
+
+            //var accessToken = await HttpContext.GetTokenAsync("access_token");
+            //using (var httpClient = new HttpClient())
+            //{
+            //    httpClient.DefaultRequestHeaders.Authorization
+            //                 = new AuthenticationHeaderValue("Bearer", accessToken);
+            //}
+
             List<UserDB> user = await _process.ListUsers();
             return user;
         }
