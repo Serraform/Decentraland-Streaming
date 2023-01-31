@@ -40,7 +40,7 @@ namespace SRFM.MediaServices.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
             //    .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
 
             services.AddCors(options =>
@@ -54,12 +54,12 @@ namespace SRFM.MediaServices.API
                                 });
             });
 
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
-            options => Configuration.Bind("JwtSettings", options));
+            //services.AddAuthentication(x =>
+            //{
+            //    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //}).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
+            //options => Configuration.Bind("JwtSettings", options));
 
             services.AddControllers();
             

@@ -99,6 +99,32 @@ namespace JwtServices
         /// </summary>
         /// <param name="token">string</param>
         /// <returns>bool</returns>
+        //public static bool ValidateToken(string token)
+        //{
+        //    bool resp = false;
+
+        //    ClaimsPrincipal principal = GetPrincipal(token);
+
+        //    if (principal != null && principal.Identity != null)
+        //    {
+        //        try
+        //        {
+        //            ClaimsIdentity identity = (ClaimsIdentity)principal.Identity;
+
+
+        //            Claim? firstClaim = identity.FindFirst(ClaimTypes.Name);
+
+        //            resp = firstClaim?.Value != null;
+        //        }
+        //        catch (NullReferenceException)
+        //        {
+        //            // Do nothing resp will be false.
+        //        }
+        //    }
+
+        //    return resp;
+        //}
+
         public static bool ValidateToken(string token)
         {
             bool resp = false;
@@ -112,9 +138,10 @@ namespace JwtServices
                     ClaimsIdentity identity = (ClaimsIdentity)principal.Identity;
 
 
-                    Claim? firstClaim = identity.FindFirst(ClaimTypes.Name);
-
-                    resp = firstClaim?.Value != null;
+                    Claim? firstClaim = identity.FindFirst(ClaimTypes.Role);
+                    List<Claim> claims = identity.Claims.ToList();
+                    Claim address = claims.First();
+                    resp = address.Value != "";
                 }
                 catch (NullReferenceException)
                 {
