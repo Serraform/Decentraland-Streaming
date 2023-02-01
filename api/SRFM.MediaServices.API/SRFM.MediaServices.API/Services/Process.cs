@@ -273,7 +273,20 @@ namespace SRFM.MediaServices.API
 
         public async Task<object> UpdateStream(StreamDB streamProp)
         {
+            var payLoadStreamQueues = new
+            {
+                walletId = streamProp.WalletId,
+                streamId = streamProp.StreamID,
+                StartDateTime = streamProp.StreamStartDate,
+                EndDateTime = streamProp.StreamEndDate
+            };
+
+            string jsonStreamQueuesString = JsonConvert.SerializeObject(payLoadStreamQueues);
+
+            await _queuesWriter.AddQueuesMessageAsync("queue-livestream", jsonStreamQueuesString);
+
             return await _tableWriter.UpdateAsync("Stream", streamProp);
+          
         }
 
         public async Task<HttpResponseMessage> DeleteStream(StreamDB streamProp)
