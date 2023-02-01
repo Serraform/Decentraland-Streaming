@@ -15,8 +15,24 @@ const useConnectWallet = () => {
       console.log(error);
     }
   }, [error]);
-
-  const connectWallet = useCallback(() => dispatch(requestConnectWallet()), [dispatch]) as any;
+  useEffect(() => {
+  const { ethereum } = window as any;
+    if (ethereum) {
+      ethereum.on("accountsChanged", (accounts: any) => {
+        if (accounts.length > 0) {
+          window.location.reload();
+        } else {
+          // setWallet("");
+          // setStatus("🦊 Connect to Metamask using the top right button.");
+        }
+      });
+    }
+  }, [dispatch]);
+  
+  const connectWallet = useCallback(
+    () =>dispatch(requestConnectWallet()),
+    [dispatch]
+  ) as any;
   return { walletID, loading, connectWallet };
 };
 

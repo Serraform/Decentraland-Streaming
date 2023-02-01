@@ -21,15 +21,18 @@ const Streams = () => {
     error,
     isSuccess,
     isLoading: loading,
-    isFetching
-  } = useFetchStreamsByWalletIdQuery(walletID, { skip: walletID === "",  refetchOnMountOrArgChange: true, });
+    isFetching,
+  } = useFetchStreamsByWalletIdQuery(walletID, {
+    skip: walletID === "",
+    refetchOnMountOrArgChange: true,
+  });
 
   useEffect(() => {
     if (!isFetching && isSuccess) {
       dispatch(updateStreams(data));
     }
   }, [isSuccess]);
-  
+
   const [copySuccess, setCopy] = useState(false);
 
   const columnHelper = createColumnHelper<IStream>();
@@ -50,27 +53,39 @@ const Streams = () => {
   );
   if ((loading || !data) && !error)
     return (
-      <div className="container pt-10">
-        <div className="preloader">
-          {" "}
-          <span></span>
-          <span></span>
+      <>
+        <div className="container pt-10">
+          {walletID === "" && (
+            <h1 className="dark:text-primary text-center font-montserratbold">
+              Please connect your wallet
+            </h1>
+          )}
+          <div className="preloader">
+            {" "}
+            <span></span>
+            <span></span>
+          </div>
         </div>
-      </div>
+      </>
     );
   if (error)
     return (
       <div className="container pt-10">
         <h1 className="font-montserratbold text-primary text-center pt-20 pb-20 border-third border-r-0 border-t-0">
-          It seems to be an issue loading your streams <br />
-          Please try later
+          There seems to be an issue loading your streams <br />
+          Please try again later.
         </h1>
       </div>
     );
   return (
     <StreamTable
       columns={columns}
-      streams={data?.map((stream: any) => ({ ...stream, streamInfo: JSON.parse(stream.streamInfo)})) as any}
+      streams={
+        data?.map((stream: any) => ({
+          ...stream,
+          streamInfo: JSON.parse(stream.streamInfo),
+        })) as any
+      }
       handleSelectStream={handleSelectStream}
     />
   );

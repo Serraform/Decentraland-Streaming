@@ -42,7 +42,7 @@ const CommonForm: React.FC<Props> = ({
         </div>
         <div className="mb-2 w-full ml-3">
           <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
-            Max estimated number of attendees
+          Estimated number of attendees
           </h2>
           <Field
             type="text"
@@ -58,8 +58,8 @@ const CommonForm: React.FC<Props> = ({
       <Calendar values={values} handleChange={handleChange} />
       <div className="mt-auto flex flex-col justify-end items-end">
         {cost !== 0 && !loading && (
-          <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem]">
-            The cost for upload will be: ${cost} USDC
+          <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem] dark:text-primary">
+            Total cost for the stream will be: ${cost} USDC
           </h2>
         )}
         <div className="flex">
@@ -76,7 +76,7 @@ const CommonForm: React.FC<Props> = ({
               className=" btn-secondary mt-auto"
               disabled={disabledEstimateCost(values) || loading}
             >
-              Estimate Cost
+              Estimate cost
             </button>
           )}
           {cost !== 0 && (
@@ -86,7 +86,7 @@ const CommonForm: React.FC<Props> = ({
               disabled={disabledEstimateCost(values) || loading}
             >
               {loading && <div className="basic mr-[1rem]" />}
-              Upload Asset
+              Create Stream
             </button>
           )}
         </div>

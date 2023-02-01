@@ -26,7 +26,15 @@ export const columnsDefinition = (
         </div>
       ),
   }),
-  
+  columnHelper.accessor("name", {
+    id: "name",
+    header: () => <span className="font-montserratbold">Name</span>,
+    cell: (info: any) => (
+      <span className="font-montserratregular text-[14.5px]">
+        {info.getValue()}
+      </span>
+    ),
+  }),
   columnHelper.accessor("streamType", {
     id: "streamType",
     header: () => <span className="font-montserratbold">Type</span>,
@@ -60,15 +68,7 @@ export const columnsDefinition = (
       );
     },
   }),
-  columnHelper.accessor("name", {
-    id: "name",
-    header: () => <span className="font-montserratbold">Name</span>,
-    cell: (info: any) => (
-      <span className="font-montserratregular text-[14.5px]">
-        {info.getValue()}
-      </span>
-    ),
-  }),
+  
   columnHelper.accessor("dates", {
     id: "dates",
     header: () => <span className="font-montserratbold">Dates</span>,
@@ -83,7 +83,7 @@ export const columnsDefinition = (
   }),
   columnHelper.accessor("attendees", {
     id: "attendees",
-    header: () => <span className="font-montserratbold">Attendence</span>,
+    header: () => <span className="font-montserratbold">Attendance</span>,
     cell: (info: any) => (
       <span className="font-montserratregular text-[14px]">
         {info.getValue()}

@@ -19,6 +19,25 @@ const initialState = {
   isSubscribed: false,
 };
 
+const targetNetworkId = "0x5";
+
+const switchNetwork = async () => {
+  const { ethereum } = window as any;
+  const currentChainId = await ethereum.request({
+    method: "eth_chainId",
+  });
+
+  // return true if network id is the same
+  if (currentChainId !== targetNetworkId) {
+    await ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: targetNetworkId }],
+    });
+    // refresh
+    window.location.reload();
+  }
+};
+
 const approvePulling = async (
   signer: any,
   funds: any,
@@ -72,7 +91,9 @@ export const requestConnectWallet = createAsyncThunk(
         message: (signatureChallenge as any).data.message,
         signature: sign,
       };
-      const signatureVerified = await verifySignature(JSON.stringify(verifyData));
+      const signatureVerified = await verifySignature(
+        JSON.stringify(verifyData)
+      );
       localStorage.setItem("token", signatureVerified.data as string);
       await createAccount(accounts[0], signatureVerified.data);
       const addr = accounts[0].slice(2, 10);
@@ -100,13 +121,17 @@ export const fetchFunds = createAsyncThunk(
         smartcontractABI,
         signer
       );
+      await switchNetwork();
       const accountInfo = await contract.sub_info(walletID);
       return {
         balance: Number(accountInfo.balance._hex) as any,
         isSubscribed: accountInfo.subscribed,
       };
     } catch (e) {
-      console.log(e);
+      return {
+        balance: 0,
+        isSubscribed: false,
+      };
     }
   }
 );
