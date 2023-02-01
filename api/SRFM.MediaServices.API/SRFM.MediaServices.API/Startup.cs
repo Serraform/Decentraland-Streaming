@@ -21,6 +21,7 @@ using Microsoft.Extensions.Azure;
 using Azure.Storage.Queues;
 using Azure.Core.Extensions;
 using SRFM.MediaServices.API.Services.LivePeer;
+using Microsoft.Extensions.Options;
 
 namespace SRFM.MediaServices.API
 {
@@ -52,6 +53,13 @@ namespace SRFM.MediaServices.API
                                                         .AllowAnyMethod();
                                 });
             });
+
+            //services.AddAuthentication(x =>
+            //{
+            //    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //}).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,
+            //options => Configuration.Bind("JwtSettings", options));
 
             services.AddControllers();
             

@@ -68,8 +68,7 @@ const StreamTable: React.FC<Props> = ({
             overflow: "hidden",
           }}
         >
-          You don’t have anything yet click on <br />
-          “Add new stream”
+          Please click "Add new stream" to start streaming
         </h1>
       )}
       <div className="h-4" />
