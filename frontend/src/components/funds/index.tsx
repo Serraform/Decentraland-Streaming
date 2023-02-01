@@ -17,7 +17,7 @@ import { fetchFunds, fundWallet } from "store/slices/account.slice";
 import { useToasts } from "react-toast-notifications";
 const Funds = () => {
   const [balanceInput, setBalanceInput] = useState("");
-  const { walletID, loading, balance, isSubscribed, locked_balance } =
+  const { walletID, loading, balance, locked_balance } =
     useSelector((state: RootState) => state.accountData);
   const { addToast } = useToasts();
   const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -36,7 +36,7 @@ const Funds = () => {
           {balance ? parseFloat(balance.toString()) / 1e18 : 0} USDC
         </h3>
       </div>
-      {locked_balance && locked_balance !== 0 && (
+      {locked_balance && locked_balance !== 0 ? (
         <div className={`${balanceStyle} rounded mt-5 bg-slate-100 dark:bg-[#151719]`}>
           <div className="text-center locked-funds">
             <p className="font-montserratmedium dark:text-white">Locked Funds</p>
@@ -48,7 +48,7 @@ const Funds = () => {
             To read more about locked funds, click here
           </p>
         </div>
-      )}
+      ) : <></>}
       <p className="font-montserratmedium mt-[24px] dark:text-white">
         In order to upload your video, you must fund your account
       </p>
@@ -67,7 +67,6 @@ const Funds = () => {
               fundWallet({
                 amountToFund: balanceInput,
                 addToast: addToast,
-                isSubscribed: isSubscribed,
               })
             )
           }

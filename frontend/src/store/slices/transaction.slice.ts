@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
-import smartcontractABI from "utils/abi/smartcontractABI.json";
+import { fetchCostService } from 'store/services/transaction.service';
+import smartcontractV2ABI from "utils/abi/smartcontractV2ABI.json";
+const smartcontractABI = smartcontractV2ABI.output.abi;
 const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 type InitialState = {
   loading: boolean;
@@ -19,7 +21,8 @@ const initialState: InitialState = {
 export const estimateCost = createAsyncThunk(
   "transaction/estimateCost",
   async (streamValues: any) => {
-    return { cost: 0.0001 };
+    const response = await fetchCostService(streamValues.streamStartDate.toUTCString(), streamValues.streamEndDate.toUTCString());
+    return { cost: parseInt(response.data.cost) as unknown  as number};
   }
 );
 
@@ -46,7 +49,7 @@ export const lockFunds = createAsyncThunk(
         signer
       );
       const deposit = ethers.utils.parseEther(""+amountToBeLock);
-      const tx = await contract.lockSubscription(walletId, duration, deposit);
+      const tx = await contract.lock_funds(walletId, duration, deposit);
       addToast("Waiting for transaction approval", {
         autoDismiss: true,
       });

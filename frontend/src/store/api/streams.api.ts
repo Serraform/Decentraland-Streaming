@@ -20,7 +20,8 @@ export const streamsApi = createApi({
     }),
     createLiveStream: builder.mutation<any, any>({
       query: ({ walletID, streamValues }) => {
-        const { name, attendees, streamStartDate, streamEndDate, streamType } = streamValues;
+        const { name, attendees, streamStartDate, streamEndDate, streamType } =
+          streamValues;
         return {
           url: `api/Stream/CreateStream`,
           method: "POST",
@@ -57,5 +58,5 @@ export const {
   useCreateLiveStreamMutation,
   useSuspendLiveStreamMutation,
   useUnSuspendLiveStreamMutation,
-  useFetchStreamDetailsQuery
+  useFetchStreamDetailsQuery,
 } = streamsApi;
