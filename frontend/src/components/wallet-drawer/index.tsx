@@ -6,6 +6,7 @@ import CloseIcon from "assets/icons/Close";
 import useConnectWallet from "hooks/useConnectWallet";
 import DarkModeIcon from "assets/icons/Dark";
 import LightModeIcon from "assets/icons/Light";
+import ReactTooltip from "react-tooltip";
 type Props = {
   openDrawer: boolean;
   setOpenDrawer: (state: boolean) => void;
@@ -33,7 +34,17 @@ const WalletDrawer: React.FC<Props> = ({ openDrawer, setOpenDrawer }) => {
             </div>
           </div>
           <div className="flex">
+            <ReactTooltip 
+            id="view-mode"
+                        place="top"
+                        type={"dark"}
+                        effect={"float"}/>
             <button
+              data-for="view-mode"
+              data-tip={
+                "Change view mode"
+              }
+              data-iscapture="true"
               type="button"
               className="mr-2"
               aria-haspopup="true"

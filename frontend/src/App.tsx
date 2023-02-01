@@ -7,6 +7,7 @@ import { ToastProvider } from "react-toast-notifications";
 import useConnectWallet from "hooks/useConnectWallet";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
+
   const { connectWallet } = useConnectWallet();
   const token = localStorage.getItem("token");
   const theme = localStorage.getItem("theme");
@@ -24,6 +25,9 @@ function App() {
       connectWallet();
     }
   }, [dontConnectWallet]);
+
+
+
 
   const router = createBrowserRouter([
     {
@@ -48,12 +52,15 @@ function App() {
     <ToastProvider placement="bottom-center">
       <Suspense
         fallback={
+          <>
+          <h1>Please connect your wallet</h1>
           <div className="preloader-wrapper">
             <div className="preloader">
               <span></span>
               <span></span>
             </div>
           </div>
+          </>
         }
       >
         <RouterProvider router={router} />

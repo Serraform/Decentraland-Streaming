@@ -123,7 +123,7 @@ const EditStream: React.FC<Props> = ({
             {renderDetail(
               "RTMP ingest URL",
               true,
-              "rtmp://rtmp.livepeer.com/live"
+              "rtmp://rtmp.serraform.com/live"
             )}
             {renderDetail(
               "Playback ID",

@@ -59,7 +59,7 @@ const Calendar: React.FC<Props> = ({ values, handleChange }) => {
           return (
             <div className="date-range">
               <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
-                Select Start and End Date of Stream
+                Select start and end date of stream
               </h2>
               <div className="flex flex-row items-baseline">
                 <input
@@ -97,7 +97,7 @@ const Calendar: React.FC<Props> = ({ values, handleChange }) => {
               <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
                 {values.streamStartDate && values.streamEndDate ? (
                   <>
-                    Duration of the Stream:{" "}
+                    Duration of the stream:{" "}
                     {differenceInHours(
                       returnAsDate(values.streamEndDate),
                       returnAsDate(values.streamStartDate)
