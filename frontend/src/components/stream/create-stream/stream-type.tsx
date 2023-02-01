@@ -78,7 +78,7 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
                         />
                         <label htmlFor={"vod"}>
                           Video On Demand <br />
-                          (VOD) - COMING SOON
+                          (COMING SOON)
                         </label>
                       </div>
                     </>
@@ -131,7 +131,7 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
                           disabled={true}
                         />
                         <label htmlFor={"twitch"}>
-                          Service Relay <br /> COMING SOON
+                          Service Relay <br /> (COMING SOON)
                         </label>
                       </div>
                     </>
