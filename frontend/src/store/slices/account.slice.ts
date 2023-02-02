@@ -124,8 +124,11 @@ export const fetchFunds = createAsyncThunk(
       );
       await switchNetwork();
       const accountInfo = await contract.view_sub_info(walletID);
+      const balance = (Number(accountInfo.balance._hex) as any);
+      
+      const units = ethers.utils.parseUnits(""+balance, "6")
       return {
-        balance: Number(accountInfo.balance._hex) as any,
+        balance: balance,
         locked_balance: Number(accountInfo.lockedBalance._hex) as any
       };
     } catch (e) {
@@ -157,7 +160,7 @@ export const fundWallet = createAsyncThunk(
       const account = await ethereum.request({
         method: "eth_requestAccounts",
       });
-      const deposit = ethers.utils.parseEther(amountToFund);
+      const deposit = ethers.utils.parseUnits(amountToFund, "6");
       const isApprovedToPull = await approvePulling(
         signer,
         deposit,

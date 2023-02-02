@@ -33,7 +33,7 @@ const Funds = () => {
       <div className={`${balanceStyle} rounded`}>
         <p className="font-montserratmedium dark:text-white">Funds</p>
         <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem] dark:text-white">
-          {balance ? parseFloat(balance.toString()) / 1e18 : 0} USDC
+          {balance ? parseFloat(balance.toString())/ 10**6 : 0} USDC
         </h3>
       </div>
       {locked_balance && locked_balance !== 0 ? (
@@ -41,7 +41,7 @@ const Funds = () => {
           <div className="text-center locked-funds">
             <p className="font-montserratmedium dark:text-white">Locked Funds</p>
             <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem] dark:text-white">
-              {parseFloat(locked_balance.toString()) / 1e18} USDC
+              {parseFloat(locked_balance.toString())/ 10**6 } USDC
             </h3>
           </div>
           <p className="font-montserratbold tracking-[0.1rem] text-[1rem] text-center hidden read-more dark:text-white">

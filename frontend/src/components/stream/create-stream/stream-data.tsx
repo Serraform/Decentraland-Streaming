@@ -16,7 +16,6 @@ import { RootState } from "store/configStore";
 import { useCreateLiveStreamMutation } from "store/api/streams.api";
 import { differenceInHours } from 'date-fns'
 
-import { string } from "yup";
 import { useNavigate } from "react-router-dom";
 const StreamInfo: React.FC<IStreamCreation> = ({
   streamType,

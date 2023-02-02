@@ -48,7 +48,7 @@ export const lockFunds = createAsyncThunk(
         smartcontractABI,
         signer
       );
-      const deposit = ethers.utils.parseEther(""+amountToBeLock);
+      const deposit = ethers.utils.parseUnits(""+amountToBeLock, "6");
       const tx = await contract.lock_funds(walletId, duration, deposit);
       addToast("Waiting for transaction approval", {
         autoDismiss: true,
