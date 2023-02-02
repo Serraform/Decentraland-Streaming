@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useReducer } from "react";
 import { IStreamVOD, ILiveStream } from "components/stream/definitions";
 import StreamVOD from "components/stream/stream-forms/VOD";
 import LiveStream from "components/stream/stream-forms/live-stream";
@@ -8,31 +8,40 @@ import type { AppDispatch } from "store/configStore";
 import {
   estimateCost,
   finishTransaction,
-} from "store/slices/transaction.slice";
+  unLockFunds,
+} from "store/slices/transaction.slice"
+import {
+  fetchFunds,
+} from "store/slices/account.slice";
 import FileCopyIcon from "assets/icons/FileCopy";
 import { editStream } from "store/slices/stream.slice";
-import { useFetchStreamDetailsQuery } from "store/api/streams.api";
+import {
+  useFetchStreamDetailsQuery,
+  useDeleteStreamMutation,
+} from "store/api/streams.api";
 import { useToasts } from "react-toast-notifications";
 import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
-import {useNavigate}from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   selectedStream: IStreamVOD | ILiveStream;
 };
-const EditStream: React.FC<Props> = ({
-  selectedStream,
-}) => {
+const EditStream: React.FC<Props> = ({ selectedStream }) => {
   const { cost } = useSelector((state: RootState) => state.transactionData);
+  const { walletID } = useSelector((state: RootState) => state.accountData);
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
-  const {
-    data,
-    isSuccess,
-  } = useFetchStreamDetailsQuery(selectedStream.streamInfo.Id, {  pollingInterval: 6000 });
+  const { data, isSuccess } = useFetchStreamDetailsQuery(
+    selectedStream.streamInfo.Id,
+    { pollingInterval: 6000 }
+  );
+
+  const [deleteStream, { isLoading }] =
+    useDeleteStreamMutation();
   const navigate = useNavigate();
   const { addToast } = useToasts();
-  
+
   const handleSave = useCallback((values: any) => {
     dispatch(editStream({ ...values }));
     addToast("Stream edited", {
@@ -40,16 +49,24 @@ const EditStream: React.FC<Props> = ({
       autoDismiss: true,
     });
     dispatch(finishTransaction());
-  },[]);
+  }, []);
 
   useEffect(() => {
-    if(selectedStream.name===""){
+    if (selectedStream.name === "") {
       navigate("/");
     }
-  }, [selectedStream])
+  }, [selectedStream]);
 
   const handleEstimateCost = (values: any) => {
     dispatch(estimateCost(values));
+  };
+
+  const handleDelete = () => {
+    console.log("delete");
+    dispatch(unLockFunds({ vaultContractId: 1, amountToBeUnlock: 1, addToast }));
+    // deleteStream({streamId: selectedStream.streamInfo.Id});
+    dispatch(fetchFunds(walletID));
+    navigate("/");
   };
 
   const renderStreamForm = () => {
@@ -61,7 +78,8 @@ const EditStream: React.FC<Props> = ({
             selectedStream={selectedStream as IStreamVOD}
             isNewStream={false}
             handleEstimateCost={handleEstimateCost}
-            isLoading={false}
+            isLoading={isLoading}
+            handleDelete={handleDelete}
           />
         );
       case "live-stream":
@@ -73,13 +91,16 @@ const EditStream: React.FC<Props> = ({
               streamInfo: {
                 ...selectedStream?.streamInfo,
                 playbackUrl: `https://livepeercdn.studio/hls/${selectedStream?.streamInfo.PlayBackId}/index.m3u8`,
-                IsActive: isSuccess ? JSON.parse((data as any).streamInfo).IsActive :  (selectedStream?.streamInfo).IsActive,
+                IsActive: isSuccess
+                  ? JSON.parse((data as any).streamInfo).IsActive
+                  : (selectedStream?.streamInfo).IsActive,
               },
             }}
             isNewStream={false}
             handleEstimateCost={handleEstimateCost}
-            isLoading={false}
+            isLoading={isLoading}
             cost={cost}
+            handleDelete={handleDelete}
           />
         );
       default:
@@ -89,7 +110,9 @@ const EditStream: React.FC<Props> = ({
   const renderDetail = (title: string, hasCopy: boolean, value: any) => {
     return (
       <div className="my-2 flex flex-row">
-        <h5 className="font-montserratbold mr-2 text-[14px] dark:text-white">{title}</h5>
+        <h5 className="font-montserratbold mr-2 text-[14px] dark:text-white">
+          {title}
+        </h5>
         {hasCopy ? (
           <span
             className="font-montserratlight text-[13px] flex flex-row items-center hover:bg-[#f7f9fa] hover:cursor-pointer dark:text-white dark:hover:bg-[#1a1d1e]"
@@ -104,7 +127,9 @@ const EditStream: React.FC<Props> = ({
             </div>
           </span>
         ) : (
-          <span className="font-montserratlight text-[13px] dark:text-white">{value} </span>
+          <span className="font-montserratlight text-[13px] dark:text-white">
+            {value}{" "}
+          </span>
         )}
       </div>
     );
@@ -147,7 +172,9 @@ const EditStream: React.FC<Props> = ({
             {renderDetail(
               "Status",
               false,
-              isSuccess && JSON.parse((data as any).streamInfo).IsActive  ? "Live" : "Idle"
+              isSuccess && JSON.parse((data as any).streamInfo).IsActive
+                ? "Live"
+                : "Idle"
             )}
           </div>
         </div>

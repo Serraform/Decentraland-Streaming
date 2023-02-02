@@ -18,6 +18,7 @@ const initialState: InitialState = {
     video: "",
     videoSize: "",
     videoLenght: "",
+    cost: "",
     streamStartDate: undefined,
     streamEndDate: undefined,
     streamInfo: {

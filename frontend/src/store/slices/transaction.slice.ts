@@ -68,6 +68,52 @@ export const lockFunds = createAsyncThunk(
   }
 );
 
+export const unLockFunds = createAsyncThunk(
+  "transaction/unlockFunds",
+  async (props: any) => {
+    const { vaultContractId, amountToBeUnlock, addToast } = props;
+    try {
+      const { ethereum } = window as any;
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      const walletAddress = accounts[0];
+      if (!ethereum) {
+        return;
+      }
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESS as string,
+        smartcontractABI,
+        signer
+      );
+      const unLockAmount = ethers.utils.parseUnits(""+amountToBeUnlock, "6");
+      const tx = await contract.returnLockedFunds(walletAddress, unLockAmount);
+      addToast("Waiting for transaction approval", {
+        autoDismiss: true,
+      });
+      const receipt = await tx.wait();
+      if (receipt.status === 1) {
+        addToast("Funds unlocked", {
+          appearance: "success",
+          autoDismiss: true,
+        });
+        return receipt;
+      } else {
+        throw new Error();
+      }
+    } catch (e) {
+      addToast("We couldn't unlocked your funds", {
+        appearance: "error",
+        autoDismiss: true,
+      });
+      throw new Error();
+    }
+  }
+);
+
 const transactionSlice = createSlice({
   name: "transactionSlice",
   initialState,

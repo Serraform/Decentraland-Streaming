@@ -14,6 +14,8 @@ type Props = {
   disabledEstimateCost: (values: any, errors:any) => boolean;
   handleEstimateCost: Function;
   handleSave: Function;
+  
+  handleDelete: Function;
   errors:any
 };
 
@@ -32,7 +34,8 @@ const CommonForm: React.FC<Props> = ({
   handleEstimateCost,
   handleSave,
   disabledEstimateCost,
-  errors
+  errors,
+  handleDelete
 }) => {
   const [openSuspendModal, setOpenSuspendModal] = useState(false);
   const navigate = useNavigate();
@@ -47,7 +50,7 @@ const CommonForm: React.FC<Props> = ({
 
   return (
     <>
-      <SuspendModal isOpen={openSuspendModal} />
+      <SuspendModal isOpen={openSuspendModal} handleAction={handleDelete} handleClose={setOpenSuspendModal} />
       <div className="flex flex-row justify-between">
         <div className="mb-2 w-full mr-3">
           <h2 className="font-montserratbold text-black text-[14px] dark:text-white">
@@ -102,18 +105,17 @@ const CommonForm: React.FC<Props> = ({
               }}
               type="button"
               className=" btn-cancel flex flex-row items-center mt-auto ml-0 mr-5"
-              // disabled={
-              //   disabledEstimateCost(values) ||
-              //   loading ||
-              //   streamIsHappeningOrHasHappened
-              // }
+              disabled={
+                loading ||
+                streamIsHappeningOrHasHappened
+              }
             >
               {loading ? (
                 <div className="basic mr-[1rem] before:border-l-red-600" />
               ) : (
                 <TrashIcon />
               )}
-              Suspend
+              Delete
             </button>
           )}
 

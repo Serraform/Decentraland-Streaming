@@ -12,6 +12,7 @@ type Props = {
   handleEstimateCost: Function;
   isLoading: boolean;
   cost: number;
+  handleDelete: Function;
 };
 
 const LiveStream: React.FC<Props> = ({
@@ -20,7 +21,8 @@ const LiveStream: React.FC<Props> = ({
   isNewStream,
   handleEstimateCost,
   isLoading,
-  cost
+  cost,
+  handleDelete
 }) => {
   
 
@@ -86,6 +88,7 @@ const LiveStream: React.FC<Props> = ({
                   handleEstimateCost={handleEstimateCost}
                   handleSave={handleOnSubmit}
                   disabledEstimateCost={disabledEstimateCost}
+                  handleDelete={handleDelete}
                 />
               </div>
          

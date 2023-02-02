@@ -60,6 +60,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     if (isSuccess) {
       const newStream = {
         ...streamValues,
+        cost: cost,
         streamInfo: JSON.stringify({
           Name: streamValues?.name,
           CreatedAt: 0,
@@ -130,6 +131,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
             isNewStream={true}
             handleEstimateCost={handleEstimateCost}
             isLoading={isLoading}
+            handleDelete={() => null}
           />
         );
       case "live-stream":
@@ -141,6 +143,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
             isNewStream={true}
             handleEstimateCost={handleEstimateCost}
             cost={cost}
+            handleDelete={() => null}
           />
         );
       default:

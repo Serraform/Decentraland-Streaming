@@ -6,6 +6,7 @@ interface IStream {
   streamType: string;
   streamStartDate: Date | undefined;
   streamEndDate: Date | undefined;
+  cost: string;
   streamInfo: {
     Name:string;
     CreatedAt: number;

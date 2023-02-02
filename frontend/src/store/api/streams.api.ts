@@ -50,6 +50,12 @@ export const streamsApi = createApi({
         method: "put",
       }),
     }),
+    deleteStream: builder.mutation<any, any>({
+      query: ({ streamId }) => ({
+        url: `api/Stream/DeleteStreamByStreamId/${streamId}`,
+        method: "delete",
+      }),
+    }),
   }),
 });
 
@@ -58,5 +64,6 @@ export const {
   useCreateLiveStreamMutation,
   useSuspendLiveStreamMutation,
   useUnSuspendLiveStreamMutation,
+  useDeleteStreamMutation,
   useFetchStreamDetailsQuery,
 } = streamsApi;
