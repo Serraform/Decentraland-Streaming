@@ -1,30 +1,52 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useCallback, useReducer } from "react";
 import {
   IStreamCreation,
   ILiveStream,
   IStreamVOD,
+  deepEqual,
 } from "components/stream/definitions";
 import StreamVOD from "components/stream/stream-forms/VOD";
 import LiveStream from "components/stream/stream-forms/live-stream";
-import { estimateCost, lockFunds } from "store/slices/transaction.slice";
+import {
+  estimateCost,
+  finishTransaction,
+  lockFunds,
+} from "store/slices/transaction.slice";
 import { uploadStream } from "store/slices/stream.slice";
+import { fetchFunds } from "store/slices/account.slice";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 import { useToasts } from "react-toast-notifications";
 import { RootState } from "store/configStore";
 import { useCreateLiveStreamMutation } from "store/api/streams.api";
-import { differenceInHours } from 'date-fns'
+import { differenceInHours } from "date-fns";
 
 import { useNavigate } from "react-router-dom";
 const StreamInfo: React.FC<IStreamCreation> = ({
   streamType,
   selectedStream,
 }) => {
-  const [streamValues, setStreamValues] = useState<ILiveStream | IStreamVOD>();
-  const { cost, loading: isTransactionLoading, receipt } = useSelector(
-    (state: RootState) => state.transactionData
+  const [streamValues, setStreamValues] = useReducer(
+    (prev: any, next: any) => {
+      const newEvent = { ...prev, ...next, streamType };
+      return newEvent;
+    },
+    {
+      streamType: streamType,
+      name: "",
+      status: false,
+      attendees: "",
+      streamStartDate: Date.now(),
+      streamEndDate: Date.now(),
+    }
   );
+
+  const {
+    cost,
+    loading: isTransactionLoading,
+    receipt,
+  } = useSelector((state: RootState) => state.transactionData);
   const { walletID } = useSelector((state: RootState) => state.accountData);
   const [createLiveStream, { isLoading, isSuccess }] =
     useCreateLiveStreamMutation();
@@ -33,6 +55,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
   const navigate = useNavigate();
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     if (isSuccess) {
       const newStream = {
@@ -56,30 +79,45 @@ const StreamInfo: React.FC<IStreamCreation> = ({
         appearance: "success",
         autoDismiss: true,
       });
+      dispatch(fetchFunds(walletID));
       navigate("/");
     }
   }, [streamValues, isSuccess]);
 
   useEffect(() => {
-    if(receipt&& receipt.status === 1){
+    if (receipt && receipt.status === 1) {
       createLiveStream({ walletID: walletID, streamValues: streamValues });
     }
-  }, [receipt])
+  }, [receipt]);
 
-  const handleSave = useCallback((values: any) => {
-    const duration = differenceInHours(values.streamEndDate, Date.now())
-    if (values.streamType === "live-stream") {
-      dispatch(
-        lockFunds({
-          addToast,
-          duration: duration,
-          amountToBeLock: cost,
-        })
-      );
-    }
-    setStreamValues(values);
-  }, [cost]);
+  const handleSave = useCallback(
+    (values: any) => {
+      debugger;
+      if (!deepEqual(values, streamValues)) {
+        dispatch(finishTransaction());
+        addToast("You have updated your inputs, please recalculate cost", {
+          appearance: "warning",
+          autoDismiss: true,
+        });
+      } else {
+        const duration = differenceInHours(values.streamEndDate, Date.now());
+        if (values.streamType === "live-stream") {
+          dispatch(
+            lockFunds({
+              addToast,
+              duration: duration,
+              amountToBeLock: cost,
+            })
+          );
+        }
+        setStreamValues(values);
+      }
+    },
+    [cost]
+  );
+
   const handleEstimateCost = (values: any) => {
+    setStreamValues(values);
     dispatch(estimateCost(values));
   };
   const renderStreamForm = () => {

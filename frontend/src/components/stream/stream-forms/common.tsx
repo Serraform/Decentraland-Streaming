@@ -8,9 +8,10 @@ type Props = {
   handleChange: Function;
   cost: number;
   loading: boolean;
-  disabledEstimateCost: (values: any) => boolean;
+  disabledEstimateCost: (values: any, errors:any) => boolean;
   handleEstimateCost: Function;
   handleSave: Function;
+  errors:any
 };
 
 const returnAsDate = (date: any) => {
@@ -28,6 +29,7 @@ const CommonForm: React.FC<Props> = ({
   handleEstimateCost,
   handleSave,
   disabledEstimateCost,
+  errors
 }) => {
   const navigate = useNavigate();
   const streamIsBeingCreated = values.streamInfo.CreatedAt === 0;
@@ -73,7 +75,7 @@ const CommonForm: React.FC<Props> = ({
           />
         </div>
       </div>
-      <Calendar values={values} handleChange={handleChange} />
+      <Calendar values={values} handleChange={handleChange} errors={errors}/>
       <div className="mt-auto flex flex-col justify-end items-end">
         {cost !== 0 && !loading && (
           <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem] dark:text-primary">
@@ -91,13 +93,14 @@ const CommonForm: React.FC<Props> = ({
           {cost === 0 && (
             <button
               onClick={() => handleEstimateCost(values)}
-              className=" btn-secondary mt-auto"
+              className=" btn-secondary mt-auto flex flex-row items-center"
               disabled={
-                disabledEstimateCost(values) ||
+                disabledEstimateCost(values, errors) ||
                 loading ||
                 streamIsHappeningOrHasHappened
               }
             >
+               {loading && <div className="basic mr-[1rem]" />}
               Estimate cost
             </button>
           )}
@@ -106,7 +109,7 @@ const CommonForm: React.FC<Props> = ({
               onClick={() => handleSave(values)}
               className="btn-secondary flex flex-row items-center"
               disabled={
-                disabledEstimateCost(values) ||
+                disabledEstimateCost(values, errors) ||
                 loading ||
                 streamIsHappeningOrHasHappened
               }

@@ -56,5 +56,33 @@ const validationSchema = Yup.object().shape({
   streamEndDate: Yup.date().required(),
 });
 
-export { initialInfoState, validationSchema };
+const validateDateRange = (values:any) => {
+  const errors = {streamEndDate: ""};
+  if (values.streamStartDate && values.streamEndDate && values.streamStartDate > values.streamEndDate) {
+    errors.streamEndDate = 'End date cannot be before start date';
+  }
+  return errors;
+};
+
+function deepEqual(obj1:any, obj2:any) {
+  if (obj1 === obj2) return true;
+  if (obj1 === null || typeof obj1 !== 'object' ||
+      obj2 === null || typeof obj2 !== 'object') return false;
+  
+  if (obj1 instanceof Date && obj2 instanceof Date) {
+    return obj1.getTime() === obj2.getTime();
+  }
+  
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+  
+  if (keys1.length !== keys2.length) return false;
+  
+  for (const key of keys1) {
+    if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) return false;
+  }
+  
+  return true;
+}
+export { initialInfoState, validationSchema, deepEqual, validateDateRange };
 export type { IStream, IStreamVOD, ILiveStream, IStreamCreation };

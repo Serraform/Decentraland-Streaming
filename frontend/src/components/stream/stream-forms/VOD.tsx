@@ -48,7 +48,7 @@ const StreamVOD: React.FC<Props> = ({
       validationSchema={validationSchema}
       onSubmit={(values) => handleOnSubmit(values)}
     >
-      {({ handleChange, values }) => (
+      {({ handleChange, values, errors }) => (
         <>
           <Form className={`flex flex-row"justify-between" w-[100%] h-[40vh]`}>
             {isNewStream ? (
@@ -82,6 +82,7 @@ const StreamVOD: React.FC<Props> = ({
                 handleEstimateCost={handleEstimateCost}
                 handleSave={handleSave}
                 disabledEstimateCost={disabledEstimateCost}
+                errors={errors}
               />
             </div>
           </Form>

@@ -125,8 +125,6 @@ export const fetchFunds = createAsyncThunk(
       await switchNetwork();
       const accountInfo = await contract.view_sub_info(walletID);
       const balance = (Number(accountInfo.balance._hex) as any);
-      
-      const units = ethers.utils.parseUnits(""+balance, "6")
       return {
         balance: balance,
         locked_balance: Number(accountInfo.lockedBalance._hex) as any

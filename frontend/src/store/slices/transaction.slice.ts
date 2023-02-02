@@ -21,7 +21,7 @@ const initialState: InitialState = {
 export const estimateCost = createAsyncThunk(
   "transaction/estimateCost",
   async (streamValues: any) => {
-    const response = await fetchCostService(streamValues.streamStartDate.toUTCString(), streamValues.streamEndDate.toUTCString());
+    const response = await fetchCostService(streamValues.streamStartDate.toISOString(), streamValues.streamEndDate.toISOString());
     return { cost: parseInt(response.data.cost) as unknown  as number};
   }
 );
@@ -35,11 +35,6 @@ export const lockFunds = createAsyncThunk(
       if (!ethereum) {
         return;
       }
-      
-      const accounts = await ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      const walletId = accounts[0];
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = provider.getSigner();
 
@@ -49,7 +44,7 @@ export const lockFunds = createAsyncThunk(
         signer
       );
       const deposit = ethers.utils.parseUnits(""+amountToBeLock, "6");
-      const tx = await contract.lock_funds(walletId, duration, deposit);
+      const tx = await contract.lock_funds(Math.floor(Math.random()*10) + 1, duration, deposit);
       addToast("Waiting for transaction approval", {
         autoDismiss: true,
       });
@@ -91,10 +86,12 @@ const transactionSlice = createSlice({
     builder.addCase(lockFunds.fulfilled, (state, action) => {
       state.loading = false;
       state.receipt = action.payload;
+      state.cost = 0;
     });
     builder.addCase(lockFunds.rejected, (state, action) => {
       state.loading = false;
       state.error = (action.error as any).message;
+      state.cost = 0;
     });
     builder.addCase(estimateCost.pending, (state) => {
       state.loading = true;
