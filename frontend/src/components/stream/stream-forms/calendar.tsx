@@ -6,9 +6,10 @@ import { differenceInHours } from "date-fns";
 type Props = {
   values: any;
   handleChange: Function;
+  errors: any
 };
 
-const Calendar: React.FC<Props> = ({ values, handleChange }) => {
+const Calendar: React.FC<Props> = ({ values, handleChange,errors}) => {
   const returnAsDate = (date: any) => {
     if (typeof date === "string") {
       return new Date(date);
@@ -108,6 +109,10 @@ const Calendar: React.FC<Props> = ({ values, handleChange }) => {
                   <></>
                 )}
               </h2>
+              <h2 className="font-montserratbold text-red-600 text-[15px] dark:text-red-600">
+              {errors.streamEndDate &&  <>{errors.streamEndDate}</>}
+              </h2>
+
             </div>
           );
         }}

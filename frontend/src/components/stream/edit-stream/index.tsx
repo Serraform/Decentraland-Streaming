@@ -13,6 +13,8 @@ import FileCopyIcon from "assets/icons/FileCopy";
 import { editStream } from "store/slices/stream.slice";
 import { useFetchStreamDetailsQuery } from "store/api/streams.api";
 import { useToasts } from "react-toast-notifications";
+import { useSelector } from "react-redux";
+import { RootState } from "store/configStore";
 import {useNavigate}from 'react-router-dom';
 
 type Props = {
@@ -21,6 +23,7 @@ type Props = {
 const EditStream: React.FC<Props> = ({
   selectedStream,
 }) => {
+  const { cost } = useSelector((state: RootState) => state.transactionData);
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
   const {
@@ -76,6 +79,7 @@ const EditStream: React.FC<Props> = ({
             isNewStream={false}
             handleEstimateCost={handleEstimateCost}
             isLoading={false}
+            cost={cost}
           />
         );
       default:
