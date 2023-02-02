@@ -8,21 +8,22 @@ export const streamsApi = createApi({
   endpoints: (builder) => ({
     fetchStreamsByWalletId: builder.query<any[], string>({
       query: (walletID) => ({
-        url: `Stream/GetStreamByWalletId/${walletID}`,
+        url: `api/Stream/GetStreamByWalletId/${walletID}`,
         method: "get",
       }),
     }),
     fetchStreamDetails: builder.query<any[], string>({
       query: (streamID) => ({
-        url: `Stream/GetStreamByStreamId/${streamID}`,
+        url: `api/Stream/GetStreamByStreamId/${streamID}`,
         method: "get",
       }),
     }),
     createLiveStream: builder.mutation<any, any>({
       query: ({ walletID, streamValues }) => {
-        const { name, attendees, streamStartDate, streamEndDate, streamType } = streamValues;
+        const { name, attendees, streamStartDate, streamEndDate, streamType } =
+          streamValues;
         return {
-          url: `Stream/CreateStream`,
+          url: `api/Stream/CreateStream`,
           method: "POST",
           data: {
             name: name,
@@ -39,13 +40,13 @@ export const streamsApi = createApi({
     }),
     suspendLiveStream: builder.mutation<any, any>({
       query: ({ streamId, walletID }) => ({
-        url: `Stream/Suspend/${streamId}/${walletID}`,
+        url: `api/Stream/Suspend/${streamId}/${walletID}`,
         method: "put",
       }),
     }),
     unSuspendLiveStream: builder.mutation<any, any>({
       query: ({ streamId, walletID }) => ({
-        url: `Stream/UnSuspend/${streamId}/${walletID}`,
+        url: `api/Stream/UnSuspend/${streamId}/${walletID}`,
         method: "put",
       }),
     }),
@@ -57,5 +58,5 @@ export const {
   useCreateLiveStreamMutation,
   useSuspendLiveStreamMutation,
   useUnSuspendLiveStreamMutation,
-  useFetchStreamDetailsQuery
+  useFetchStreamDetailsQuery,
 } = streamsApi;

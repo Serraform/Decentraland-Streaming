@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
-import smartcontractABI from "utils/abi/smartcontractABI.json";
+import { fetchCostService } from 'store/services/transaction.service';
+import smartcontractV2ABI from "utils/abi/smartcontractV2ABI.json";
+const smartcontractABI = smartcontractV2ABI.output.abi;
 const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 type InitialState = {
   loading: boolean;
@@ -19,7 +21,8 @@ const initialState: InitialState = {
 export const estimateCost = createAsyncThunk(
   "transaction/estimateCost",
   async (streamValues: any) => {
-    return { cost: 0.0001 };
+    const response = await fetchCostService(streamValues.streamStartDate.toISOString(), streamValues.streamEndDate.toISOString());
+    return { cost: parseInt(response.data.cost) as unknown  as number};
   }
 );
 
@@ -32,11 +35,6 @@ export const lockFunds = createAsyncThunk(
       if (!ethereum) {
         return;
       }
-      
-      const accounts = await ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      const walletId = accounts[0];
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = provider.getSigner();
 
@@ -45,8 +43,8 @@ export const lockFunds = createAsyncThunk(
         smartcontractABI,
         signer
       );
-      const deposit = ethers.utils.parseEther(""+amountToBeLock);
-      const tx = await contract.lockSubscription(walletId, duration, deposit);
+      const deposit = ethers.utils.parseUnits(""+amountToBeLock, "6");
+      const tx = await contract.lock_funds(Math.floor(Math.random()*10) + 1, duration, deposit);
       addToast("Waiting for transaction approval", {
         autoDismiss: true,
       });
@@ -88,10 +86,12 @@ const transactionSlice = createSlice({
     builder.addCase(lockFunds.fulfilled, (state, action) => {
       state.loading = false;
       state.receipt = action.payload;
+      state.cost = 0;
     });
     builder.addCase(lockFunds.rejected, (state, action) => {
       state.loading = false;
       state.error = (action.error as any).message;
+      state.cost = 0;
     });
     builder.addCase(estimateCost.pending, (state) => {
       state.loading = true;

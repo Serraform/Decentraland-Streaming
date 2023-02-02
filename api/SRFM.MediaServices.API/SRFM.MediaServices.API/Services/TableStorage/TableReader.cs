@@ -57,7 +57,7 @@ namespace SRFM.MediaServices.API
         {
             var tableref = _tableClient.GetTableReference(tableName);
             // by partition and rwo keys
-            TableOperation retrieveOperation = TableOperation.Retrieve<T>("USA", rowKey);
+            TableOperation retrieveOperation = TableOperation.Retrieve<T>(StorageAccount.PartitionKey, rowKey);
             TableResult result = await tableref.ExecuteAsync(retrieveOperation);
             return result.Result as T;
         }

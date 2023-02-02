@@ -1,4 +1,6 @@
 ﻿using Azure;
+using JwtServices;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -16,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace SRFM.MediaServices.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -33,49 +36,82 @@ namespace SRFM.MediaServices.API.Controllers
         [HttpGet]
         [Route("ListUsers")]
         public async Task<List<UserDB>> ListUsers()
-        {            
-            List<UserDB> user = await _process.ListUsers();
-            return user;
+        {
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
+            {
+                List<UserDB> user = await _process.ListUsers();
+                return user;
+            }
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }   
         }
 
         [HttpGet]
         [Route("GetUserDetailsByWalletId/{walletId}")]
         public async Task<UserDB> GetUserDetailsByWalletId(string walletId)
-        {  
-            if (walletId != null)
+        {
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
             {
-                UserDB user = await _process.GetUserByWalletId(walletId);
-                return user;
+                if (walletId != null)
+                {
+                    UserDB user = await _process.GetUserByWalletId(walletId);
+                    return user;
+                }
+                throw new CustomException("WalletId inputs Required");
             }
-            throw new CustomException("WalletId inputs Required");
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
         }
 
         [HttpPost]
         [Route("CreateUser")]
         public async Task<object> CreateUser([FromBody] UserDB entity)
         {
-            if (entity != null)
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
             {
-                UserDB user = await _process.GetUserByWalletId(entity.WalletId);
+                if (entity != null)
+                {
+                    UserDB user = await _process.GetUserByWalletId(entity.WalletId);
 
-                if (user == null)
-                {
-                    entity.PartitionKey = "USA";                   
-                    entity.RowKey = entity.WalletId;
-                   
-                    var ret = await _process.CreateNewUser(entity);
-                    //var ret = new ObjectResult(ret) { StatusCode = StatusCodes.Status204NoContent };
-                    return ret;
-                    
+                    if (user == null)
+                    {
+                        entity.PartitionKey = StorageAccount.PartitionKey;
+                        entity.RowKey = entity.WalletId;
+
+                        var ret = await _process.CreateNewUser(entity);
+                        //var ret = new ObjectResult(ret) { StatusCode = StatusCodes.Status204NoContent };
+                        return ret;
+
+                    }
+                    else
+                    {
+                        //throw new CustomException("WalletId already present. Please try again with new wallet Id.");
+                        var responseMsg = new ResponseMessage { ErrorMsg = "WalletId already present. Please try again with new wallet Id." };
+                        return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(JsonSerializer.Serialize(responseMsg), System.Text.Encoding.UTF8, "application/json") };
+                    }
                 }
-                else
-                {
-                    //throw new CustomException("WalletId already present. Please try again with new wallet Id.");
-                    var responseMsg = new ResponseMessage { ErrorMsg = "WalletId already present. Please try again with new wallet Id." };
-                    return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(JsonSerializer.Serialize(responseMsg), System.Text.Encoding.UTF8, "application/json") };                    
-                }
+                throw new CustomException("User inputs Required");
             }
-            throw new CustomException("User inputs Required");
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
         }
 
 
@@ -83,47 +119,62 @@ namespace SRFM.MediaServices.API.Controllers
         [Route("UpdateUser")]
         public async Task<IActionResult> UpdateUser([FromBody] UserDB entity)
         {
-
-            UserDB user = await _process.GetUserByWalletId(entity.WalletId);
-
-            if (user != null)
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
             {
-                if (entity != null)
+                UserDB user = await _process.GetUserByWalletId(entity.WalletId);
+
+                if (user != null)
                 {
-                    entity.PartitionKey = "USA";
-                    entity.RowKey = user.WalletId;
-                    entity.ETag = user.ETag;
-                    
-                    var statusCode = await _process.UpdateUser(entity);
-                    var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
-                    return ret;
+                    if (entity != null)
+                    {
+                        entity.PartitionKey = StorageAccount.PartitionKey;
+                        entity.RowKey = user.WalletId;
+                        entity.ETag = user.ETag;
+
+                        var statusCode = await _process.UpdateUser(entity);
+                        var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
+                        return ret;
+                    }
+                    throw new CustomException("WalletId inputs Required");
                 }
-                throw new CustomException("WalletId inputs Required");
+                return NotFound();
             }
-            return NotFound();            
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
         }
 
         [HttpDelete]
         [Route("DeleteUserByWalletId/{walletId}")]
         public async Task<IActionResult> DeleteUserByWalletId(string walletId)
-        {  
-            UserDB user = await _process.GetUserByWalletId(walletId);
-
-            if (user != null)
+        {
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
             {
-                user.Active = false;
-                var statusCode = await _process.UpdateUser(user);
-                var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
-                return ret;
+                UserDB user = await _process.GetUserByWalletId(walletId);
+
+                if (user != null)
+                {
+                    user.Active = false;
+                    var statusCode = await _process.UpdateUser(user);
+                    var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
+                    return ret;
+                }
+                throw new CustomException("WalletId not correct");
             }
-            throw new CustomException("WalletId not correct");
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
         }
-
-
-
-
-
-
 
 
         //// GET: api/<UserController>

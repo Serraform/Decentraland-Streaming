@@ -1,7 +1,7 @@
 import { Formik, Form } from "formik";
 import { ILiveStream } from "components/stream/definitions";
 import React, { useCallback, useState } from "react";
-import { validationSchema } from "components/stream/definitions";
+import { validationSchema, validateDateRange } from "components/stream/definitions";
 import CommonForm from "components/stream/stream-forms/common";
 
 import Video from "components/stream/create-stream/video";
@@ -38,12 +38,13 @@ const LiveStream: React.FC<Props> = ({
     },
     [handleSave]
   );
-  const disabledEstimateCost = (values: ILiveStream) => {
+  const disabledEstimateCost = (values: ILiveStream, errors:any) => {
     return (
       values.name === "" ||
       values.attendees === "" ||
       values.streamStartDate === undefined ||
-      values.streamEndDate === undefined
+      values.streamEndDate === undefined ||
+      errors.streamEndDate
     );
   };
   
@@ -52,8 +53,9 @@ const LiveStream: React.FC<Props> = ({
       initialValues={liveStreamVideo}
       validationSchema={validationSchema}
       onSubmit={(values) => handleOnSubmit(values)}
+      validate={validateDateRange}
     >
-      {({ handleChange, values }) => {
+      {({ handleChange, values , errors,touched}) => {
         
         return (
           <>
@@ -80,11 +82,13 @@ const LiveStream: React.FC<Props> = ({
                   handleChange={handleChange}
                   cost={cost}
                   loading={isLoading}
+                  errors={errors}
                   handleEstimateCost={handleEstimateCost}
                   handleSave={handleOnSubmit}
                   disabledEstimateCost={disabledEstimateCost}
                 />
               </div>
+         
             </Form>
           </>
         );

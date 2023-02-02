@@ -1,9 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { createAccount } from "store/services/account.service";
+import {
+  createAccount,
+  getSignatureChallenge,
+  verifySignature,
+} from "store/services/account.service";
 import jazzicon from "jazzicon-ts";
 import { ethers } from "ethers";
-import smartcontractABI from "utils/abi/smartcontractABI.json";
+import smartcontractV2ABI from "utils/abi/smartcontractV2ABI.json";
 import usdcABI from "utils/abi/usdcAbi.json";
+const smartcontractABI = smartcontractV2ABI.output.abi;
 const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 const USDC_CONTRACT_ADDRESS = process.env.REACT_APP_USDC_CONTRACT_ADDRESS;
 const initialState = {
@@ -12,8 +17,26 @@ const initialState = {
   balance: 0,
   loading: false,
   error: null,
-  isSubscribed: false,
   locked_balance: 0
+};
+
+const targetNetworkId = "0x5";
+
+const switchNetwork = async () => {
+  const { ethereum } = window as any;
+  const currentChainId = await ethereum.request({
+    method: "eth_chainId",
+  });
+
+  // return true if network id is the same
+  if (currentChainId !== targetNetworkId) {
+    await ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: targetNetworkId }],
+    });
+    // refresh
+    window.location.reload();
+  }
 };
 
 const approvePulling = async (
@@ -48,11 +71,32 @@ export const requestConnectWallet = createAsyncThunk(
       return;
     }
 
-    const accounts = await ethereum.request({
-      method: "eth_requestAccounts",
-    });
     try {
-      await createAccount(accounts[0]);
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      const walletAddress = accounts[0];
+      const chainId = await ethereum.request({ method: "eth_chainId" });
+      const network = await ethereum.request({ method: "net_version" });
+      const signatureChallenge = await getSignatureChallenge(
+        walletAddress,
+        network,
+        chainId[2]
+      );
+      const params = [(signatureChallenge as any).data.message, walletAddress];
+      const sign = await ethereum.request({
+        method: "personal_sign",
+        params: params,
+      });
+      const verifyData = {
+        message: (signatureChallenge as any).data.message,
+        signature: sign,
+      };
+      const signatureVerified = await verifySignature(
+        JSON.stringify(verifyData)
+      );
+      localStorage.setItem("token", signatureVerified.data as string);
+      await createAccount(accounts[0], signatureVerified.data);
       const addr = accounts[0].slice(2, 10);
       const identicon = jazzicon(40, parseInt(addr, 20));
       return { walletID: accounts[0], avatar: identicon, balance: 0 };
@@ -78,15 +122,18 @@ export const fetchFunds = createAsyncThunk(
         smartcontractABI,
         signer
       );
-      const accountInfo = await contract.sub_info(walletID);
-      
+      await switchNetwork();
+      const accountInfo = await contract.view_sub_info(walletID);
+      const balance = (Number(accountInfo.balance._hex) as any);
       return {
-        balance: Number(accountInfo.balance._hex) as any,
-        isSubscribed: accountInfo.subscribed,
-        locked_balance: Number(accountInfo.locked_balance._hex) as any
+        balance: balance,
+        locked_balance: Number(accountInfo.lockedBalance._hex) as any
       };
     } catch (e) {
-      console.log(e);
+      return {
+        balance: 0,
+        locked_balance: 0
+      };
     }
   }
 );
@@ -94,7 +141,7 @@ export const fetchFunds = createAsyncThunk(
 export const fundWallet = createAsyncThunk(
   "fund-wallet",
   async (props: any) => {
-    const { amountToFund, addToast, isSubscribed } = props;
+    const { amountToFund, addToast } = props;
     try {
       const { ethereum } = window as any;
       if (!ethereum) {
@@ -111,7 +158,7 @@ export const fundWallet = createAsyncThunk(
       const account = await ethereum.request({
         method: "eth_requestAccounts",
       });
-      const deposit = ethers.utils.parseEther(amountToFund);
+      const deposit = ethers.utils.parseUnits(amountToFund, "6");
       const isApprovedToPull = await approvePulling(
         signer,
         deposit,
@@ -121,11 +168,7 @@ export const fundWallet = createAsyncThunk(
       );
       if (isApprovedToPull) {
         let tx = null;
-        if (isSubscribed) {
-          tx = await contract.deposit(deposit);
-        } else {
-          tx = await contract.createSubscription(deposit);
-        }
+        tx = await contract.deposit(deposit);
         addToast("Waiting for funding approval", {
           autoDismiss: true,
         });
@@ -135,7 +178,7 @@ export const fundWallet = createAsyncThunk(
             appearance: "success",
             autoDismiss: true,
           });
-          const accountInfo = await contract.sub_info(account[0]);
+          const accountInfo = await contract.view_sub_info(account[0]);
           return {
             balance: Number(accountInfo.balance._hex) as any,
           };
@@ -175,7 +218,6 @@ const accountSlice = createSlice({
     builder.addCase(fetchFunds.fulfilled, (state, action) => {
       state.loading = false;
       state.balance = action.payload?.balance;
-      state.isSubscribed = action.payload?.isSubscribed;
       state.locked_balance = action.payload?.locked_balance;
     });
     builder.addCase(fetchFunds.rejected, (state, action) => {
