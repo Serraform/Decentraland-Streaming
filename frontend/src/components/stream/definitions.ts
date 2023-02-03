@@ -8,6 +8,7 @@ interface IStream {
   streamStartDate: Date | undefined;
   streamEndDate: Date | undefined;
   cost: string;
+  vaultContractId: string;
   streamInfo: {
     Name:string;
     CreatedAt: number;

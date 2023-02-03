@@ -9,20 +9,22 @@ type InitialState = {
   cost: number;
   error: string;
   receipt: any;
+  vaultContractId: number
 };
 
 const initialState: InitialState = {
   cost: 0,
   loading: false,
   error: "",
-  receipt: null
+  receipt: null,
+  vaultContractId: 0
 };
 
 export const estimateCost = createAsyncThunk(
   "transaction/estimateCost",
   async (streamValues: any) => {
     const response = await fetchCostService(streamValues.streamStartDate.toISOString(), streamValues.streamEndDate.toISOString());
-    return { cost: parseInt(response.data.cost) as unknown  as number};
+    return { cost: parseInt(response.data.cost) as unknown  as number, vaultContractId: parseInt(response.data.vaultContractId)};
   }
 );
 
@@ -44,7 +46,7 @@ export const lockFunds = createAsyncThunk(
         signer
       );
       const deposit = ethers.utils.parseUnits(""+amountToBeLock, "6");
-      const tx = await contract.lock_funds(Math.floor(Math.random()*10) + 1, duration, deposit);
+      const tx = await contract.lock_funds(""+vaultContractId, duration, deposit);
       addToast("Waiting for transaction approval", {
         autoDismiss: true,
       });
@@ -74,10 +76,6 @@ export const unLockFunds = createAsyncThunk(
     const { vaultContractId, amountToBeUnlock, addToast } = props;
     try {
       const { ethereum } = window as any;
-      const accounts = await ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      const walletAddress = accounts[0];
       if (!ethereum) {
         return;
       }
@@ -90,7 +88,7 @@ export const unLockFunds = createAsyncThunk(
         signer
       );
       const unLockAmount = ethers.utils.parseUnits(""+amountToBeUnlock, "6");
-      const tx = await contract.returnLockedFunds(walletAddress, unLockAmount);
+      const tx = await contract.returnLockedFunds(vaultContractId, unLockAmount);
       addToast("Waiting for transaction approval", {
         autoDismiss: true,
       });
@@ -132,7 +130,6 @@ const transactionSlice = createSlice({
     builder.addCase(lockFunds.fulfilled, (state, action) => {
       state.loading = false;
       state.receipt = action.payload;
-      state.cost = 0;
     });
     builder.addCase(lockFunds.rejected, (state, action) => {
       state.loading = false;
@@ -145,6 +142,7 @@ const transactionSlice = createSlice({
     builder.addCase(estimateCost.fulfilled, (state, action) => {
       state.loading = false;
       state.cost = action.payload.cost;
+      state.vaultContractId = action.payload.vaultContractId;
     });
     builder.addCase(estimateCost.rejected, (state, action) => {
       state.loading = false;

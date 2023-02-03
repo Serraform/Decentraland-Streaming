@@ -20,7 +20,7 @@ export const streamsApi = createApi({
     }),
     createLiveStream: builder.mutation<any, any>({
       query: ({ walletID, streamValues }) => {
-        const { name, attendees, streamStartDate, streamEndDate, streamType, cost } =
+        const { name, attendees, streamStartDate, streamEndDate, streamType, cost, vaultContractId } =
           streamValues;
         return {
           url: `api/Stream/CreateStream`,
@@ -34,7 +34,8 @@ export const streamsApi = createApi({
             streamStartDate: streamStartDate.toISOString(),
             streamEndDate: streamEndDate.toISOString(),
             attendees: attendees,
-            cost: ""+cost
+            cost: ""+cost,
+            vaultContractId: ""+vaultContractId
           },
         };
       },

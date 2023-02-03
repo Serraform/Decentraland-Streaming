@@ -17,7 +17,7 @@ import {
 } from "store/slices/transaction.slice";
 import { fetchFunds } from "store/slices/account.slice";
 import FileCopyIcon from "assets/icons/FileCopy";
-import { editStream } from "store/slices/stream.slice";
+import { editStream, deleteStreamFromTable } from "store/slices/stream.slice";
 import {
   useFetchStreamDetailsQuery,
   useDeleteStreamMutation,
@@ -107,6 +107,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   const handleDelete = () => {
     // dispatch(unLockFunds({ vaultContractId: 1, amountToBeUnlock: 1, addToast }));
     deleteStream({ streamId: selectedStream.streamInfo.Id });
+    dispatch(deleteStreamFromTable(selectedStream.streamInfo.Id))
     addToast("Stream deleted", {
       appearance: "success",
       autoDismiss: true,

@@ -46,6 +46,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     cost,
     loading: isTransactionLoading,
     receipt,
+    vaultContractId
   } = useSelector((state: RootState) => state.transactionData);
   const { walletID } = useSelector((state: RootState) => state.accountData);
   const [createLiveStream, { isLoading, isSuccess }] =
@@ -60,7 +61,8 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     if (isSuccess) {
       const newStream = {
         ...streamValues,
-        cost: cost,
+        cost: ""+cost,
+        vaultContractId: ""+vaultContractId,
         streamInfo: JSON.stringify({
           Name: streamValues?.name,
           CreatedAt: 0,
@@ -88,7 +90,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
 
   useEffect(() => {
     if (receipt && receipt.status === 1) {
-      createLiveStream({ walletID: walletID, streamValues: {...streamValues, cost} });
+      createLiveStream({ walletID: walletID, streamValues: {...streamValues, cost, vaultContractId} });
     }
   }, [receipt, cost]);
 
@@ -108,6 +110,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
               addToast,
               duration: duration,
               amountToBeLock: cost,
+              vaultContractId: vaultContractId
             })
           );
         }
