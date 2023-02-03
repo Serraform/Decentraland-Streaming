@@ -20,7 +20,7 @@ import type { AppDispatch } from "store/configStore";
 import { useToasts } from "react-toast-notifications";
 import { RootState } from "store/configStore";
 import { useCreateLiveStreamMutation } from "store/api/streams.api";
-import { differenceInHours } from "date-fns";
+import { differenceInMinutes } from "date-fns";
 
 import { useNavigate } from "react-router-dom";
 const StreamInfo: React.FC<IStreamCreation> = ({
@@ -80,6 +80,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
         appearance: "success",
         autoDismiss: true,
       });
+      dispatch(finishTransaction());
       dispatch(fetchFunds(walletID));
       navigate("/");
     }
@@ -87,13 +88,12 @@ const StreamInfo: React.FC<IStreamCreation> = ({
 
   useEffect(() => {
     if (receipt && receipt.status === 1) {
-      createLiveStream({ walletID: walletID, streamValues: streamValues });
+      createLiveStream({ walletID: walletID, streamValues: {...streamValues, cost} });
     }
-  }, [receipt]);
+  }, [receipt, cost]);
 
   const handleSave = useCallback(
     (values: any) => {
-      debugger;
       if (!deepEqual(values, streamValues)) {
         dispatch(finishTransaction());
         addToast("You have updated your inputs, please recalculate cost", {
@@ -101,7 +101,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
           autoDismiss: true,
         });
       } else {
-        const duration = differenceInHours(values.streamEndDate, Date.now());
+        const duration = differenceInMinutes(values.streamEndDate, Date.now());
         if (values.streamType === "live-stream") {
           dispatch(
             lockFunds({

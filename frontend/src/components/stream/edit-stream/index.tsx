@@ -1,6 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useCallback, useReducer } from "react";
-import { IStreamVOD, ILiveStream } from "components/stream/definitions";
+import {
+  IStreamVOD,
+  ILiveStream,
+  checkDateRangeChange,
+} from "components/stream/definitions";
 import StreamVOD from "components/stream/stream-forms/VOD";
 import LiveStream from "components/stream/stream-forms/live-stream";
 import { useDispatch } from "react-redux";
@@ -8,11 +12,10 @@ import type { AppDispatch } from "store/configStore";
 import {
   estimateCost,
   finishTransaction,
+  lockFunds,
   unLockFunds,
-} from "store/slices/transaction.slice"
-import {
-  fetchFunds,
-} from "store/slices/account.slice";
+} from "store/slices/transaction.slice";
+import { fetchFunds } from "store/slices/account.slice";
 import FileCopyIcon from "assets/icons/FileCopy";
 import { editStream } from "store/slices/stream.slice";
 import {
@@ -23,11 +26,21 @@ import { useToasts } from "react-toast-notifications";
 import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
 import { useNavigate } from "react-router-dom";
-
+import {differenceInMinutes} from "date-fns"
 type Props = {
   selectedStream: IStreamVOD | ILiveStream;
 };
 const EditStream: React.FC<Props> = ({ selectedStream }) => {
+  const [streamValues, setStreamValues] = useReducer(
+    (prev: any, next: any) => {
+      const newEvent = { ...prev, ...next };
+      return newEvent;
+    },
+    {
+      ...selectedStream,
+    }
+  );
+
   const { cost } = useSelector((state: RootState) => state.transactionData);
   const { walletID } = useSelector((state: RootState) => state.accountData);
   const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -37,19 +50,48 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
     { pollingInterval: 6000 }
   );
 
-  const [deleteStream, { isLoading }] =
-    useDeleteStreamMutation();
+  const [deleteStream, { isLoading }] = useDeleteStreamMutation();
   const navigate = useNavigate();
   const { addToast } = useToasts();
 
-  const handleSave = useCallback((values: any) => {
-    dispatch(editStream({ ...values }));
-    addToast("Stream edited", {
-      appearance: "success",
-      autoDismiss: true,
-    });
-    dispatch(finishTransaction());
-  }, []);
+  const handleSave = useCallback(
+    (values: any) => {
+      let costDifference = 0;
+      switch (
+        checkDateRangeChange(
+          values.streamStartDate,
+          values.streamEndDate,
+          streamValues.streamStartDate,
+          streamValues.streamEndDate
+        )
+      ) {
+        case 0:
+           costDifference = streamValues.cost - cost;
+           dispatch(unLockFunds({ vaultContractId: streamValues.vaultContractId, amountToBeUnlock: costDifference, addToast }));
+          // The date range has been shortened
+          break;
+        case 1:
+          costDifference =  cost - streamValues.cost;
+          const newDuration = differenceInMinutes(values.streamEndDate, Date.now());
+          dispatch(lockFunds({ vaultContractId: streamValues.vaultContractId, amountToBeLock: costDifference, addToast, duration: newDuration }));
+          // the date range has been extended
+          break;
+        case -1:
+          // the date range didn't change
+          break;
+      }
+    },
+    [cost]
+  );
+
+  // const handleSave = useCallback((values: any) => {
+  //   dispatch(editStream({ ...values }));
+  //   addToast("Stream edited", {
+  //     appearance: "success",
+  //     autoDismiss: true,
+  //   });
+  //   dispatch(finishTransaction());
+  // }, []);
 
   useEffect(() => {
     if (selectedStream.name === "") {
@@ -59,12 +101,16 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
 
   const handleEstimateCost = (values: any) => {
     dispatch(estimateCost(values));
+    setStreamValues(values);
   };
 
   const handleDelete = () => {
-    console.log("delete");
-    dispatch(unLockFunds({ vaultContractId: 1, amountToBeUnlock: 1, addToast }));
-    // deleteStream({streamId: selectedStream.streamInfo.Id});
+    // dispatch(unLockFunds({ vaultContractId: 1, amountToBeUnlock: 1, addToast }));
+    deleteStream({ streamId: selectedStream.streamInfo.Id });
+    addToast("Stream deleted", {
+      appearance: "success",
+      autoDismiss: true,
+    });
     dispatch(fetchFunds(walletID));
     navigate("/");
   };

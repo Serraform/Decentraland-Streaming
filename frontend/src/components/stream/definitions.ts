@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+import { differenceInMinutes } from "date-fns";
 interface IStream {
   name: string;
   status: boolean;
@@ -85,5 +86,27 @@ function deepEqual(obj1:any, obj2:any) {
   
   return true;
 }
-export { initialInfoState, validationSchema, deepEqual, validateDateRange };
+
+
+
+const checkDateRangeChange = (oldStartDate: Date, oldEndDate: Date, newStartDate: Date, newEndDate: Date) => {
+  const oldRange = differenceInMinutes(oldEndDate, oldStartDate);
+  const newRange = differenceInMinutes(newEndDate, newStartDate);
+
+  if (newRange < oldRange) {
+    const difference = oldRange - newRange;
+    // Call function A
+    console.log(`The date range has been shortened by ${difference} minutes. Function A is called.`);
+    return 0;
+  } else if (newRange > oldRange) {
+    const difference = newRange - oldRange;
+    // Call function B
+    console.log(`The date range has been extended by ${difference} minutes. Function B is called.`);
+    return 1;
+  } else {
+    console.log(`The date range has not changed.`);
+    return -1;
+  }
+}
+export { initialInfoState, validationSchema, deepEqual, validateDateRange, checkDateRangeChange };
 export type { IStream, IStreamVOD, ILiveStream, IStreamCreation };

@@ -29,7 +29,7 @@ export const estimateCost = createAsyncThunk(
 export const lockFunds = createAsyncThunk(
   "transaction/lockFunds",
   async (props: any) => {
-    const { addToast, duration, amountToBeLock } = props;
+    const { addToast, duration, amountToBeLock, vaultContractId } = props;
     try {
       const { ethereum } = window as any;
       if (!ethereum) {
