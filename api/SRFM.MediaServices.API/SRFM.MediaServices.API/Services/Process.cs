@@ -273,6 +273,7 @@ namespace SRFM.MediaServices.API
 
         public async Task<object> UpdateStream(StreamDB streamProp)
         {
+            //Not possible to change stream name in livepeer
             var payLoadStreamQueues = new
             {
                 walletId = streamProp.WalletId,
@@ -286,7 +287,6 @@ namespace SRFM.MediaServices.API
             await _queuesWriter.AddQueuesMessageAsync("queue-livestream", jsonStreamQueuesString);
 
             return await _tableWriter.UpdateAsync("Stream", streamProp);
-          
         }
 
         public async Task<HttpResponseMessage> DeleteStream(StreamDB streamProp)
