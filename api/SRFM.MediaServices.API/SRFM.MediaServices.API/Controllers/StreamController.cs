@@ -135,6 +135,40 @@ namespace SRFM.MediaServices.API.Controllers
             }
         }
 
+        [HttpPatch]
+        [Route("UpdateStream")]
+        public async Task<HttpResponseMessage> UpdateStream(StreamDB streamProps)
+        {
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
+            {
+                StreamDB getStream = await _process.GetStreamByStreamId(streamProps.StreamID);
+
+                if (getStream != null)
+                {
+                    getStream.Name = streamProps.Name;                
+                    getStream.StreamStartDate = streamProps.StreamStartDate;
+                    getStream.StreamEndDate = streamProps.StreamEndDate;
+                    getStream.StreamDuration = streamProps.StreamDuration;
+                    getStream.Cost = streamProps.Cost;
+                    getStream.Attendees = streamProps.Attendees;
+
+                    var response = await _process.UpdateStream(getStream);
+
+                    string jsonString = JsonSerializer.Serialize(response);
+                    return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                }
+                throw new CustomException("Stream inputs Required");
+            }
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
+        }
+
         [HttpDelete]
         [Route("DeleteStreamByStreamId/{streamId}")]
         public async Task<IActionResult> DeleteStreamByStreamId(string streamId)
@@ -181,8 +215,12 @@ namespace SRFM.MediaServices.API.Controllers
 
                 var number = Math.Ceiling(Convert.ToDecimal(cost));
 
-                StreamCost streamCost = new StreamCost { Cost = number.ToString() };
+                var vaultId = new Random().Next(0, 999999).ToString();
+                vaultId = string.Concat(streamStartDate.ToString("yyyyMMddmmss"), vaultId);
+
+                StreamCost streamCost = new StreamCost { Cost = number.ToString(), VaultContractId = vaultId };
                 return streamCost;
+
             }
             else
             {

@@ -39,6 +39,8 @@ namespace SRFM.MediaServices.API
 
         public string Cost { get; set; }
 
+        public string VaultContractId { get; set; }
+
         public string Attendees { get; set; }           
 
         public string SuspendStatus { get; set; }
