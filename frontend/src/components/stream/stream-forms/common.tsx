@@ -47,8 +47,8 @@ const CommonForm: React.FC<Props> = ({
     !streamIsBeingCreated &&
     ((isAfter(Date.now(), returnAsDate(values.streamStartDate)) &&
       isBefore(Date.now(), returnAsDate(values.streamEndDate))) ||
-      isAfter(Date.now(), returnAsDate(values.streamEndDate)) ||
-      values.streamInfo.Suspended);
+      isAfter(Date.now(), returnAsDate(values.streamEndDate)) || false);
+      //  values.streamInfo.Suspended);
 
   return (
     <>

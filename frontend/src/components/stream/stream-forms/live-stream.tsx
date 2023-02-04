@@ -71,7 +71,7 @@ const LiveStream: React.FC<Props> = ({
               {isEditForm && (
                 <Video
                   values={values}
-                  suspended={selectedStream.streamInfo.Suspended}
+                  suspended={false}
                   status={selectedStream.streamInfo.IsActive}
                   video={values.streamInfo.playbackUrl}
                   handleChange={() => null}

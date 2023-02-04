@@ -42,6 +42,7 @@ export const streamsApi = createApi({
     }),
    editStream: builder.mutation<any, any>({
       query: ({ streamValues }) => {
+        debugger;
         const { name, attendees, streamStartDate, streamEndDate, cost, streamID } = streamValues;
         return {
           url: `api/Stream/UpdateStream`,

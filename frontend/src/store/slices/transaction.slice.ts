@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
 import { fetchCostService } from "store/services/transaction.service";
-import smartcontractV2ABI from "utils/abi/smartcontractV2ABI.json";
+import smartcontractV2ABI from "utils/abi/smartContractV3Abi.json";
 const smartcontractABI = smartcontractV2ABI.output.abi;
 const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 type InitialState = {
@@ -32,7 +32,7 @@ export const estimateCost = createAsyncThunk(
       );
       return {
         cost: parseInt(response.data.cost) as unknown as number,
-        vaultContractId: parseInt(streamValues.vaultContractId),
+        vaultContractId: streamValues.vaultContractId,
       };
     }
     const response = await fetchCostService(
@@ -49,7 +49,7 @@ export const estimateCost = createAsyncThunk(
 export const lockFunds = createAsyncThunk(
   "transaction/lockFunds",
   async (props: any) => {
-    const { addToast, duration, amountToBeLock, vaultContractId } = props;
+    const { addToast, duration, amountToBeLock, vaultContractId, durationUntilStart } = props;
     try {
       const { ethereum } = window as any;
       if (!ethereum) {
@@ -66,6 +66,7 @@ export const lockFunds = createAsyncThunk(
       const deposit = ethers.utils.parseUnits("" + amountToBeLock, "6");
       const tx = await contract.lock_funds(
         "" + vaultContractId,
+        durationUntilStart,
         duration,
         deposit
       );
@@ -91,6 +92,49 @@ export const lockFunds = createAsyncThunk(
     }
   }
 );
+
+export const unLockAllFunds = createAsyncThunk(
+  "transaction/unLockAllFunds",
+  async (props: any) => {
+    const { vaultContractId, addToast } = props;
+    try {
+       const { ethereum } = window as any;
+      if (!ethereum) {
+        return;
+      }
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESS as string,
+        smartcontractABI,
+        signer
+      );
+      
+      const tx = await contract.cancel_stream(
+        vaultContractId,
+      );
+      addToast("Waiting for transaction approval", {
+        autoDismiss: true,
+      });
+      const receipt = await tx.wait();
+      if (receipt.status === 1) {
+        addToast("Funds unlocked, stream canceled", {
+          appearance: "success",
+          autoDismiss: true,
+        });
+        return receipt;
+      } else {
+        throw new Error();
+      }
+    } catch (e) {
+         addToast("We couldn't unlocked your funds", {
+           appearance: "error",
+           autoDismiss: true,
+         });
+         throw new Error();
+       }
+  })
 
 export const unLockFunds = createAsyncThunk(
   "transaction/unlockFunds",
@@ -143,8 +187,12 @@ const transactionSlice = createSlice({
   reducers: {
     finishTransaction(state: any) {
       return {
-        ...initialState,
         cost: 0,
+        loading: false,
+        error: "",
+        receipt: null,
+        transactionType: "",
+        vaultContractId: 0,
       };
     },
   },
@@ -162,19 +210,19 @@ const transactionSlice = createSlice({
       state.error = (action.error as any).message;
       state.cost = 0;
     });
-    // builder.addCase(unLockAllFunds.pending, (state) => {
-    //   state.loading = true;
-    // });
-    // builder.addCase(unLockAllFunds.fulfilled, (state, action) => {
-    //   state.loading = false;
-    //   state.receipt = action.payload;
-    //   state.transactionType = "cancel";
-    // });
-    // builder.addCase(unLockAllFunds.rejected, (state, action) => {
-    //   state.loading = false;
-    //   state.error = (action.error as any).message;
-    //   state.cost = 0;
-    // });
+    builder.addCase(unLockAllFunds.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(unLockAllFunds.fulfilled, (state, action) => {
+      state.loading = false;
+      state.receipt = action.payload;
+      state.transactionType = "cancel";
+    });
+    builder.addCase(unLockAllFunds.rejected, (state, action) => {
+      state.loading = false;
+      state.error = (action.error as any).message;
+      state.cost = 0;
+    });
     // builder.addCase(unLockFund.pending, (state) => {
     //   state.loading = true;
     // });

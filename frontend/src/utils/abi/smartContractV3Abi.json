@@ -6,13 +6,7 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_tokenAddress",
-						"type": "address"
-					}
-				],
+				"inputs": [],
 				"stateMutability": "nonpayable",
 				"type": "constructor"
 			},
@@ -53,7 +47,7 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "amount_sent",
+						"name": "amount_withdrawn",
 						"type": "uint256"
 					},
 					{
@@ -64,6 +58,87 @@
 					}
 				],
 				"name": "treasury_withdrawal",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "videoID",
+						"type": "uint256"
+					}
+				],
+				"name": "vault_cancellation",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "videoID",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "returnAddress",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "balance",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "lockend",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "lockstart",
+						"type": "uint256"
+					}
+				],
+				"name": "vault_creation",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "videoID",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "new_balance",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "new_lockstart",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "new_lockend",
+						"type": "uint256"
+					}
+				],
+				"name": "vault_update",
 				"type": "event"
 			},
 			{
@@ -109,24 +184,9 @@
 						"internalType": "uint256",
 						"name": "videoID",
 						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "sub_owner",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_lockduration",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_amount",
-						"type": "uint256"
 					}
 				],
-				"name": "admin_lock_funds",
+				"name": "cancel_stream",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -166,11 +226,39 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "videoID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "int256",
+						"name": "_amount",
+						"type": "int256"
+					},
+					{
+						"internalType": "int256",
+						"name": "lock_duration_change",
+						"type": "int256"
+					},
+					{
+						"internalType": "int256",
+						"name": "lock_start_change",
+						"type": "int256"
+					}
+				],
+				"name": "edit_vault",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
 						"name": "vaultID",
 						"type": "uint256"
 					}
 				],
-				"name": "empty_vault",
+				"name": "empty_unlocked_vault",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -180,6 +268,11 @@
 					{
 						"internalType": "uint256",
 						"name": "videoID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "time_till_lockstart",
 						"type": "uint256"
 					},
 					{
@@ -227,24 +320,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "videoID",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_amount",
-						"type": "uint256"
-					}
-				],
-				"name": "returnLockedFunds",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -308,6 +383,40 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "vault",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "returnAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lockstart",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lockduration",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "balance",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
 						"name": "videoID",
 						"type": "uint256"
 					},
@@ -320,6 +429,19 @@
 				"name": "vaultWithdraw",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "view_blocktimestamp",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "blocktimestamp",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -373,7 +495,12 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "unlockTime",
+						"name": "_lockstart",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_lockend",
 						"type": "uint256"
 					},
 					{
@@ -446,11 +573,11 @@
 	},
 	"sources": {
 		"Work/ComplexLockingSubscribtions.sol": {
-			"keccak256": "0x66227d7075432007195934b829358ac63fb135492111b4d3e8baad4e67e61a33",
-			"license": "FIG",
+			"keccak256": "0xcabd5523444d06631364fbb0f7a0fe6589bc39957fa3d2120aebd48db4b01000",
+			"license": "unlicensed",
 			"urls": [
-				"bzz-raw://61b02b65edfa687a9cc2dc6ce7eb4d40c8a37e656a7b3f8f97cf54be431925cf",
-				"dweb:/ipfs/QmZk32EyeYMbhFyhGpvsiyb1yZn1vzZ3dfcrxmbAwY97dX"
+				"bzz-raw://84d18d5116b16904eaafae9979c3a28e9b95c63c3adf38a28dadb0c4a1ebef3b",
+				"dweb:/ipfs/QmRf9aqCndDMpm5FTA8TDqcnxnEkK9XGFzmwUdNuJC83Vv"
 			]
 		}
 	},

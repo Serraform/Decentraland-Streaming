@@ -105,11 +105,13 @@ const StreamInfo: React.FC<IStreamCreation> = ({
         });
       } else {
         const duration = differenceInMinutes(values.streamEndDate, Date.now());
+        const durationUntilStart = differenceInMinutes(values.streamStartDate, Date.now());
         if (values.streamType === "live-stream") {
           dispatch(
             lockFunds({
               addToast,
               duration: duration,
+              durationUntilStart:durationUntilStart,
               amountToBeLock: cost,
               vaultContractId: vaultContractId
             })

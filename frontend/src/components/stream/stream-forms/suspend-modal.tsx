@@ -19,9 +19,17 @@ type Props = {
   handleClose: Function;
 };
 
-const SuspendModal: React.FC<Props> = ({ isOpen, handleAction,handleClose }) => {
+const SuspendModal: React.FC<Props> = ({
+  isOpen,
+  handleAction,
+  handleClose,
+}) => {
   return (
-    <Modal isOpen={isOpen} style={customStyles}  onRequestClose={() => handleClose()}>
+    <Modal
+      isOpen={isOpen}
+      style={customStyles}
+      onRequestClose={() => handleClose()}
+    >
       <div className="items-start flex flex-col justify-start w-100 dark:bg-[#1a1d1e]">
         <div className="px-[5rem] py-[20px]">
           <h1 className="font-montserratbold text-black text-start b-[40px] dark:text-white">
@@ -33,9 +41,24 @@ dark:text-white"
           >
             Deleting your stream will unlock funds back to your funds
           </p>
-          <div  className="pt-[20px] flex flex-row justify-end">
-            <button onClick={() => handleClose()} className="btn-third" style={{color: "#C1C1C1"}}>Cancel</button>
-            <button onClick={() => handleAction()} className="btn-third" style={{paddingRight: "0"}}>Delete</button>
+          <div className="pt-[20px] flex flex-row justify-end">
+            <button
+              onClick={() => handleClose()}
+              className="btn-third"
+              style={{ color: "#C1C1C1" }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                handleAction();
+                handleClose();
+              }}
+              className="btn-third"
+              style={{ paddingRight: "0" }}
+            >
+              Delete
+            </button>
           </div>
         </div>
       </div>

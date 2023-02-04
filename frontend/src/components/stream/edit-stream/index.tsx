@@ -13,11 +13,15 @@ import {
   estimateCost,
   finishTransaction,
   lockFunds,
+  unLockAllFunds,
   unLockFunds,
 } from "store/slices/transaction.slice";
 import { fetchFunds } from "store/slices/account.slice";
 import FileCopyIcon from "assets/icons/FileCopy";
-import { deleteStreamFromTable, editStreamFromTable } from "store/slices/stream.slice";
+import {
+  deleteStreamFromTable,
+  editStreamFromTable,
+} from "store/slices/stream.slice";
 import {
   useEditStreamMutation,
   useFetchStreamDetailsQuery,
@@ -56,8 +60,10 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
     { pollingInterval: 6000 }
   );
 
-  const [deleteStream, { isLoading: isDeleteLoading, isSuccess: isDeleteSuccess }] =
-    useDeleteStreamMutation();
+  const [
+    deleteStream,
+    { isLoading: isDeleteLoading, isSuccess: isDeleteSuccess },
+  ] = useDeleteStreamMutation();
   const [editStream, { isLoading: isEditLoading, isSuccess: isEditSuccess }] =
     useEditStreamMutation();
 
@@ -68,10 +74,9 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
         appearance: "success",
         autoDismiss: true,
       });
-      
     }
-    if (isEditSuccess ) {
-      dispatch(editStreamFromTable(streamValues))
+    if (isEditSuccess) {
+      dispatch(editStreamFromTable(streamValues));
       addToast("Stream edited", {
         appearance: "success",
         autoDismiss: true,
@@ -87,12 +92,12 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
       deleteStream({ streamId: selectedStream.streamInfo.Id });
     }
     if (receipt && receipt.status === 1 && transactionType === "edit") {
-      editStream({
+      editStream({streamValues:{
         ...streamValues,
         cost: cost,
-      });
+      }});
     }
-  }, [streamValues,receipt, cost, transactionType]);
+  }, [streamValues, receipt, cost, transactionType]);
 
   const isLoading = isTransactionLoading || isDeleteLoading || isEditLoading;
 
@@ -102,6 +107,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   const handleSave = useCallback(
     (values: any) => {
       let costDifference = 0;
+      
       switch (
         checkDateRangeChange(
           values.streamStartDate,
@@ -119,8 +125,8 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
               addToast,
             })
           );
-         
-          setStreamValues({...values, cost: cost});
+
+          setStreamValues({ ...values, cost: cost });
           // The date range has been shortened
           break;
         case 1:
@@ -137,14 +143,15 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
               duration: newDuration,
             })
           );
-          setStreamValues({...values, cost: cost});
+          setStreamValues({ ...values, cost: cost });
           // the date range has been extended
           break;
         case -1:
           // the date range didn't change
-          editStream({
+          debugger;
+          editStream({streamValues:{
             ...values,
-          });
+          }});
           break;
       }
     },
@@ -162,9 +169,15 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
     setStreamValues(values);
   };
 
-  const handleDelete = () => {
-    // dispatch(unLockFunds({ vaultContractId: 1, amountToBeUnlock: 1, addToast }));
-  };
+  const handleDelete = useCallback(() => {
+    
+    dispatch(
+      unLockAllFunds({
+        vaultContractId: selectedStream.vaultContractId,
+        addToast,
+      })
+    );
+  }, [dispatch]);
 
   const renderStreamForm = () => {
     switch (selectedStream.streamType.toLowerCase()) {
