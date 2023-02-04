@@ -12,9 +12,8 @@ import type { AppDispatch } from "store/configStore";
 import {
   estimateCost,
   finishTransaction,
-  lockFunds,
   unLockAllFunds,
-  unLockFunds,
+  editVault,
 } from "store/slices/transaction.slice";
 import { fetchFunds } from "store/slices/account.slice";
 import FileCopyIcon from "assets/icons/FileCopy";
@@ -86,16 +85,24 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
     dispatch(finishTransaction());
     navigate("/");
   }, [isDeleteSuccess, isEditSuccess]);
+  const returnAsDate = (date: any) => {
+    if (typeof date === "string") {
+      return new Date(date);
+    }
+    return date;
+  };
 
   useEffect(() => {
     if (receipt && receipt.status === 1 && transactionType === "cancel") {
       deleteStream({ streamId: selectedStream.streamInfo.Id });
     }
     if (receipt && receipt.status === 1 && transactionType === "edit") {
-      editStream({streamValues:{
-        ...streamValues,
-        cost: cost,
-      }});
+      editStream({
+        streamValues: {
+          ...streamValues,
+          cost: ""+cost,
+        },
+      });
     }
   }, [streamValues, receipt, cost, transactionType]);
 
@@ -107,51 +114,64 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   const handleSave = useCallback(
     (values: any) => {
       let costDifference = 0;
-      
+      let durationUntilStart = 0;
+      let duration = 0;
       switch (
         checkDateRangeChange(
-          values.streamStartDate,
-          values.streamEndDate,
-          streamValues.streamStartDate,
-          streamValues.streamEndDate
+          returnAsDate(selectedStream.streamStartDate),
+          returnAsDate(selectedStream.streamEndDate),
+          returnAsDate(values.streamStartDate),
+          returnAsDate(values.streamEndDate),
         )
       ) {
         case 0:
+          
           costDifference = streamValues.cost - cost;
+          duration = differenceInMinutes(returnAsDate(values.streamEndDate), Date.now());
+          durationUntilStart = differenceInMinutes(
+            returnAsDate(values.streamStartDate),
+            Date.now()
+          );
           dispatch(
-            unLockFunds({
+            editVault({
               vaultContractId: streamValues.vaultContractId,
-              amountToBeUnlock: costDifference,
+              amountToBeUnlock: -1 * costDifference,
               addToast,
+              duration,
+              durationUntilStart,
             })
           );
 
-          setStreamValues({ ...values, cost: cost });
+          setStreamValues({ streamValues: { ...values, cost: cost } });
           // The date range has been shortened
           break;
         case 1:
           costDifference = cost - streamValues.cost;
-          const newDuration = differenceInMinutes(
-            values.streamEndDate,
+          duration = differenceInMinutes( returnAsDate(values.streamEndDate), Date.now());
+          durationUntilStart = differenceInMinutes(
+             returnAsDate(values.streamStartDate),
             Date.now()
           );
           dispatch(
-            lockFunds({
+            editVault({
               vaultContractId: streamValues.vaultContractId,
-              amountToBeLock: costDifference,
+              amountToBeUnlock: costDifference,
               addToast,
-              duration: newDuration,
+              duration,
+              durationUntilStart,
             })
           );
-          setStreamValues({ ...values, cost: cost });
+          setStreamValues({ streamValues: { ...values, cost: cost } });
           // the date range has been extended
           break;
         case -1:
+          
           // the date range didn't change
-          debugger;
-          editStream({streamValues:{
-            ...values,
-          }});
+          editStream({
+            streamValues: {
+              ...values,
+            },
+          });
           break;
       }
     },
@@ -170,7 +190,6 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   };
 
   const handleDelete = useCallback(() => {
-    
     dispatch(
       unLockAllFunds({
         vaultContractId: selectedStream.vaultContractId,

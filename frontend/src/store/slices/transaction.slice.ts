@@ -27,8 +27,8 @@ export const estimateCost = createAsyncThunk(
   async (streamValues: any) => {
     if (streamValues.streamID) {
       const response = await fetchCostService(
-        streamValues.streamStartDate,
-        streamValues.streamEndDate
+        new Date(streamValues.streamStartDate).toISOString(),
+        new Date(streamValues.streamEndDate).toISOString()
       );
       return {
         cost: parseInt(response.data.cost) as unknown as number,
@@ -49,7 +49,13 @@ export const estimateCost = createAsyncThunk(
 export const lockFunds = createAsyncThunk(
   "transaction/lockFunds",
   async (props: any) => {
-    const { addToast, duration, amountToBeLock, vaultContractId, durationUntilStart } = props;
+    const {
+      addToast,
+      duration,
+      amountToBeLock,
+      vaultContractId,
+      durationUntilStart,
+    } = props;
     try {
       const { ethereum } = window as any;
       if (!ethereum) {
@@ -98,7 +104,7 @@ export const unLockAllFunds = createAsyncThunk(
   async (props: any) => {
     const { vaultContractId, addToast } = props;
     try {
-       const { ethereum } = window as any;
+      const { ethereum } = window as any;
       if (!ethereum) {
         return;
       }
@@ -110,10 +116,8 @@ export const unLockAllFunds = createAsyncThunk(
         smartcontractABI,
         signer
       );
-      
-      const tx = await contract.cancel_stream(
-        vaultContractId,
-      );
+
+      const tx = await contract.cancel_stream(vaultContractId);
       addToast("Waiting for transaction approval", {
         autoDismiss: true,
       });
@@ -128,18 +132,25 @@ export const unLockAllFunds = createAsyncThunk(
         throw new Error();
       }
     } catch (e) {
-         addToast("We couldn't unlocked your funds", {
-           appearance: "error",
-           autoDismiss: true,
-         });
-         throw new Error();
-       }
-  })
+      addToast("We couldn't unlocked your funds", {
+        appearance: "error",
+        autoDismiss: true,
+      });
+      throw new Error();
+    }
+  }
+);
 
-export const unLockFunds = createAsyncThunk(
-  "transaction/unlockFunds",
+export const editVault = createAsyncThunk(
+  "transaction/editVault",
   async (props: any) => {
-    const { vaultContractId, amountToBeUnlock, addToast } = props;
+    const {
+      vaultContractId,
+      amountToBeUnlock,
+      addToast,
+      durationUntilStart,
+      duration,
+    } = props;
     try {
       const { ethereum } = window as any;
       if (!ethereum) {
@@ -153,17 +164,21 @@ export const unLockFunds = createAsyncThunk(
         smartcontractABI,
         signer
       );
-      const unLockAmount = ethers.utils.parseUnits("" + amountToBeUnlock, "6");
-      const tx = await contract.returnLockedFunds(
+      
+      const amountToEdit = ethers.utils.parseUnits("" + amountToBeUnlock, "6");
+      const tx = await contract.edit_vault(
         vaultContractId,
-        unLockAmount
+        amountToEdit,
+        duration,
+        durationUntilStart
       );
+
       addToast("Waiting for transaction approval", {
         autoDismiss: true,
       });
       const receipt = await tx.wait();
       if (receipt.status === 1) {
-        addToast("Funds unlocked", {
+        addToast("Vault Updated", {
           appearance: "success",
           autoDismiss: true,
         });
@@ -172,7 +187,7 @@ export const unLockFunds = createAsyncThunk(
         throw new Error();
       }
     } catch (e) {
-      addToast("We couldn't unlocked your funds", {
+      addToast("We couldn't update your funds", {
         appearance: "error",
         autoDismiss: true,
       });
@@ -223,19 +238,19 @@ const transactionSlice = createSlice({
       state.error = (action.error as any).message;
       state.cost = 0;
     });
-    // builder.addCase(unLockFund.pending, (state) => {
-    //   state.loading = true;
-    // });
-    // builder.addCase(unLockFund.fulfilled, (state, action) => {
-    //   state.loading = false;
-    //   state.receipt = action.payload;
-    //   state.transactionType = "edit";
-    // });
-    // builder.addCase(unLockFund.rejected, (state, action) => {
-    //   state.loading = false;
-    //   state.error = (action.error as any).message;
-    //   state.cost = 0;
-    // });
+    builder.addCase(editVault.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(editVault.fulfilled, (state, action) => {
+      state.loading = false;
+      state.receipt = action.payload;
+      state.transactionType = "edit";
+    });
+    builder.addCase(editVault.rejected, (state, action) => {
+      state.loading = false;
+      state.error = (action.error as any).message;
+      state.cost = 0;
+    });
     builder.addCase(estimateCost.pending, (state) => {
       state.loading = true;
     });
