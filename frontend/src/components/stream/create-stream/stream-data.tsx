@@ -46,7 +46,8 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     cost,
     loading: isTransactionLoading,
     receipt,
-    vaultContractId
+    vaultContractId,
+    transactionType
   } = useSelector((state: RootState) => state.transactionData);
   const { walletID } = useSelector((state: RootState) => state.accountData);
   const [createLiveStream, { isLoading, isSuccess }] =
@@ -89,10 +90,10 @@ const StreamInfo: React.FC<IStreamCreation> = ({
   }, [streamValues, isSuccess]);
 
   useEffect(() => {
-    if (receipt && receipt.status === 1) {
+    if (receipt && receipt.status === 1 && transactionType === "lock") {
       createLiveStream({ walletID: walletID, streamValues: {...streamValues, cost, vaultContractId} });
     }
-  }, [receipt, cost]);
+  }, [receipt, cost, transactionType]);
 
   const handleSave = useCallback(
     (values: any) => {
@@ -131,7 +132,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
           <StreamVOD
             handleSave={handleSave}
             selectedStream={selectedStream as IStreamVOD}
-            isNewStream={true}
+            formMode={"create"}
             handleEstimateCost={handleEstimateCost}
             isLoading={isLoading}
             handleDelete={() => null}
@@ -143,7 +144,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
             isLoading={isLoading || isTransactionLoading}
             handleSave={handleSave}
             selectedStream={selectedStream as ILiveStream}
-            isNewStream={true}
+            formMode={"create"}
             handleEstimateCost={handleEstimateCost}
             cost={cost}
             handleDelete={() => null}

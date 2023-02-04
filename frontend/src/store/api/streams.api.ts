@@ -40,6 +40,23 @@ export const streamsApi = createApi({
         };
       },
     }),
+   editStream: builder.mutation<any, any>({
+      query: ({ streamValues }) => {
+        const { name, attendees, streamStartDate, streamEndDate, cost, streamID } = streamValues;
+        return {
+          url: `api/Stream/UpdateStream`,
+          method: "PATCH",
+          data: {
+            StreamID: streamID,
+            Name: name,
+            Cost: cost,
+            StreamStartDate: streamStartDate,
+            StreamEndDate: streamEndDate,
+            Attendees: attendees,
+          },
+        };
+      },
+    }),
     suspendLiveStream: builder.mutation<any, any>({
       query: ({ streamId, walletID }) => ({
         url: `api/Stream/Suspend/${streamId}/${walletID}`,
@@ -68,4 +85,5 @@ export const {
   useUnSuspendLiveStreamMutation,
   useDeleteStreamMutation,
   useFetchStreamDetailsQuery,
+  useEditStreamMutation
 } = streamsApi;

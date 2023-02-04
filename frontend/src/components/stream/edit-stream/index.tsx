@@ -17,8 +17,9 @@ import {
 } from "store/slices/transaction.slice";
 import { fetchFunds } from "store/slices/account.slice";
 import FileCopyIcon from "assets/icons/FileCopy";
-import { editStream, deleteStreamFromTable } from "store/slices/stream.slice";
+import { deleteStreamFromTable, editStreamFromTable } from "store/slices/stream.slice";
 import {
+  useEditStreamMutation,
   useFetchStreamDetailsQuery,
   useDeleteStreamMutation,
 } from "store/api/streams.api";
@@ -26,7 +27,7 @@ import { useToasts } from "react-toast-notifications";
 import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
 import { useNavigate } from "react-router-dom";
-import {differenceInMinutes} from "date-fns"
+import { differenceInMinutes } from "date-fns";
 type Props = {
   selectedStream: IStreamVOD | ILiveStream;
 };
@@ -41,7 +42,12 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
     }
   );
 
-  const { cost } = useSelector((state: RootState) => state.transactionData);
+  const {
+    cost,
+    receipt,
+    loading: isTransactionLoading,
+    transactionType,
+  } = useSelector((state: RootState) => state.transactionData);
   const { walletID } = useSelector((state: RootState) => state.accountData);
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
@@ -50,7 +56,46 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
     { pollingInterval: 6000 }
   );
 
-  const [deleteStream, { isLoading }] = useDeleteStreamMutation();
+  const [deleteStream, { isLoading: isDeleteLoading, isSuccess: isDeleteSuccess }] =
+    useDeleteStreamMutation();
+  const [editStream, { isLoading: isEditLoading, isSuccess: isEditSuccess }] =
+    useEditStreamMutation();
+
+  useEffect(() => {
+    if (isDeleteSuccess) {
+      dispatch(deleteStreamFromTable(selectedStream.streamInfo.Id));
+      addToast("Stream deleted", {
+        appearance: "success",
+        autoDismiss: true,
+      });
+      
+    }
+    if (isEditSuccess ) {
+      dispatch(editStreamFromTable(streamValues))
+      addToast("Stream edited", {
+        appearance: "success",
+        autoDismiss: true,
+      });
+    }
+    dispatch(fetchFunds(walletID));
+    dispatch(finishTransaction());
+    navigate("/");
+  }, [isDeleteSuccess, isEditSuccess]);
+
+  useEffect(() => {
+    if (receipt && receipt.status === 1 && transactionType === "cancel") {
+      deleteStream({ streamId: selectedStream.streamInfo.Id });
+    }
+    if (receipt && receipt.status === 1 && transactionType === "edit") {
+      editStream({
+        ...streamValues,
+        cost: cost,
+      });
+    }
+  }, [streamValues,receipt, cost, transactionType]);
+
+  const isLoading = isTransactionLoading || isDeleteLoading || isEditLoading;
+
   const navigate = useNavigate();
   const { addToast } = useToasts();
 
@@ -66,32 +111,45 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
         )
       ) {
         case 0:
-           costDifference = streamValues.cost - cost;
-           dispatch(unLockFunds({ vaultContractId: streamValues.vaultContractId, amountToBeUnlock: costDifference, addToast }));
+          costDifference = streamValues.cost - cost;
+          dispatch(
+            unLockFunds({
+              vaultContractId: streamValues.vaultContractId,
+              amountToBeUnlock: costDifference,
+              addToast,
+            })
+          );
+         
+          setStreamValues({...values, cost: cost});
           // The date range has been shortened
           break;
         case 1:
-          costDifference =  cost - streamValues.cost;
-          const newDuration = differenceInMinutes(values.streamEndDate, Date.now());
-          dispatch(lockFunds({ vaultContractId: streamValues.vaultContractId, amountToBeLock: costDifference, addToast, duration: newDuration }));
+          costDifference = cost - streamValues.cost;
+          const newDuration = differenceInMinutes(
+            values.streamEndDate,
+            Date.now()
+          );
+          dispatch(
+            lockFunds({
+              vaultContractId: streamValues.vaultContractId,
+              amountToBeLock: costDifference,
+              addToast,
+              duration: newDuration,
+            })
+          );
+          setStreamValues({...values, cost: cost});
           // the date range has been extended
           break;
         case -1:
           // the date range didn't change
+          editStream({
+            ...values,
+          });
           break;
       }
     },
     [cost]
   );
-
-  // const handleSave = useCallback((values: any) => {
-  //   dispatch(editStream({ ...values }));
-  //   addToast("Stream edited", {
-  //     appearance: "success",
-  //     autoDismiss: true,
-  //   });
-  //   dispatch(finishTransaction());
-  // }, []);
 
   useEffect(() => {
     if (selectedStream.name === "") {
@@ -106,14 +164,6 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
 
   const handleDelete = () => {
     // dispatch(unLockFunds({ vaultContractId: 1, amountToBeUnlock: 1, addToast }));
-    deleteStream({ streamId: selectedStream.streamInfo.Id });
-    dispatch(deleteStreamFromTable(selectedStream.streamInfo.Id))
-    addToast("Stream deleted", {
-      appearance: "success",
-      autoDismiss: true,
-    });
-    dispatch(fetchFunds(walletID));
-    navigate("/");
   };
 
   const renderStreamForm = () => {
@@ -123,7 +173,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
           <StreamVOD
             handleSave={handleSave}
             selectedStream={selectedStream as IStreamVOD}
-            isNewStream={false}
+            formMode={"edit"}
             handleEstimateCost={handleEstimateCost}
             isLoading={isLoading}
             handleDelete={handleDelete}
@@ -143,7 +193,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
                   : (selectedStream?.streamInfo).IsActive,
               },
             }}
-            isNewStream={false}
+            formMode={"edit"}
             handleEstimateCost={handleEstimateCost}
             isLoading={isLoading}
             cost={cost}

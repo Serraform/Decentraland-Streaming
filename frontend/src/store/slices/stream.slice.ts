@@ -100,7 +100,7 @@ const streamSlice = createSlice({
         })),
       };
     },
-    editStream(state: any, payload) {
+    editStreamFromTable(state: any, payload) {
       const streamToAdd = { ...payload.payload };
       let newData = state.streams.map((item: any) => Object.assign({}, item));
       newData.splice(payload.payload.index, 1);
@@ -116,7 +116,7 @@ const streamSlice = createSlice({
 export const {
   selectStream,
   uploadStream,
-  editStream,
+  editStreamFromTable,
   updateStreams,
   deleteStreamFromTable,
   clearSelectStream,

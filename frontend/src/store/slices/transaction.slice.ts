@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
-import { fetchCostService } from 'store/services/transaction.service';
+import { fetchCostService } from "store/services/transaction.service";
 import smartcontractV2ABI from "utils/abi/smartcontractV2ABI.json";
 const smartcontractABI = smartcontractV2ABI.output.abi;
 const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
@@ -9,7 +9,8 @@ type InitialState = {
   cost: number;
   error: string;
   receipt: any;
-  vaultContractId: number
+  vaultContractId: number;
+  transactionType: "lock" | "cancel" | "edit" | "";
 };
 
 const initialState: InitialState = {
@@ -17,14 +18,31 @@ const initialState: InitialState = {
   loading: false,
   error: "",
   receipt: null,
-  vaultContractId: 0
+  transactionType: "",
+  vaultContractId: 0,
 };
 
 export const estimateCost = createAsyncThunk(
   "transaction/estimateCost",
   async (streamValues: any) => {
-    const response = await fetchCostService(streamValues.streamStartDate.toISOString(), streamValues.streamEndDate.toISOString());
-    return { cost: parseInt(response.data.cost) as unknown  as number, vaultContractId: parseInt(response.data.vaultContractId)};
+    if (streamValues.streamID) {
+      const response = await fetchCostService(
+        streamValues.streamStartDate,
+        streamValues.streamEndDate
+      );
+      return {
+        cost: parseInt(response.data.cost) as unknown as number,
+        vaultContractId: parseInt(streamValues.vaultContractId),
+      };
+    }
+    const response = await fetchCostService(
+      streamValues.streamStartDate.toISOString(),
+      streamValues.streamEndDate.toISOString()
+    );
+    return {
+      cost: parseInt(response.data.cost) as unknown as number,
+      vaultContractId: parseInt(response.data.vaultContractId),
+    };
   }
 );
 
@@ -45,8 +63,12 @@ export const lockFunds = createAsyncThunk(
         smartcontractABI,
         signer
       );
-      const deposit = ethers.utils.parseUnits(""+amountToBeLock, "6");
-      const tx = await contract.lock_funds(""+vaultContractId, duration, deposit);
+      const deposit = ethers.utils.parseUnits("" + amountToBeLock, "6");
+      const tx = await contract.lock_funds(
+        "" + vaultContractId,
+        duration,
+        deposit
+      );
       addToast("Waiting for transaction approval", {
         autoDismiss: true,
       });
@@ -87,8 +109,11 @@ export const unLockFunds = createAsyncThunk(
         smartcontractABI,
         signer
       );
-      const unLockAmount = ethers.utils.parseUnits(""+amountToBeUnlock, "6");
-      const tx = await contract.returnLockedFunds(vaultContractId, unLockAmount);
+      const unLockAmount = ethers.utils.parseUnits("" + amountToBeUnlock, "6");
+      const tx = await contract.returnLockedFunds(
+        vaultContractId,
+        unLockAmount
+      );
       addToast("Waiting for transaction approval", {
         autoDismiss: true,
       });
@@ -130,12 +155,39 @@ const transactionSlice = createSlice({
     builder.addCase(lockFunds.fulfilled, (state, action) => {
       state.loading = false;
       state.receipt = action.payload;
+      state.transactionType = "lock";
     });
     builder.addCase(lockFunds.rejected, (state, action) => {
       state.loading = false;
       state.error = (action.error as any).message;
       state.cost = 0;
     });
+    // builder.addCase(unLockAllFunds.pending, (state) => {
+    //   state.loading = true;
+    // });
+    // builder.addCase(unLockAllFunds.fulfilled, (state, action) => {
+    //   state.loading = false;
+    //   state.receipt = action.payload;
+    //   state.transactionType = "cancel";
+    // });
+    // builder.addCase(unLockAllFunds.rejected, (state, action) => {
+    //   state.loading = false;
+    //   state.error = (action.error as any).message;
+    //   state.cost = 0;
+    // });
+    // builder.addCase(unLockFund.pending, (state) => {
+    //   state.loading = true;
+    // });
+    // builder.addCase(unLockFund.fulfilled, (state, action) => {
+    //   state.loading = false;
+    //   state.receipt = action.payload;
+    //   state.transactionType = "edit";
+    // });
+    // builder.addCase(unLockFund.rejected, (state, action) => {
+    //   state.loading = false;
+    //   state.error = (action.error as any).message;
+    //   state.cost = 0;
+    // });
     builder.addCase(estimateCost.pending, (state) => {
       state.loading = true;
     });
