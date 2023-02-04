@@ -20,7 +20,7 @@ import type { AppDispatch } from "store/configStore";
 import { useToasts } from "react-toast-notifications";
 import { RootState } from "store/configStore";
 import { useCreateLiveStreamMutation } from "store/api/streams.api";
-import { differenceInHours } from "date-fns";
+import { differenceInMinutes } from "date-fns";
 
 import { useNavigate } from "react-router-dom";
 const StreamInfo: React.FC<IStreamCreation> = ({
@@ -46,6 +46,8 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     cost,
     loading: isTransactionLoading,
     receipt,
+    vaultContractId,
+    transactionType
   } = useSelector((state: RootState) => state.transactionData);
   const { walletID } = useSelector((state: RootState) => state.accountData);
   const [createLiveStream, { isLoading, isSuccess }] =
@@ -60,6 +62,8 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     if (isSuccess) {
       const newStream = {
         ...streamValues,
+        cost: ""+cost,
+        vaultContractId: ""+vaultContractId,
         streamInfo: JSON.stringify({
           Name: streamValues?.name,
           CreatedAt: 0,
@@ -79,20 +83,20 @@ const StreamInfo: React.FC<IStreamCreation> = ({
         appearance: "success",
         autoDismiss: true,
       });
+      dispatch(finishTransaction());
       dispatch(fetchFunds(walletID));
       navigate("/");
     }
   }, [streamValues, isSuccess]);
 
   useEffect(() => {
-    if (receipt && receipt.status === 1) {
-      createLiveStream({ walletID: walletID, streamValues: streamValues });
+    if (receipt && receipt.status === 1 && transactionType === "lock") {
+      createLiveStream({ walletID: walletID, streamValues: {...streamValues, cost, vaultContractId} });
     }
-  }, [receipt]);
+  }, [receipt, cost, transactionType]);
 
   const handleSave = useCallback(
     (values: any) => {
-      debugger;
       if (!deepEqual(values, streamValues)) {
         dispatch(finishTransaction());
         addToast("You have updated your inputs, please recalculate cost", {
@@ -100,13 +104,16 @@ const StreamInfo: React.FC<IStreamCreation> = ({
           autoDismiss: true,
         });
       } else {
-        const duration = differenceInHours(values.streamEndDate, Date.now());
+        const duration = differenceInMinutes(values.streamEndDate, Date.now());
+        const durationUntilStart = differenceInMinutes(values.streamStartDate, Date.now());
         if (values.streamType === "live-stream") {
           dispatch(
             lockFunds({
               addToast,
               duration: duration,
+              durationUntilStart:durationUntilStart,
               amountToBeLock: cost,
+              vaultContractId: vaultContractId
             })
           );
         }
@@ -127,9 +134,10 @@ const StreamInfo: React.FC<IStreamCreation> = ({
           <StreamVOD
             handleSave={handleSave}
             selectedStream={selectedStream as IStreamVOD}
-            isNewStream={true}
+            formMode={"create"}
             handleEstimateCost={handleEstimateCost}
             isLoading={isLoading}
+            handleDelete={() => null}
           />
         );
       case "live-stream":
@@ -138,9 +146,10 @@ const StreamInfo: React.FC<IStreamCreation> = ({
             isLoading={isLoading || isTransactionLoading}
             handleSave={handleSave}
             selectedStream={selectedStream as ILiveStream}
-            isNewStream={true}
+            formMode={"create"}
             handleEstimateCost={handleEstimateCost}
             cost={cost}
+            handleDelete={() => null}
           />
         );
       default:

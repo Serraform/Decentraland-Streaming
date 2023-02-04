@@ -20,7 +20,7 @@ export const streamsApi = createApi({
     }),
     createLiveStream: builder.mutation<any, any>({
       query: ({ walletID, streamValues }) => {
-        const { name, attendees, streamStartDate, streamEndDate, streamType } =
+        const { name, attendees, streamStartDate, streamEndDate, streamType, cost, vaultContractId } =
           streamValues;
         return {
           url: `api/Stream/CreateStream`,
@@ -34,6 +34,26 @@ export const streamsApi = createApi({
             streamStartDate: streamStartDate.toISOString(),
             streamEndDate: streamEndDate.toISOString(),
             attendees: attendees,
+            cost: ""+cost,
+            vaultContractId: ""+vaultContractId
+          },
+        };
+      },
+    }),
+   editStream: builder.mutation<any, any>({
+      query: ({ streamValues }) => {
+        
+        const { name, attendees, streamStartDate, streamEndDate, cost, streamID } = streamValues;
+        return {
+          url: `api/Stream/UpdateStream`,
+          method: "PATCH",
+          data: {
+            StreamID: streamID,
+            Name: name,
+            Cost: cost,
+            StreamStartDate: streamStartDate,
+            StreamEndDate: streamEndDate,
+            Attendees: attendees,
           },
         };
       },
@@ -50,6 +70,12 @@ export const streamsApi = createApi({
         method: "put",
       }),
     }),
+    deleteStream: builder.mutation<any, any>({
+      query: ({ streamId }) => ({
+        url: `api/Stream/DeleteStreamByStreamId/${streamId}`,
+        method: "delete",
+      }),
+    }),
   }),
 });
 
@@ -58,5 +84,7 @@ export const {
   useCreateLiveStreamMutation,
   useSuspendLiveStreamMutation,
   useUnSuspendLiveStreamMutation,
+  useDeleteStreamMutation,
   useFetchStreamDetailsQuery,
+  useEditStreamMutation
 } = streamsApi;

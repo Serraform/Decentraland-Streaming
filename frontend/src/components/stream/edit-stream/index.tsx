@@ -1,6 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react";
-import { IStreamVOD, ILiveStream } from "components/stream/definitions";
+import { useEffect, useCallback, useReducer } from "react";
+import {
+  IStreamVOD,
+  ILiveStream,
+  checkDateRangeChange,
+} from "components/stream/definitions";
 import StreamVOD from "components/stream/stream-forms/VOD";
 import LiveStream from "components/stream/stream-forms/live-stream";
 import { useDispatch } from "react-redux";
@@ -8,49 +12,191 @@ import type { AppDispatch } from "store/configStore";
 import {
   estimateCost,
   finishTransaction,
+  unLockAllFunds,
+  editVault,
 } from "store/slices/transaction.slice";
+import { fetchFunds } from "store/slices/account.slice";
 import FileCopyIcon from "assets/icons/FileCopy";
-import { editStream } from "store/slices/stream.slice";
-import { useFetchStreamDetailsQuery } from "store/api/streams.api";
+import {
+  deleteStreamFromTable,
+  editStreamFromTable,
+} from "store/slices/stream.slice";
+import {
+  useEditStreamMutation,
+  useFetchStreamDetailsQuery,
+  useDeleteStreamMutation,
+} from "store/api/streams.api";
 import { useToasts } from "react-toast-notifications";
 import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
-import {useNavigate}from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
+import { differenceInMinutes } from "date-fns";
 type Props = {
   selectedStream: IStreamVOD | ILiveStream;
 };
-const EditStream: React.FC<Props> = ({
-  selectedStream,
-}) => {
-  const { cost } = useSelector((state: RootState) => state.transactionData);
+const EditStream: React.FC<Props> = ({ selectedStream }) => {
+  const [streamValues, setStreamValues] = useReducer(
+    (prev: any, next: any) => {
+      const newEvent = { ...prev, ...next };
+      return newEvent;
+    },
+    {
+      ...selectedStream,
+    }
+  );
+
+  const {
+    cost,
+    receipt,
+    loading: isTransactionLoading,
+    transactionType,
+  } = useSelector((state: RootState) => state.transactionData);
+  const { walletID } = useSelector((state: RootState) => state.accountData);
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
-  const {
-    data,
-    isSuccess,
-  } = useFetchStreamDetailsQuery(selectedStream.streamInfo.Id, {  pollingInterval: 6000 });
-  const navigate = useNavigate();
-  const { addToast } = useToasts();
-  
-  const handleSave = (values: any) => {
-    dispatch(editStream({ ...values }));
-    addToast("Stream edited", {
-      appearance: "success",
-      autoDismiss: true,
-    });
+  const { data, isSuccess } = useFetchStreamDetailsQuery(
+    selectedStream.streamInfo.Id,
+    { pollingInterval: 6000 }
+  );
+
+  const [
+    deleteStream,
+    { isLoading: isDeleteLoading, isSuccess: isDeleteSuccess },
+  ] = useDeleteStreamMutation();
+  const [editStream, { isLoading: isEditLoading, isSuccess: isEditSuccess }] =
+    useEditStreamMutation();
+
+  useEffect(() => {
+    if (isDeleteSuccess) {
+      dispatch(deleteStreamFromTable(selectedStream.streamInfo.Id));
+      addToast("Stream deleted", {
+        appearance: "success",
+        autoDismiss: true,
+      });
+    }
+    if (isEditSuccess) {
+      dispatch(editStreamFromTable(streamValues));
+      addToast("Stream edited", {
+        appearance: "success",
+        autoDismiss: true,
+      });
+    }
+    dispatch(fetchFunds(walletID));
     dispatch(finishTransaction());
+    navigate("/");
+  }, [isDeleteSuccess, isEditSuccess]);
+  const returnAsDate = (date: any) => {
+    if (typeof date === "string") {
+      return new Date(date);
+    }
+    return date;
   };
 
   useEffect(() => {
-    if(selectedStream.name===""){
+    if (receipt && receipt.status === 1 && transactionType === "cancel") {
+      deleteStream({ streamId: selectedStream.streamInfo.Id });
+    }
+    if (receipt && receipt.status === 1 && transactionType === "edit") {
+      editStream({
+        streamValues: {
+          ...streamValues,
+          cost: ""+cost,
+        },
+      });
+    }
+  }, [streamValues, receipt, cost, transactionType]);
+
+  const isLoading = isTransactionLoading || isDeleteLoading || isEditLoading;
+
+  const navigate = useNavigate();
+  const { addToast } = useToasts();
+
+  const handleSave = useCallback(
+    (values: any) => {
+      let costDifference = 0;
+      let durationUntilStart = 0;
+      let duration = 0;
+      switch (
+        checkDateRangeChange(
+          returnAsDate(selectedStream.streamStartDate),
+          returnAsDate(selectedStream.streamEndDate),
+          returnAsDate(values.streamStartDate),
+          returnAsDate(values.streamEndDate),
+        )
+      ) {
+        case 0:
+          
+          costDifference = streamValues.cost - cost;
+          duration = differenceInMinutes(returnAsDate(values.streamEndDate), Date.now());
+          durationUntilStart = differenceInMinutes(
+            returnAsDate(values.streamStartDate),
+            Date.now()
+          );
+          dispatch(
+            editVault({
+              vaultContractId: streamValues.vaultContractId,
+              amountToBeUnlock: -1 * costDifference,
+              addToast,
+              duration,
+              durationUntilStart,
+            })
+          );
+
+          setStreamValues({ streamValues: { ...values, cost: cost } });
+          // The date range has been shortened
+          break;
+        case 1:
+          costDifference = cost - streamValues.cost;
+          duration = differenceInMinutes( returnAsDate(values.streamEndDate), Date.now());
+          durationUntilStart = differenceInMinutes(
+             returnAsDate(values.streamStartDate),
+            Date.now()
+          );
+          dispatch(
+            editVault({
+              vaultContractId: streamValues.vaultContractId,
+              amountToBeUnlock: costDifference,
+              addToast,
+              duration,
+              durationUntilStart,
+            })
+          );
+          setStreamValues({ streamValues: { ...values, cost: cost } });
+          // the date range has been extended
+          break;
+        case -1:
+          
+          // the date range didn't change
+          editStream({
+            streamValues: {
+              ...values,
+            },
+          });
+          break;
+      }
+    },
+    [cost]
+  );
+
+  useEffect(() => {
+    if (selectedStream.name === "") {
       navigate("/");
     }
-  }, [selectedStream])
+  }, [selectedStream]);
 
   const handleEstimateCost = (values: any) => {
     dispatch(estimateCost(values));
+    setStreamValues(values);
   };
+
+  const handleDelete = useCallback(() => {
+    dispatch(
+      unLockAllFunds({
+        vaultContractId: selectedStream.vaultContractId,
+        addToast,
+      })
+    );
+  }, [dispatch]);
 
   const renderStreamForm = () => {
     switch (selectedStream.streamType.toLowerCase()) {
@@ -59,9 +205,10 @@ const EditStream: React.FC<Props> = ({
           <StreamVOD
             handleSave={handleSave}
             selectedStream={selectedStream as IStreamVOD}
-            isNewStream={false}
+            formMode={"edit"}
             handleEstimateCost={handleEstimateCost}
-            isLoading={false}
+            isLoading={isLoading}
+            handleDelete={handleDelete}
           />
         );
       case "live-stream":
@@ -73,13 +220,16 @@ const EditStream: React.FC<Props> = ({
               streamInfo: {
                 ...selectedStream?.streamInfo,
                 playbackUrl: `https://livepeercdn.studio/hls/${selectedStream?.streamInfo.PlayBackId}/index.m3u8`,
-                IsActive: isSuccess ? JSON.parse((data as any).streamInfo).IsActive :  (selectedStream?.streamInfo).IsActive,
+                IsActive: isSuccess
+                  ? JSON.parse((data as any).streamInfo).IsActive
+                  : (selectedStream?.streamInfo).IsActive,
               },
             }}
-            isNewStream={false}
+            formMode={"edit"}
             handleEstimateCost={handleEstimateCost}
-            isLoading={false}
+            isLoading={isLoading}
             cost={cost}
+            handleDelete={handleDelete}
           />
         );
       default:
@@ -89,7 +239,9 @@ const EditStream: React.FC<Props> = ({
   const renderDetail = (title: string, hasCopy: boolean, value: any) => {
     return (
       <div className="my-2 flex flex-row">
-        <h5 className="font-montserratbold mr-2 text-[14px] dark:text-white">{title}</h5>
+        <h5 className="font-montserratbold mr-2 text-[14px] dark:text-white">
+          {title}
+        </h5>
         {hasCopy ? (
           <span
             className="font-montserratlight text-[13px] flex flex-row items-center hover:bg-[#f7f9fa] hover:cursor-pointer dark:text-white dark:hover:bg-[#1a1d1e]"
@@ -104,7 +256,9 @@ const EditStream: React.FC<Props> = ({
             </div>
           </span>
         ) : (
-          <span className="font-montserratlight text-[13px] dark:text-white">{value} </span>
+          <span className="font-montserratlight text-[13px] dark:text-white">
+            {value}{" "}
+          </span>
         )}
       </div>
     );
@@ -147,7 +301,9 @@ const EditStream: React.FC<Props> = ({
             {renderDetail(
               "Status",
               false,
-              isSuccess && JSON.parse((data as any).streamInfo).IsActive  ? "Live" : "Idle"
+              isSuccess && JSON.parse((data as any).streamInfo).IsActive
+                ? "Live"
+                : "Idle"
             )}
           </div>
         </div>

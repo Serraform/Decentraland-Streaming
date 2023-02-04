@@ -14,10 +14,12 @@ const initialState: InitialState = {
     name: "",
     status: false,
     attendees: "",
-    streamType:"",
+    streamType: "",
     video: "",
     videoSize: "",
     videoLenght: "",
+    cost: "",
+    vaultContractId: "",
     streamStartDate: undefined,
     streamEndDate: undefined,
     streamInfo: {
@@ -66,12 +68,22 @@ const streamSlice = createSlice({
         selectedStream: initialState.selectedStream,
       };
     },
-    
+
     uploadStream(state: any, payload) {
       const streamToAdd = { ...payload.payload };
-      
+
       let newData = state.streams.map((item: any) => Object.assign({}, item));
       newData.push(streamToAdd);
+      return {
+        ...state,
+        streams: newData,
+      };
+    },
+    deleteStreamFromTable(state: any, payload) {
+      const streamToDelete = { ...payload.payload };
+
+      let newData = state.streams.filter((item: any) => item.Id === streamToDelete);
+      
       return {
         ...state,
         streams: newData,
@@ -82,10 +94,13 @@ const streamSlice = createSlice({
 
       return {
         ...state,
-        streams: streamsToAdd.map((stream: any) => ({ ...stream, streamInfo: JSON.parse(stream.streamInfo)})),
+        streams: streamsToAdd.map((stream: any) => ({
+          ...stream,
+          streamInfo: JSON.parse(stream.streamInfo),
+        })),
       };
     },
-    editStream(state: any, payload) {
+    editStreamFromTable(state: any, payload) {
       const streamToAdd = { ...payload.payload };
       let newData = state.streams.map((item: any) => Object.assign({}, item));
       newData.splice(payload.payload.index, 1);
@@ -101,9 +116,10 @@ const streamSlice = createSlice({
 export const {
   selectStream,
   uploadStream,
-  editStream,
+  editStreamFromTable,
   updateStreams,
-  clearSelectStream
+  deleteStreamFromTable,
+  clearSelectStream,
 } = streamSlice.actions;
 
 export default streamSlice.reducer;

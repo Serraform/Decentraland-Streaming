@@ -9,18 +9,22 @@ import { RootState } from "store/configStore";
 type Props = {
   handleSave: Function;
   selectedStream: IStreamVOD;
-  isNewStream: boolean;
+  formMode: string;
   handleEstimateCost: Function;
   isLoading: boolean;
+  handleDelete: Function;
+
 };
 
 const StreamVOD: React.FC<Props> = ({
   handleSave,
   selectedStream,
-  isNewStream,
+  formMode,
   handleEstimateCost,
   isLoading,
+  handleDelete
 }) => {
+  const isCreateMode = formMode === "create"
   const [streamInfoVOD] = useState<IStreamVOD>({
     ...selectedStream,
   });
@@ -48,10 +52,11 @@ const StreamVOD: React.FC<Props> = ({
       validationSchema={validationSchema}
       onSubmit={(values) => handleOnSubmit(values)}
     >
-      {({ handleChange, values, errors }) => (
+      {({ handleChange, values, errors
+      ,initialValues }) => (
         <>
           <Form className={`flex flex-row"justify-between" w-[100%] h-[40vh]`}>
-            {isNewStream ? (
+            {isCreateMode ? (
               <Video
                 status={false}
                 values={values}
@@ -75,14 +80,17 @@ const StreamVOD: React.FC<Props> = ({
               }}
             >
               <CommonForm
+              initialValues={initialValues}
                 values={values}
                 handleChange={handleChange}
                 cost={cost}
+                formMode={formMode}
                 loading={isLoading}
                 handleEstimateCost={handleEstimateCost}
                 handleSave={handleSave}
                 disabledEstimateCost={disabledEstimateCost}
                 errors={errors}
+                handleDelete={handleDelete}
               />
             </div>
           </Form>

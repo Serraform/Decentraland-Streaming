@@ -9,7 +9,7 @@ export const columnsDefinition = (
     id: "status",
     header: () => <span className="font-montserratbold">Status</span>,
     cell: (info: any) =>
-      info.row.original.streamInfo.Suspended ? (
+      false ? (
         <div className="flex justify-center flex-row items-center">
           <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
           <span className="text-[14px]">Suspended</span>

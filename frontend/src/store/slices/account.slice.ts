@@ -6,7 +6,7 @@ import {
 } from "store/services/account.service";
 import jazzicon from "jazzicon-ts";
 import { ethers } from "ethers";
-import smartcontractV2ABI from "utils/abi/smartcontractV2ABI.json";
+import smartcontractV2ABI from "utils/abi/smartContractV3Abi.json";
 import usdcABI from "utils/abi/usdcAbi.json";
 const smartcontractABI = smartcontractV2ABI.output.abi;
 const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;

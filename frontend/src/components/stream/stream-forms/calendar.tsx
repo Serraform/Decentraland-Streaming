@@ -2,38 +2,70 @@ import React from "react";
 import "react-nice-dates/build/style.css";
 import { DateRangePicker, useDateInput } from "react-nice-dates";
 import { enUS } from "date-fns/locale";
-import { differenceInHours } from "date-fns";
+import { differenceInHours, isEqual } from "date-fns";
+
+import { checkDateRangeChange } from "components/stream/definitions";
+
 type Props = {
   values: any;
   handleChange: Function;
-  errors: any
+  errors: any;
+  initialValues: any;
+  datesHasChange: Function;
 };
 
-const Calendar: React.FC<Props> = ({ values, handleChange,errors}) => {
+const Calendar: React.FC<Props> = ({
+  values,
+  handleChange,
+  errors,
+  initialValues,
+  datesHasChange,
+}) => {
   const returnAsDate = (date: any) => {
     if (typeof date === "string") {
       return new Date(date);
     }
     return date;
   };
+
+  const handleStartDateChange = (e:any) => {
+    const hasChange = checkDateRangeChange(
+      returnAsDate(e),
+      returnAsDate(values.streamEndDate),
+      returnAsDate(initialValues.streamStartDate),
+      returnAsDate(initialValues.streamEndDate)
+    );
+    datesHasChange(hasChange === 0 || hasChange === 1);
+    handleChange({
+      target: { name: "streamStartDate", value: e },
+    });
+  };
+
+  const handleEndDateChange = (e:any) => {
+    const hasChange = checkDateRangeChange(
+      returnAsDate(values.streamStartDate),
+      returnAsDate(e),
+      returnAsDate(initialValues.streamStartDate),
+      returnAsDate(initialValues.streamEndDate)
+    );
+    datesHasChange(hasChange === 0 || hasChange === 1);
+    handleChange({
+      target: { name: "streamEndDate", value: e },
+    });
+  };
+
   const timeStartInputProps = useDateInput({
     date: returnAsDate(values.streamStartDate),
     format: "HH",
     locale: enUS,
-    onDateChange: (e: any) =>
-      handleChange({
-        target: { name: "streamStartDate", value: e },
-      }),
+    onDateChange: (e: any) => handleStartDateChange(e),
   });
 
   const timeEndInputProps = useDateInput({
     date: returnAsDate(values.streamEndDate),
     format: "HH",
     locale: enUS,
-    onDateChange: (e: any) =>
-      handleChange({
-        target: { name: "streamEndDate", value: e },
-      }),
+    onDateChange: (e: any) => handleEndDateChange(e),
   });
   const modifiersClassNames = {
     highlight: "-highlight",
@@ -43,14 +75,8 @@ const Calendar: React.FC<Props> = ({ values, handleChange,errors}) => {
       <DateRangePicker
         startDate={returnAsDate(values.streamStartDate)}
         endDate={returnAsDate(values.streamEndDate)}
-        onStartDateChange={(e: any) =>
-          handleChange({
-            target: { name: "streamStartDate", value: e },
-          })
-        }
-        onEndDateChange={(e: any) =>
-          handleChange({ target: { name: "streamEndDate", value: e } })
-        }
+        onStartDateChange={(e: any) =>  handleStartDateChange(e)}
+        onEndDateChange={(e: any) =>  handleEndDateChange(e)}
         minimumDate={new Date()}
         format="dd MMM yyyy"
         modifiersClassNames={modifiersClassNames}
@@ -110,9 +136,8 @@ const Calendar: React.FC<Props> = ({ values, handleChange,errors}) => {
                 )}
               </h2>
               <h2 className="font-montserratbold text-red-600 text-[15px] dark:text-red-600">
-              {errors.streamEndDate &&  <>{errors.streamEndDate}</>}
+                {errors.streamEndDate && <>{errors.streamEndDate}</>}
               </h2>
-
             </div>
           );
         }}

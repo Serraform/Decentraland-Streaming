@@ -1,17 +1,22 @@
+import { useState } from "react";
 import { Field } from "formik";
 import "react-nice-dates/build/style.css";
-import { useNavigate } from "react-router-dom";
+import SuspendModal from "components/stream/stream-forms/suspend-modal";
 import Calendar from "components/stream/stream-forms/calendar";
 import { isAfter, isBefore } from "date-fns";
+import FormButtons from "components/stream/stream-forms/form-buttons";
 type Props = {
   values: any;
+  initialValues: any;
   handleChange: Function;
   cost: number;
   loading: boolean;
-  disabledEstimateCost: (values: any, errors:any) => boolean;
+  disabledEstimateCost: (values: any, errors: any) => boolean;
   handleEstimateCost: Function;
   handleSave: Function;
-  errors:any
+  formMode: string;
+  handleDelete: Function;
+  errors: any;
 };
 
 const returnAsDate = (date: any) => {
@@ -23,26 +28,35 @@ const returnAsDate = (date: any) => {
 
 const CommonForm: React.FC<Props> = ({
   values,
+  initialValues,
   handleChange,
   cost,
   loading,
   handleEstimateCost,
   handleSave,
   disabledEstimateCost,
-  errors
+  errors,
+  handleDelete,
+  formMode,
 }) => {
-  const navigate = useNavigate();
+  const [needsToEstimateNewCost, setNeedsToEstimateNewCost] = useState(false);
+  const [openSuspendModal, setOpenSuspendModal] = useState(false);
   const streamIsBeingCreated = values.streamInfo.CreatedAt === 0;
 
   const streamIsHappeningOrHasHappened =
     !streamIsBeingCreated &&
     ((isAfter(Date.now(), returnAsDate(values.streamStartDate)) &&
       isBefore(Date.now(), returnAsDate(values.streamEndDate))) ||
-      isAfter(Date.now(), returnAsDate(values.streamEndDate)) ||
-      values.streamInfo.Suspended);
+      isAfter(Date.now(), returnAsDate(values.streamEndDate)) || false);
+      //  values.streamInfo.Suspended);
 
   return (
     <>
+      <SuspendModal
+        isOpen={openSuspendModal}
+        handleAction={handleDelete}
+        handleClose={setOpenSuspendModal}
+      />
       <div className="flex flex-row justify-between">
         <div className="mb-2 w-full mr-3">
           <h2 className="font-montserratbold text-black text-[14px] dark:text-white">
@@ -61,7 +75,7 @@ const CommonForm: React.FC<Props> = ({
         </div>
         <div className="mb-2 w-full ml-3">
           <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
-          Estimated number of attendees
+            Estimated number of attendees
           </h2>
           <Field
             type="text"
@@ -75,7 +89,7 @@ const CommonForm: React.FC<Props> = ({
           />
         </div>
       </div>
-      <Calendar values={values} handleChange={handleChange} errors={errors}/>
+      <Calendar values={values} handleChange={handleChange} errors={errors} datesHasChange={setNeedsToEstimateNewCost} initialValues={initialValues}/>
       <div className="mt-auto flex flex-col justify-end items-end">
         {cost !== 0 && !loading && (
           <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem] dark:text-primary">
@@ -83,41 +97,21 @@ const CommonForm: React.FC<Props> = ({
           </h2>
         )}
         <div className="flex">
-          <button
-            onClick={() => navigate("/")}
-            className=" btn-third mt-auto ml-0"
-          >
-            Cancel
-          </button>
-
-          {cost === 0 && (
-            <button
-              onClick={() => handleEstimateCost(values)}
-              className=" btn-secondary mt-auto flex flex-row items-center"
-              disabled={
-                disabledEstimateCost(values, errors) ||
+          <FormButtons
+              formMode={formMode}
+              cost={cost}
+              isDisabled={
+                (disabledEstimateCost(values, errors) ||
                 loading ||
-                streamIsHappeningOrHasHappened
-              }
-            >
-               {loading && <div className="basic mr-[1rem]" />}
-              Estimate cost
-            </button>
-          )}
-          {cost !== 0 && (
-            <button
-              onClick={() => handleSave(values)}
-              className="btn-secondary flex flex-row items-center"
-              disabled={
-                disabledEstimateCost(values, errors) ||
-                loading ||
-                streamIsHappeningOrHasHappened
-              }
-            >
-              {loading && <div className="basic mr-[1rem]" />}
-              Create Stream
-            </button>
-          )}
+                streamIsHappeningOrHasHappened)}
+              loading={loading}
+              streamIsBeingCreated={streamIsBeingCreated}
+              setOpenSuspendModal={setOpenSuspendModal}
+              handleEstimateCost={handleEstimateCost}
+              handleSave={handleSave}
+              values={values}
+              needsToEstimateNewCost={needsToEstimateNewCost}
+          />
         </div>
       </div>
     </>
