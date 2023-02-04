@@ -2,7 +2,7 @@ import React from "react";
 import "react-nice-dates/build/style.css";
 import { DateRangePicker, useDateInput } from "react-nice-dates";
 import { enUS } from "date-fns/locale";
-import { differenceInHours, isEqual } from "date-fns";
+import { differenceInHours } from "date-fns";
 
 import { checkDateRangeChange } from "components/stream/definitions";
 
