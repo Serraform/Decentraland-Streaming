@@ -49,7 +49,7 @@ const LiveStream: React.FC<Props> = ({
       values.attendees === "" ||
       values.streamStartDate === undefined ||
       values.streamEndDate === undefined ||
-      errors.streamEndDate
+      errors.streamEndDate ||  errors.streamStartDate
     );
   };
 

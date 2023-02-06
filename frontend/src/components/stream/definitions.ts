@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { differenceInMinutes } from "date-fns";
+import { differenceInMinutes, isBefore } from "date-fns";
 interface IStream {
   name: string;
   status: boolean;
@@ -60,9 +60,12 @@ const validationSchema = Yup.object().shape({
 });
 
 const validateDateRange = (values:any) => {
-  const errors = {streamEndDate: ""};
+  const errors = {streamEndDate: "", streamStartDate:""};
   if (values.streamStartDate && values.streamEndDate && values.streamStartDate > values.streamEndDate) {
     errors.streamEndDate = 'End date cannot be before start date';
+  }
+  if(isBefore(values.streamStartDate, Date.now())){
+    errors.streamStartDate = 'Start date cannot be a past date';
   }
   return errors;
 };
