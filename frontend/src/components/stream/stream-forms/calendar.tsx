@@ -104,7 +104,7 @@ const Calendar: React.FC<Props> = ({
                   {...timeStartInputProps}
                   placeholder="HH"
                 />
-                <span className="dark:text-white">-</span>{" "}
+                <span className="dark:text-white">to</span>{" "}
                 <input
                   {...endDateInputProps}
                   placeholder="End date"
@@ -124,7 +124,7 @@ const Calendar: React.FC<Props> = ({
               <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
                 {values.streamStartDate && values.streamEndDate ? (
                   <>
-                    Duration of the stream:{" "}
+                    <span className="font-montserratregular">Stream duration:</span>{" "}
                     {differenceInHours(
                       returnAsDate(values.streamEndDate),
                       returnAsDate(values.streamStartDate)
@@ -137,6 +137,9 @@ const Calendar: React.FC<Props> = ({
               </h2>
               <h2 className="font-montserratbold text-red-600 text-[15px] dark:text-red-600">
                 {errors.streamEndDate && <>{errors.streamEndDate}</>}
+              </h2>
+              <h2 className="font-montserratbold text-red-600 text-[15px] dark:text-red-600">
+                {errors.streamStartDate && <>{errors.streamStartDate}</>}
               </h2>
             </div>
           );

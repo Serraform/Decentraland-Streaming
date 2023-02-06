@@ -17,7 +17,8 @@ const initialState = {
   balance: 0,
   loading: false,
   error: null,
-  locked_balance: 0
+  locked_balance: 0,
+  isTokenContractApprove: false,
 };
 
 const targetNetworkId = "0x5";
@@ -38,29 +39,60 @@ const switchNetwork = async () => {
     window.location.reload();
   }
 };
+export const approvePulling = createAsyncThunk(
+  "approve-pulling",
+  async (props: any) => {
+    const { ethereum } = window as any;
+    if (!ethereum) {
+      return;
+    }
+    const { addToast } = props;
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
 
-const approvePulling = async (
-  signer: any,
-  funds: any,
-  provider: any,
-  account: string,
-  addToast: any
-) => {
+    try {
+      const USDCContract = new ethers.Contract(
+        USDC_CONTRACT_ADDRESS as string,
+        usdcABI,
+        provider
+      );
+      
+      const deposit = ethers.utils.parseUnits("" + Math.pow(10, 10), "6");
+      const pullFundsApproval = await USDCContract.connect(signer).approve(
+        CONTRACT_ADDRESS,
+        deposit
+      );
+
+      addToast("Waiting for pulling approval", {
+        autoDismiss: true,
+      });
+      const pullFundsApprovalReceipt = await pullFundsApproval.wait();
+      if (pullFundsApprovalReceipt.status === 0) {
+        throw new Error();
+      }
+      return pullFundsApprovalReceipt.status === 1;
+    } catch (e) {
+      addToast("Metamask couldn't approve the use of USDC", {
+        appearance: "error",
+        autoDismiss: true,
+      });
+      throw new Error();
+    }
+  }
+);
+
+const checkAllowance = async (signer: any, provider: any, account: any) => {
   const USDCContract = new ethers.Contract(
     USDC_CONTRACT_ADDRESS as string,
     usdcABI,
     provider
   );
-  const pullFundsApproval = await USDCContract.connect(signer).approve(
-    CONTRACT_ADDRESS,
-    funds
+  const allowanceResponse = await USDCContract.connect(signer).allowance(
+    account,
+    CONTRACT_ADDRESS
   );
-
-  addToast("Waiting for pulling approval", {
-    autoDismiss: true,
-  });
-  const pullFundsApprovalReceipt = await pullFundsApproval.wait();
-  return pullFundsApprovalReceipt.status === 1;
+  
+  return Number(allowanceResponse._hex) > 0;
 };
 
 export const requestConnectWallet = createAsyncThunk(
@@ -124,15 +156,21 @@ export const fetchFunds = createAsyncThunk(
       );
       await switchNetwork();
       const accountInfo = await contract.view_sub_info(walletID);
-      const balance = (Number(accountInfo.balance._hex) as any);
+      const balance = Number(accountInfo.balance._hex) as any;
+      const isTokenContractApprove = await checkAllowance(
+        signer,
+        provider,
+        walletID
+      );
       return {
         balance: balance,
-        locked_balance: Number(accountInfo.lockedBalance._hex) as any
+        locked_balance: Number(accountInfo.lockedBalance._hex) as any,
+        isTokenContractApprove: isTokenContractApprove,
       };
     } catch (e) {
       return {
         balance: 0,
-        locked_balance: 0
+        locked_balance: 0,
       };
     }
   }
@@ -159,32 +197,22 @@ export const fundWallet = createAsyncThunk(
         method: "eth_requestAccounts",
       });
       const deposit = ethers.utils.parseUnits(amountToFund, "6");
-      const isApprovedToPull = await approvePulling(
-        signer,
-        deposit,
-        provider,
-        account[0],
-        addToast
-      );
-      if (isApprovedToPull) {
-        let tx = null;
-        tx = await contract.deposit(deposit);
-        addToast("Waiting for funding approval", {
+
+      let tx = null;
+      tx = await contract.deposit(deposit);
+      addToast("Waiting for funding approval", {
+        autoDismiss: true,
+      });
+      const receipt = await tx.wait();
+      if (receipt.status === 1) {
+        addToast("Balance Updated", {
+          appearance: "success",
           autoDismiss: true,
         });
-        const receipt = await tx.wait();
-        if (receipt.status === 1) {
-          addToast("Balance Updated", {
-            appearance: "success",
-            autoDismiss: true,
-          });
-          const accountInfo = await contract.view_sub_info(account[0]);
-          return {
-            balance: Number(accountInfo.balance._hex) as any,
-          };
-        }
-      } else {
-        throw new Error();
+        const accountInfo = await contract.view_sub_info(account[0]);
+        return {
+          balance: Number(accountInfo.balance._hex) as any,
+        };
       }
     } catch (e) {
       addToast("We couldn't update your balance", {
@@ -219,6 +247,8 @@ const accountSlice = createSlice({
       state.loading = false;
       state.balance = action.payload?.balance;
       state.locked_balance = action.payload?.locked_balance;
+      state.isTokenContractApprove = action.payload
+        ?.isTokenContractApprove as boolean;
     });
     builder.addCase(fetchFunds.rejected, (state, action) => {
       state.loading = false;
@@ -231,6 +261,16 @@ const accountSlice = createSlice({
       state.balance = action.payload?.balance;
     });
     builder.addCase(fundWallet.rejected, (state, action) => {
+      state.loading = false;
+    });
+    builder.addCase(approvePulling.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(approvePulling.fulfilled, (state, action) => {
+      state.loading = false;
+      state.isTokenContractApprove = true;
+    });
+    builder.addCase(approvePulling.rejected, (state, action) => {
       state.loading = false;
     });
   },
