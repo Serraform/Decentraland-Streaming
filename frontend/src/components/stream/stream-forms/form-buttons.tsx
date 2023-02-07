@@ -55,7 +55,7 @@ const FormButtons = (props: any) => {
           disabled={isDisabled}
         >
           {loading && <div className="basic mr-[1rem]" />}
-          {cost === 0 ? "Estimate cost" : "Create Stream"}
+          {cost === 0 ? "Calculate Price" : "Schedule Stream"}
         </button>
       ) : (
         <button
@@ -70,7 +70,7 @@ const FormButtons = (props: any) => {
           disabled={isDisabled}
         >
           {loading && <div className="basic mr-[1rem]" />}
-          {cost === 0 && needsToEstimateNewCost ? "Estimate cost" : "Edit Stream"}
+          {cost === 0 && needsToEstimateNewCost ? "Calculate Price" : "Edit Stream"}
         </button>
       )}
     </div>

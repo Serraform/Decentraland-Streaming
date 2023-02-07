@@ -33,7 +33,7 @@ export const streamsApi = createApi({
             streamDuration: "",
             streamStartDate: streamStartDate.toISOString(),
             streamEndDate: streamEndDate.toISOString(),
-            attendees: attendees,
+            attendees: ""+attendees,
             cost: ""+cost,
             vaultContractId: ""+vaultContractId
           },
@@ -53,7 +53,7 @@ export const streamsApi = createApi({
             Cost: cost,
             StreamStartDate: streamStartDate,
             StreamEndDate: streamEndDate,
-            Attendees: attendees,
+            Attendees: typeof attendees === "number" ? ""+attendees: attendees,
           },
         };
       },

@@ -42,7 +42,7 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
       <div className="items-start flex flex-col justify-start w-100 dark:bg-[#1a1d1e]">
         <div className="px-[5rem] py-[20px]">
           <h1 className="font-montserratbold text-black text-start b-[40px] dark:text-white">
-            Select which stream type you wish to create
+           What type of stream would you like to schedule?
           </h1>
           <div className="flex flex-row flex-wrap justify-evenly items-baseline pt-[35px]">
             <Formik
@@ -53,6 +53,31 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
               {({ handleChange, values }) => (
                 <>
                   <Form className="flex flex-row justify-between w-[100%]">
+                  <>
+                      <ReactTooltip
+                        id="live"
+                        place="top"
+                        type={"dark"}
+                        effect={"float"}
+                      />
+                      <div
+                        data-for="live"
+                        className="radio-item"
+                        data-tip={
+                          "Request an RTMP url/key to broadcast live using OBS, Zoom or other services supporting RTMP output."
+                        }
+                        data-iscapture="true"
+                      >
+                        <Field
+                          type="radio"
+                          onChange={handleChange}
+                          id={"live-stream"}
+                          name="streamType"
+                          value={"live-stream"}
+                        />
+                        <label htmlFor={"live-stream"}>Live</label>
+                      </div>
+                    </>
                     <>
                       <ReactTooltip
                         id="VOD"
@@ -82,31 +107,7 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
                         </label>
                       </div>
                     </>
-                    <>
-                      <ReactTooltip
-                        id="live"
-                        place="top"
-                        type={"dark"}
-                        effect={"float"}
-                      />
-                      <div
-                        data-for="live"
-                        className="radio-item"
-                        data-tip={
-                          "Request an RTMP url/key to broadcast live using OBS, Zoom or other services supporting RTMP output."
-                        }
-                        data-iscapture="true"
-                      >
-                        <Field
-                          type="radio"
-                          onChange={handleChange}
-                          id={"live-stream"}
-                          name="streamType"
-                          value={"live-stream"}
-                        />
-                        <label htmlFor={"live-stream"}>Live</label>
-                      </div>
-                    </>
+                    
                     <>
                       <ReactTooltip
                         id="twitch"
