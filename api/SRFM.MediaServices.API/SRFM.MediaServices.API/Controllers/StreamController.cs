@@ -209,11 +209,9 @@ namespace SRFM.MediaServices.API.Controllers
             bool isValidToken = TokenManager.ValidateToken(token);
             if (isValidToken)
             {
-                TimeSpan ts = streamEndDate - streamStartDate;
+                TimeSpan ts = streamEndDate - streamStartDate;               
 
-                var cost = String.Concat(ts.Hours, ".", ts.Minutes);
-
-                var number = Math.Ceiling(Convert.ToDecimal(cost));
+                var number = Math.Ceiling(ts.TotalHours);
 
                 var vaultId = new Random().Next(0, 999999).ToString();
                 vaultId = string.Concat(streamStartDate.ToString("yyyyMMddmmss"), vaultId);
