@@ -33,7 +33,7 @@ const Header: React.FC<Props> = ({ openNewStream }) => {
               disabled={walletID === ""}
               className="btn-third"
             >
-              Add new stream
+              Schedule new stream
             </button>
             <button
               className="border-2 rounded-full p-[0.2rem] border-primary flex justify-center items-center flex-row"

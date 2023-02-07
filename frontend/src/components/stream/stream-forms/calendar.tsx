@@ -129,7 +129,7 @@ const Calendar: React.FC<Props> = ({
                       returnAsDate(values.streamEndDate),
                       returnAsDate(values.streamStartDate)
                     )}{" "}
-                    hrs
+                    hours
                   </>
                 ) : (
                   <></>

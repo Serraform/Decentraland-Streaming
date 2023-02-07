@@ -81,7 +81,7 @@ export const lockFunds = createAsyncThunk(
       });
       const receipt = await tx.wait();
       if (receipt.status === 1) {
-        addToast("Funds locked, starting upload of stream", {
+        addToast("Funds locked, starting to schedule your stream", {
           appearance: "success",
           autoDismiss: true,
         });

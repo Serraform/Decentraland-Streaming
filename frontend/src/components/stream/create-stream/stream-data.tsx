@@ -79,7 +79,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
         }),
       };
       dispatch(uploadStream(newStream));
-      addToast("Stream created", {
+      addToast("Stream successfully scheduled", {
         appearance: "success",
         autoDismiss: true,
       });

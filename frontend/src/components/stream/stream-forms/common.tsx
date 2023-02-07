@@ -64,7 +64,11 @@ const CommonForm: React.FC<Props> = ({
 
   }, [streamIsHappeningOrHasHappened, addToast])
 
-
+  const preventMinus = (e: any) => {
+    if (e.code === 'Minus') {
+        e.preventDefault();
+    }
+};
 
   return (
     <>
@@ -95,7 +99,9 @@ const CommonForm: React.FC<Props> = ({
             Estimated number of attendees
           </h2>
           <Field
-            type="text"
+            type="number"
+            min="0"
+            onKeyPress={preventMinus}
             required
             value={values.attendees}
             disabled={streamIsHappeningOrHasHappened}
@@ -119,7 +125,7 @@ const CommonForm: React.FC<Props> = ({
           <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem] dark:text-primary">
             <span className="font-montserratregular">
               {" "}
-              Total cost for the stream will be:
+              Your stream will cost:
             </span>{" "}
             ${cost} USDC
           </h2>
