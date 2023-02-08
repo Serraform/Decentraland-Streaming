@@ -296,3 +296,6 @@ input{
 .dark-icon{
   @apply fill-slate-400 dark:fill-slate-500;
 }
+
+.question-icon{
+  @apply  fill-sky-500 dark:fill-slate-500 }

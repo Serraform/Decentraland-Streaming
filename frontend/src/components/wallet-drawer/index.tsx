@@ -6,6 +6,7 @@ import CloseIcon from "assets/icons/Close";
 import useConnectWallet from "hooks/useConnectWallet";
 import DarkModeIcon from "assets/icons/Dark";
 import LightModeIcon from "assets/icons/Light";
+import FaqIcon from "assets/icons/Question";
 import ReactTooltip from "react-tooltip";
 type Props = {
   openDrawer: boolean;
@@ -29,21 +30,41 @@ const WalletDrawer: React.FC<Props> = ({ openDrawer, setOpenDrawer }) => {
             </div>
             <div className="ml-2">
               <span className="font-montserratbold tracking-[0.1rem] dark:text-white">
-               My Serraform Wallet
+                My Serraform Wallet
               </span>
             </div>
           </div>
-          <div className="flex">
-            <ReactTooltip 
-            id="view-mode"
-                        place="top"
-                        type={"dark"}
-                        effect={"float"}/>
+          <div className="flex flex-row items-center">
+          <ReactTooltip
+              id="faq"
+              place="top"
+              type={"dark"}
+              effect={"float"}
+            />
+            <a
+               href="https://docs.google.com/document/d/1Dz-a3iqXRFiSoAd4owAYohmHywOJKQIx/edit"
+               target="_blank"
+              data-for="faq"
+              data-tip={"FAQ"}
+              data-iscapture="true"
+              type="button"
+              className="mr-2"
+              aria-haspopup="true"
+              aria-expanded="false"
+              data-headlessui-state=""
+              aria-labelledby="headlessui-listbox-label-3 headlessui-listbox-button-4" rel="noreferrer"
+            >
+              <FaqIcon />
+            </a>
+            <ReactTooltip
+              id="view-mode"
+              place="top"
+              type={"dark"}
+              effect={"float"}
+            />
             <button
               data-for="view-mode"
-              data-tip={
-                "Change view mode"
-              }
+              data-tip={"Change view mode"}
               data-iscapture="true"
               type="button"
               className="mr-2"
@@ -52,20 +73,26 @@ const WalletDrawer: React.FC<Props> = ({ openDrawer, setOpenDrawer }) => {
               data-headlessui-state=""
               aria-labelledby="headlessui-listbox-label-3 headlessui-listbox-button-4"
             >
-              <span className="dark:hidden" onClick={() => {
-                 const root = window.document.documentElement;
-                 root.classList.remove("light");
-                 root.classList.add("dark");
-                 localStorage.setItem('theme', "dark");
-              }}>
+              <span
+                className="dark:hidden"
+                onClick={() => {
+                  const root = window.document.documentElement;
+                  root.classList.remove("light");
+                  root.classList.add("dark");
+                  localStorage.setItem("theme", "dark");
+                }}
+              >
                 <LightModeIcon />
               </span>
-              <span className="hidden dark:inline" onClick={() => {
-                 const root = window.document.documentElement;
-                 root.classList.remove("dark");
-                 root.classList.add("light");
-                 localStorage.setItem('theme', "light");
-              }}>
+              <span
+                className="hidden dark:inline"
+                onClick={() => {
+                  const root = window.document.documentElement;
+                  root.classList.remove("dark");
+                  root.classList.add("light");
+                  localStorage.setItem("theme", "light");
+                }}
+              >
                 <DarkModeIcon />
               </span>
             </button>
