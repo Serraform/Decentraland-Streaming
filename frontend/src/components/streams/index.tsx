@@ -83,7 +83,7 @@ const Streams = () => {
         data?.map((stream: any) => ({
           ...stream,
           streamInfo: JSON.parse(stream.streamInfo),
-        })) as any
+        })).sort((a, b) => (new Date(b.streamStartDate) as any)- (new Date(a.streamStartDate) as any)) as any
       }
       handleSelectStream={handleSelectStream}
     />

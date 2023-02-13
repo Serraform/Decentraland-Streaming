@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Buffer } from "buffer";
-import ReactHlsPlayer from "react-hls-player";
+import ReactPlayer from 'react-player'
 type Props = {
   video: string;
   handleChange: Function;
@@ -11,7 +11,6 @@ type Props = {
 const Video: React.FC<Props> = ({ values, video, handleChange, status, suspended }) => {
   const [localVideo, setLocalVideo] = useState();
   const inputFileRef: any = useRef();
-  const playerRef = useRef();
 
   const onFileChangeCapture = (e: any, setLocalVideo: any) => {
     onFileChange(e, setLocalVideo);
@@ -54,36 +53,38 @@ const Video: React.FC<Props> = ({ values, video, handleChange, status, suspended
   }
   const renderStatus = () => {
    return (suspended ? (
-      <div className="flex justify-center flex-row items-center absolute bullet-status">
+      <div className="flex justify-center flex-row items-center absolute bullet-status top-0">
         <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
         <span className="text-[14px]">Suspended</span>
       </div>
     ) : status ? (
-      <div className="flex justify-center flex-row items-center absolute bullet-status">
+      <div className="flex justify-center flex-row items-center absolute bullet-status top-0">
         <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-green-600" />
         <span className="text-[14px]">Live</span>
       </div>
     ) : (
-      <div className="flex justify-center flex-row items-center absolute bullet-status">
+      <div className="flex justify-center flex-row items-center absolute bullet-status top-0">
         <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-gray-600" />
         <span className="text-[14px]">Idle</span>
       </div>
     ))
   }
   return (
-    <div className="flex flex-col w-[40%] relative">
+    <div className="flex flex-col w-[48%] relative h-full">
       {video ? (
-       <>
-        <ReactHlsPlayer
-          src={video}
-          autoPlay={true}
-          controls={true}
-          width="100%"
-          playerRef={playerRef as any}
-          
-        />
-        {renderStatus()}
-        </>
+        <div className="relative w-full h-full">
+          <ReactPlayer 
+        
+            url={video}
+            muted={true}
+            playing={true}
+            width="auto"
+            height="100%"
+            light={(!status)}
+          >
+          </ReactPlayer>
+           {renderStatus()} 
+        </div>
       ) : localVideo ? (
         <video
           key={localVideo}
