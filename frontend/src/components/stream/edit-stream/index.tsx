@@ -23,7 +23,6 @@ import {
 } from "store/slices/stream.slice";
 import {
   useEditStreamMutation,
-  useFetchStreamDetailsQuery,
   useDeleteStreamMutation,
 } from "store/api/streams.api";
 import { useToasts } from "react-toast-notifications";
@@ -54,10 +53,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   const { walletID } = useSelector((state: RootState) => state.accountData);
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
-  const { data, isSuccess } = useFetchStreamDetailsQuery(
-    selectedStream.streamInfo.Id,
-    { pollingInterval: 6000 }
-  );
+ 
 
   const [
     deleteStream,
@@ -217,14 +213,8 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
             handleSave={handleSave}
             selectedStream={{
               ...(selectedStream as ILiveStream),
-              streamInfo: {
-                ...selectedStream?.streamInfo,
-                playbackUrl: `https://livepeercdn.studio/hls/${selectedStream?.streamInfo.PlayBackId}/index.m3u8`,
-                IsActive: isSuccess
-                  ? JSON.parse((data as any).streamInfo).IsActive
-                  : (selectedStream?.streamInfo).IsActive,
-              },
             }}
+            
             formMode={"edit"}
             handleEstimateCost={handleEstimateCost}
             isLoading={isLoading}
@@ -297,13 +287,6 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
               "Created at",
               false,
               new Date((selectedStream?.streamInfo).CreatedAt).toLocaleString()
-            )}
-            {renderDetail(
-              "Status",
-              false,
-              isSuccess && JSON.parse((data as any).streamInfo).IsActive
-                ? "Live"
-                : "Idle"
             )}
           </div>
         </div>

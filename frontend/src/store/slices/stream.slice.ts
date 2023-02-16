@@ -32,7 +32,7 @@ const initialState: InitialState = {
       Record: false,
       StreamKey: "",
       Suspended: false,
-      playbackUrl: "",
+      playBackUrl: "",
       rtmpIngestUrl: "",
     },
   },

@@ -1,14 +1,20 @@
 import React, { useState, useRef } from "react";
 import { Buffer } from "buffer";
 import ReactPlayer from 'react-player'
+import {
+  useFetchStreamDetailsQuery,
+} from "store/api/streams.api";
 type Props = {
   video: string;
   handleChange: Function;
   values: any;
-  status: boolean;
   suspended: boolean;
 };
-const Video: React.FC<Props> = ({ values, video, handleChange, status, suspended }) => {
+const Video: React.FC<Props> = ({ values, video, handleChange, suspended }) => {
+  const { data } = useFetchStreamDetailsQuery(
+    values.streamInfo.Id,
+    { pollingInterval: 6000 }
+  );
   const [localVideo, setLocalVideo] = useState();
   const inputFileRef: any = useRef();
 
@@ -57,7 +63,7 @@ const Video: React.FC<Props> = ({ values, video, handleChange, status, suspended
         <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
         <span className="text-[14px]">Suspended</span>
       </div>
-    ) : status ? (
+    ) : (data as any)?.streamLP.isActive ? (
       <div className="flex justify-center flex-row items-center absolute bullet-status top-0">
         <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-green-600" />
         <span className="text-[14px]">Live</span>
@@ -80,7 +86,7 @@ const Video: React.FC<Props> = ({ values, video, handleChange, status, suspended
             playing={true}
             width="auto"
             height="100%"
-            light={(!status)}
+            light={(!(data as any)?.streamLP.isActive)}
           >
           </ReactPlayer>
            {renderStatus()} 
