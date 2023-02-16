@@ -5,6 +5,7 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { IStreamVOD, ILiveStream } from "components/stream/definitions";
+import { useEffect } from "react";
 type Props = {
   columns: any;
   streams: (IStreamVOD | ILiveStream)[];
@@ -21,6 +22,9 @@ const StreamTable: React.FC<Props> = ({
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
+  useEffect(() => {
+    table.setPageSize(4);
+  }, [table])
   return (
     <div className="container pt-10">
       <table className="border-third  border rounded w-[100%]">
