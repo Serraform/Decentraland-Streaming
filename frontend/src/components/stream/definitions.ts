@@ -19,7 +19,7 @@ interface IStream {
     Record: boolean;
     StreamKey: string;
     Suspended: boolean;
-    playbackUrl: string;
+    playBackUrl: string;
     rtmpIngestUrl: string;
   },
   
@@ -32,6 +32,7 @@ type IStreamVOD = IStream & {
 };
 
 type ILiveStream = IStream & {
+  playBackUrl: string;
   rtmpIngestUrl: string; 
   streamKey: string;
 };

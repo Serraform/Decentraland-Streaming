@@ -74,7 +74,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
           Record: false,
           StreamKey: "",
           Suspended: false,
-          playbackUrl: "",
+          playBackUrl: "",
           rtmpIngestUrl: "",
         }),
       };

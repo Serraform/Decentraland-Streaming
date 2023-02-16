@@ -58,7 +58,6 @@ const StreamVOD: React.FC<Props> = ({
           <Form className={`flex flex-row"justify-between" w-[100%] h-[40vh]`}>
             {isCreateMode ? (
               <Video
-                status={false}
                 values={values}
                 suspended={false}
                 video={values.video}
@@ -68,7 +67,6 @@ const StreamVOD: React.FC<Props> = ({
               <Video
                 values={values}
                 suspended={false}
-                status={false}
                 video={values.video}
                 handleChange={() => null}
               />

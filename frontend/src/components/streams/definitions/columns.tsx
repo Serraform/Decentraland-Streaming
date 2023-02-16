@@ -40,12 +40,12 @@ export const columnsDefinition = (
     header: () => <span className="font-montserratbold">Type</span>,
     cell: (info: any) =>     <span className="font-montserratregular text-[14px]">{info.getValue()}</span>,
   }),
-  columnHelper.accessor("playbackUrl", {
-    id: "playbackUrl",
+  columnHelper.accessor("playBackUrl", {
+    id: "playBackUrl",
     header: () => <span className="font-montserratbold">Playback URL</span>,
     cell: (info: any) => {
       const playbackId = info.row.original.streamInfo.PlayBackId;
-      const playbackUrl = `https://livepeercdn.studio/hls/${playbackId}/index.m3u8`;
+      const playBackUrl = `https://livepeercdn.studio/hls/${playbackId}/index.m3u8`;
       return (
         <>
           <ReactTooltip id="main" place="top" type={"dark"} effect={"float"} />
@@ -54,14 +54,14 @@ export const columnsDefinition = (
             className="flex flex-row items-center justify-between hover:cursor-pointer hover:bg-gray-300 hover:text-gray-800 hover:transition hover:ease-linear w-fit mx-auto p-1 rounded-sm"
             onClick={(e) => {
               e.stopPropagation();
-              navigator.clipboard.writeText(playbackUrl);
+              navigator.clipboard.writeText(playBackUrl);
               setCopy(true);
             }}
             data-tip={`${copySuccess ? "Copied!" : "Copy link"}`}
             data-iscapture="true"
           >
             <span className="font-montserratregular text-[14px]">
-            {playbackUrl.slice(8, 25)}...
+            {playBackUrl.slice(8, 25)}...
             </span>
           </div>
         </>

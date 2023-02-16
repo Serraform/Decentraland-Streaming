@@ -72,8 +72,7 @@ const LiveStream: React.FC<Props> = ({
                 <Video
                   values={values}
                   suspended={false}
-                  status={selectedStream.streamInfo.IsActive}
-                  video={values.streamInfo.playbackUrl}
+                  video={values.playBackUrl}
                   handleChange={() => null}
                 />
               )}

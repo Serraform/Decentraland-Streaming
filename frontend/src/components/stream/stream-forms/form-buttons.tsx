@@ -14,7 +14,6 @@ const FormButtons = (props: any) => {
     needsToEstimateNewCost
   } = props;
   console.log(cost)
-  console.log(needsToEstimateNewCost)
   const navigate = useNavigate();
   return (
     <div className="flex">
