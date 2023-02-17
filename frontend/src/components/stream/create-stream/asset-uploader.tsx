@@ -1,10 +1,12 @@
 import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
-import { useState, useRef, useReducer, useEffect } from "react";
+import { useRef, useReducer, useEffect } from "react";
 import Close from "assets/icons/Close";
 import { useRequestAssetUploaderQuery } from "store/api/assets.api";
 import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
+import { useToasts } from "react-toast-notifications";
+import useTusUploadInstance from "hooks/useTusUploadInstance";
 const customStyles = {
   content: {
     top: "50%",
@@ -18,6 +20,7 @@ const customStyles = {
   },
 };
 const AssetUploader = () => {
+  const { addToast } = useToasts();
   const { walletID } = useSelector((state: RootState) => state.accountData);
   const inputFileRef: any = useRef();
   const [file, setFile] = useReducer(
@@ -31,17 +34,21 @@ const AssetUploader = () => {
       tusEndpoint: "",
     }
   );
-  const { data, isLoading, isSuccess } =
-    useRequestAssetUploaderQuery(
-      { walletID, assetName: file.fileInfo && file.fileInfo.name },
-      {
-        skip: !file.fileInfo,
-      }
-    );
+  const { uploadInstance } = useTusUploadInstance(
+    file.fileInfo,
+    file.tusEndpoint,
+    file.fileInfo?.name
+  );
+  const { data, isLoading, isSuccess, isError } = useRequestAssetUploaderQuery(
+    { walletID, assetName: file.fileInfo && file.fileInfo.name },
+    {
+      skip: !file.fileInfo,
+    }
+  );
 
   useEffect(() => {
     if (isSuccess && data) {
-      setFile({ tusEndpoint: data.tusEndpoint });
+      setFile({ tusEndpoint: data.tusEndPoint });
     }
   }, [isSuccess, data]);
   const navigate = useNavigate();
@@ -57,7 +64,7 @@ const AssetUploader = () => {
     if (!file) return;
     setFile({ fileInfo: file });
     if (file) {
-      const video = URL.createObjectURL(file);
+      // const video = URL.createObjectURL(file);
       // setLocalVideo(video);
       let reader = new FileReader();
       reader.onload = function (e) {
@@ -134,7 +141,7 @@ const AssetUploader = () => {
                 Cancel
               </button>
               <button
-                // onClick={() => refetch()}
+                onClick={() => uploadInstance && uploadInstance.start()}
                 className="mt-[30px] btn-secondary flex flex-row"
                 disabled={
                   isLoading || !file.fileInfo || file.tusEndpoint === ""

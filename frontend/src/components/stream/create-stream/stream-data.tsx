@@ -3,10 +3,8 @@ import React, { useEffect, useCallback, useReducer } from "react";
 import {
   IStreamCreation,
   ILiveStream,
-  IStreamVOD,
   deepEqual,
 } from "components/stream/definitions";
-import StreamVOD from "components/stream/stream-forms/VOD";
 import LiveStream from "components/stream/stream-forms/live-stream";
 import {
   estimateCost,
