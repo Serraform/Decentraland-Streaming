@@ -1,12 +1,13 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "store/clientConfig";
+import { IAsset } from "components/stream/definitions";
 export const assetsApi = createApi({
   reducerPath: "assetsApi",
   baseQuery: axiosBaseQuery({
     baseUrl: `${process.env.REACT_APP_API_BASE}`,
   }),
   endpoints: (builder) => ({
-    fetchAssetsByWalletId: builder.query<any[], string>({
+    fetchAssetsByWalletId: builder.query<IAsset[], string>({
       query: (walletID) => ({
         url: `api/Asset/GetAssetsByWalletId/${walletID}`,
         method: "get",

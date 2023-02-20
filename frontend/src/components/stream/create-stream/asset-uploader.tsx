@@ -7,6 +7,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
 import { useToasts } from "react-toast-notifications";
 import useTusUploadInstance from "hooks/useTusUploadInstance";
+import { startUploadAsset } from "store/slices/assets.slice";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "store/configStore";
 const customStyles = {
   content: {
     top: "50%",
@@ -20,6 +23,8 @@ const customStyles = {
   },
 };
 const AssetUploader = () => {
+  const useAppDispatch = () => useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const { addToast } = useToasts();
   const { walletID } = useSelector((state: RootState) => state.accountData);
   const inputFileRef: any = useRef();
@@ -141,7 +146,17 @@ const AssetUploader = () => {
                 Cancel
               </button>
               <button
-                onClick={() => uploadInstance && uploadInstance.start()}
+                onClick={() => {
+                  if (uploadInstance) {
+                    uploadInstance.start();
+                    dispatch(startUploadAsset({ title: file.fileInfo.name }));
+                    addToast("Uploading asset started", {
+                      appearance: "success",
+                      autoDismiss: true,
+                    });
+                    navigate("/");
+                  }
+                }}
                 className="mt-[30px] btn-secondary flex flex-row"
                 disabled={
                   isLoading || !file.fileInfo || file.tusEndpoint === ""

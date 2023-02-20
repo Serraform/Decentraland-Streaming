@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import accountReducer from 'store/slices/account.slice';
 import streamReducer from 'store/slices/stream.slice';
 import transactionReducer from 'store/slices/transaction.slice';
+import assetsDataReducer from 'store/slices/assets.slice';
 import {streamsApi} from 'store/api/streams.api';
 import {assetsApi} from 'store/api/assets.api';
 export const store = configureStore({
@@ -9,6 +10,7 @@ export const store = configureStore({
     accountData: accountReducer,
     streamData: streamReducer,
     transactionData: transactionReducer,
+    assetsData: assetsDataReducer,
     [streamsApi.reducerPath]: streamsApi.reducer,
     [assetsApi.reducerPath]: assetsApi.reducer
   },
