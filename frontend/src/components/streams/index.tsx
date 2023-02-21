@@ -72,21 +72,30 @@ const Streams = () => {
     return (
       <div className="container pt-10">
         <h1 className="font-montserratbold text-primary text-center pt-20 pb-20 border-third border-r-0 border-t-0">
-        Please refresh your browser to see your streams.
+          Please refresh your browser to see your streams.
         </h1>
       </div>
     );
   return (
-    <StreamTable
-      columns={columns}
-      streams={
-        data?.map((stream: any) => ({
-          ...stream,
-          streamInfo: JSON.parse(stream.streamInfo),
-        })).sort((a, b) => (new Date(b.streamStartDate) as any)- (new Date(a.streamStartDate) as any)) as any
-      }
-      handleSelectStream={handleSelectStream}
-    />
+    <>
+      
+      <StreamTable
+        columns={columns}
+        streams={
+          data
+            ?.map((stream: any) => ({
+              ...stream,
+              streamInfo: JSON.parse(stream.streamInfo),
+            }))
+            .sort(
+              (a, b) =>
+                (new Date(b.streamStartDate) as any) -
+                (new Date(a.streamStartDate) as any)
+            ) as any
+        }
+        handleSelectStream={handleSelectStream}
+      />
+    </>
   );
 };
 

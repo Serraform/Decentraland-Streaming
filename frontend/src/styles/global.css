@@ -12,6 +12,11 @@
     src: url("../assets/fonts/Montserrat-Regular.ttf");
   }
 
+  .file-name svg{
+    width: 0.5rem;
+    margin-right: 0.5rem;
+  }
+
 
   .background-banner{
     background:linear-gradient(0deg, #38B6FF -18.4%, #2561C5 19.88%, #163872 120.3%);

@@ -1,33 +1,34 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   useReactTable,
   getCoreRowModel,
   getPaginationRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import { IStreamVOD, ILiveStream } from "components/stream/definitions";
+import { IAsset } from "components/stream/definitions";
 import {  useMemo } from "react";
 type Props = {
   columns: any;
-  streams: (IStreamVOD | ILiveStream)[];
-  handleSelectStream: Function;
+  assets: IAsset[];
+  handleSelectAsset: Function;
 };
-const StreamTable: React.FC<Props> = ({
+const AssetTable: React.FC<Props> = ({
   columns,
-  streams,
-  handleSelectStream,
+  assets,
+  handleSelectAsset,
 }) => {
   const table = useReactTable({
-    data: streams,
+    data: assets,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
-  const rowModel = useMemo(() => table.getRowModel(), [table]);
   const headerGroups = useMemo(() => table.getHeaderGroups(), [table]);
   const pageCount = useMemo(() => table.getPageCount(), [table]);
-  const pagination = useMemo(() => table.getState().pagination, [table]);
-  const canPreviousPage = useMemo(() => table.getCanPreviousPage(), [table]);
-  const canNextPage = useMemo(() => table.getCanNextPage(), [table]);
+  const pagination =  table.getState().pagination;
+  const rowModel = useMemo(() => table.getRowModel(), [table, pagination]);
+  const canPreviousPage =  table.getCanPreviousPage()
+  const canNextPage =  table.getCanNextPage()
 
   return (
     <div className="container pt-5">
@@ -54,7 +55,7 @@ const StreamTable: React.FC<Props> = ({
             <tr
               key={row.id}
               className="my-2 py-2 h-20 rounded  hover:opacity-2 hover:bg-[#f7f9fa] hover:cursor-pointer hover:transition-transform dark:hover:bg-[#1a1d1e]"
-              onClick={(e) => handleSelectStream(row.original)}
+              onClick={(e) => handleSelectAsset(row.original)}
             >
               {row.getVisibleCells().map((cell) => (
                 <td
@@ -76,7 +77,7 @@ const StreamTable: React.FC<Props> = ({
             overflow: "hidden",
           }}
         >
-          Please click "Schedule new stream" to start streaming
+          Please click "Schedule new stream" to upload your first asset and start streaming
         </h1>
       )}
       <div className="h-4" />
@@ -106,4 +107,4 @@ const StreamTable: React.FC<Props> = ({
   );
 };
 
-export default StreamTable;
+export default AssetTable;

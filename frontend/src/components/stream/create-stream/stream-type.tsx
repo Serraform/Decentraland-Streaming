@@ -99,7 +99,6 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
                           id={"vod"}
                           name="streamType"
                           value={"vod"}
-                          disabled={true}
                         />
                         <label htmlFor={"vod"}>
                           Video On Demand <br />

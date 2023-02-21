@@ -3,6 +3,7 @@ import axios from "axios";
 import type { AxiosRequestConfig, AxiosError } from "axios";
 
 const jwtToken = localStorage.getItem("token");
+
 export const client = axios.create({
   baseURL: `${process.env.REACT_APP_API_BASE}`,
   timeout: 50000,
@@ -11,6 +12,7 @@ export const client = axios.create({
     "content-type": "application/json"
   },
 });
+
 
 
 export const axiosBaseQuery =

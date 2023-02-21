@@ -25,6 +25,12 @@ interface IStream {
   
 }
 
+interface IAsset {
+  assetId: string; 
+  assetName: string; 
+  playbackId: string; 
+}
+
 type IStreamVOD = IStream & {
   video: string;
   videoSize: string;
@@ -114,4 +120,4 @@ const checkDateRangeChange = (oldStartDate: Date, oldEndDate: Date, newStartDate
   }
 }
 export { initialInfoState, validationSchema, deepEqual, validateDateRange, checkDateRangeChange };
-export type { IStream, IStreamVOD, ILiveStream, IStreamCreation };
+export type { IStream, IStreamVOD, ILiveStream, IStreamCreation, IAsset };

@@ -3,16 +3,15 @@ import React, { useEffect, useCallback, useReducer } from "react";
 import {
   IStreamCreation,
   ILiveStream,
-  IStreamVOD,
   deepEqual,
 } from "components/stream/definitions";
-import StreamVOD from "components/stream/stream-forms/VOD";
 import LiveStream from "components/stream/stream-forms/live-stream";
 import {
   estimateCost,
   finishTransaction,
   lockFunds,
 } from "store/slices/transaction.slice";
+import AssetUploader from 'components/stream/create-stream/asset-uploader';
 import { uploadStream } from "store/slices/stream.slice";
 import { fetchFunds } from "store/slices/account.slice";
 import { useDispatch, useSelector } from "react-redux";
@@ -131,14 +130,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     switch (streamType) {
       case "vod":
         return (
-          <StreamVOD
-            handleSave={handleSave}
-            selectedStream={selectedStream as IStreamVOD}
-            formMode={"create"}
-            handleEstimateCost={handleEstimateCost}
-            isLoading={isLoading}
-            handleDelete={() => null}
-          />
+          <AssetUploader />
         );
       case "live-stream":
         return (

@@ -49,9 +49,7 @@ const Video: React.FC<Props> = ({ values, video, handleChange, suspended }) => {
           console.log(Buffer.from(reader.result as any));
           handleChange({ target: { name: "videoSize", value: fileSize } });
           handleChange({ target: { name: "videoLength", value: fileLength } });
-          handleChange({
-            target: { name: "video", value: "s" },
-          });
+          
         }
       };
       reader.readAsArrayBuffer(file);
@@ -76,7 +74,7 @@ const Video: React.FC<Props> = ({ values, video, handleChange, suspended }) => {
     ))
   }
   return (
-    <div className="flex flex-col w-[48%] relative h-full">
+    <div className="flex flex-col w-[48%] relative h-full pr-[2rem]">
       {video ? (
         <div className="relative w-full h-full">
           <ReactPlayer 
@@ -106,7 +104,7 @@ const Video: React.FC<Props> = ({ values, video, handleChange, suspended }) => {
       ) : (
         <button
           onClick={onBtnClick}
-          className="h-[100%] rounded bg-secondary flex justify-center items-center text-white font-montserratbold text-[30px] hover:cursor-pointer"
+          className="h-[100%] rounded bg-secondary dark:bg-slate-600 flex justify-center items-center text-white font-montserratbold text-[30px] hover:cursor-pointer "
         >
           Upload your video!
         </button>
