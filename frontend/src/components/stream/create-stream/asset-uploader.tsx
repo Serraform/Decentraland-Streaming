@@ -37,6 +37,7 @@ const AssetUploader = () => {
       fileInfo: null,
       localVideo: null,
       tusEndpoint: "",
+      assetId: "",
     }
   );
   const { uploadInstance } = useTusUploadInstance(
@@ -44,7 +45,7 @@ const AssetUploader = () => {
     file.tusEndpoint,
     file.fileInfo?.name
   );
-  const { data, isLoading, isSuccess, isError } = useRequestAssetUploaderQuery(
+  const { data, isLoading, isSuccess } = useRequestAssetUploaderQuery(
     { walletID, assetName: file.fileInfo && file.fileInfo.name },
     {
       skip: !file.fileInfo,
@@ -53,7 +54,7 @@ const AssetUploader = () => {
 
   useEffect(() => {
     if (isSuccess && data) {
-      setFile({ tusEndpoint: data.tusEndPoint });
+      setFile({ tusEndpoint: data.tusEndPoint, assetId: data.asset.id });
     }
   }, [isSuccess, data]);
   const navigate = useNavigate();
@@ -149,7 +150,7 @@ const AssetUploader = () => {
                 onClick={() => {
                   if (uploadInstance) {
                     uploadInstance.start();
-                    dispatch(startUploadAsset({ title: file.fileInfo.name }));
+                    dispatch(startUploadAsset({ title: file.fileInfo.name,  assetId: file.assetId }));
                     addToast("Uploading asset started", {
                       appearance: "success",
                       autoDismiss: true,

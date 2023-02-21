@@ -4,10 +4,12 @@ type InitialState = {
   title: string;
   isUploading: boolean;
   percentage: number;
+  assetId: string;
 };
 
 const initialState: InitialState = {
   title: "",
+  assetId: "",
   isUploading: false,
   percentage: 0,
 };
@@ -17,9 +19,10 @@ const assetSlice = createSlice({
   initialState,
   reducers: {
     startUploadAsset(state: any, payload) {
-      const { title } = payload.payload;
+      const { title, assetId } = payload.payload;
       return {
         ...state,
+        assetId,
         title,
         isUploading: true,
       };
@@ -28,6 +31,7 @@ const assetSlice = createSlice({
       return {
         ...state,
         title: "",
+        assetId: "",
         percentange: "",
         isUploading: false,
       };

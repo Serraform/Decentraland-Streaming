@@ -10,7 +10,6 @@ import { RootState } from "store/configStore";
 import StreamTable from "components/streams/stream-table";
 
 import { useFetchStreamsByWalletIdQuery } from "store/api/streams.api";
-import { useFetchAssetsByWalletIdQuery } from "store/api/assets.api";
 import { useNavigate } from "react-router-dom";
 const Streams = () => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -24,13 +23,6 @@ const Streams = () => {
     isLoading: loading,
     isFetching,
   } = useFetchStreamsByWalletIdQuery(walletID, {
-    skip: walletID === "",
-    refetchOnMountOrArgChange: true,
-  });
-
-  const {
-    data: assets,
-  } = useFetchAssetsByWalletIdQuery(walletID, {
     skip: walletID === "",
     refetchOnMountOrArgChange: true,
   });

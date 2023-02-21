@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   useReactTable,
   getCoreRowModel,
@@ -22,12 +23,12 @@ const AssetTable: React.FC<Props> = ({
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
-  const rowModel = useMemo(() => table.getRowModel(), [table]);
   const headerGroups = useMemo(() => table.getHeaderGroups(), [table]);
   const pageCount = useMemo(() => table.getPageCount(), [table]);
-  const pagination = useMemo(() => table.getState().pagination, [table]);
-  const canPreviousPage = useMemo(() => table.getCanPreviousPage(), [table]);
-  const canNextPage = useMemo(() => table.getCanNextPage(), [table]);
+  const pagination =  table.getState().pagination;
+  const rowModel = useMemo(() => table.getRowModel(), [table, pagination]);
+  const canPreviousPage =  table.getCanPreviousPage()
+  const canNextPage =  table.getCanNextPage()
 
   return (
     <div className="container pt-5">

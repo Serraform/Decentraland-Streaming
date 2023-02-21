@@ -1,32 +1,34 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useMemo, useState, useCallback, useEffect } from "react";
+import { useMemo } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { columnsDefinition } from "components/assets/definitions/columns";
 import { IAsset } from "components/stream/definitions";
 // import { selectAsset, updateAssets } from "store/slices/assets.slice";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch } from "store/configStore";
+import { useSelector } from "react-redux";
+// import type { AppDispatch } from "store/configStore";
 import { RootState } from "store/configStore";
 import AssetTable from "components/assets/asset-table";
 
 import { useFetchAssetsByWalletIdQuery } from "store/api/assets.api";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 const Assets = () => {
-  const useAppDispatch = () => useDispatch<AppDispatch>();
-  const dispatch = useAppDispatch();
+  // const useAppDispatch = () => useDispatch<AppDispatch>();
+  // const dispatch = useAppDispatch();
   const { walletID } = useSelector((state: RootState) => state.accountData);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const {
     data: assets,
     error,
-    isSuccess,
     isLoading: loading,
-    isFetching,
   } = useFetchAssetsByWalletIdQuery(walletID, {
     skip: walletID === "",
     refetchOnMountOrArgChange: true,
   });
+
+  const { assetId, percentage } = useSelector(
+    (state: RootState) => state.assetsData
+  );
 
   // useEffect(() => {
   //   if (!isFetching && isSuccess) {
@@ -36,19 +38,19 @@ const Assets = () => {
 
   const columnHelper = createColumnHelper<IAsset>();
 
-  const handleSelectAsset = useCallback(
-    (selectedAsset: IAsset, index: number) => {
-      // const setSelectedAsset = { ...selectedAsset } as any;
-      // const navigateTo = `/asset/${setSelectedAsset.assetId}`;
-      // navigate(navigateTo);
-      // dispatch(selectAsset({ setSelectedAsset, index }));
-      return;
-    },
-    [dispatch, navigate]
-  );
+  // const handleSelectAsset = useCallback(
+  //   (selectedAsset: IAsset, index: number) => {
+  //     // const setSelectedAsset = { ...selectedAsset } as any;
+  //     // const navigateTo = `/asset/${setSelectedAsset.assetId}`;
+  //     // navigate(navigateTo);
+  //     // dispatch(selectAsset({ setSelectedAsset, index }));
+  //     return;
+  //   },
+  //   [dispatch, navigate]
+  // );
   const columns = useMemo(
-    () => columnsDefinition(columnHelper),
-    [columnHelper]
+    () => columnsDefinition(columnHelper, assetId, percentage),
+    [columnHelper, assetId, percentage]
   );
   if ((loading || !assets) && !error)
     return (
@@ -83,7 +85,11 @@ const Assets = () => {
           assets?.map((asset: any) => ({
             ...asset,
             assetInfo: JSON.parse(asset.assetInfo),
-          })) as IAsset[]
+          })).sort(
+            (a, b) =>
+              (new Date(b.timestamp) as any) -
+              (new Date(a.timestamp) as any)
+          ) as any as IAsset[]
         }
         handleSelectAsset={() => null}
       />

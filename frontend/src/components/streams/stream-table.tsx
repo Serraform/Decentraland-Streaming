@@ -5,7 +5,7 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { IStreamVOD, ILiveStream } from "components/stream/definitions";
-import { useEffect, useMemo } from "react";
+import {  useMemo } from "react";
 type Props = {
   columns: any;
   streams: (IStreamVOD | ILiveStream)[];
