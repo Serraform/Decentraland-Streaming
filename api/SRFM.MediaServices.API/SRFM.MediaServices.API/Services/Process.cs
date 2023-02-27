@@ -253,7 +253,8 @@ namespace SRFM.MediaServices.API
                     streamProps.Name = streamStatus.Name;
                     streamProps.StreamInfo = jsonStreamString;
                     streamProps.PlayBackId = streamStatus.PlayBackId;
-                    streamProps.SuspendStatus = "Suspended"; //streamStatus.Suspended ? "Suspended" : "Normal";
+                    streamProps.SuspendStatus = streamStatus.Suspended ? "Suspended" : "Normal";
+                    streamProps.StreamStatus = StreamStatus.Upcoming.ToString();
                     streamProps.Active = true;
 
                     var createStream = await _tableWriter.AddAsync("Stream", streamProps);
