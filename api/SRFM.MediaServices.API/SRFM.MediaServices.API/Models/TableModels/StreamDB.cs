@@ -19,13 +19,13 @@ namespace SRFM.MediaServices.API
                 
         public string StreamInfo { get; set; }
 
-        public StreamLP StreamLP
-        {
-            get
-            {
-                return JsonConvert.DeserializeObject<StreamLP>(StreamInfo);
-            }
-        }
+        //public StreamLP StreamLP
+        //{
+        //    get
+        //    {
+        //        return JsonConvert.DeserializeObject<StreamLP>(StreamInfo);
+        //    }
+        //}
 
         public string WalletId { get; set; }        
 
@@ -44,6 +44,8 @@ namespace SRFM.MediaServices.API
         public string Attendees { get; set; }           
 
         public string SuspendStatus { get; set; }
+
+        public string StreamStatus { get; set; }
 
         public string PlayBackId { get; set; }
 
