@@ -2,7 +2,8 @@ import * as tus from "tus-js-client";
 import { useMemo } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "store/configStore";
-import { updatePercentage, stopUploadAsset } from "store/slices/assets.slice";import { useToasts } from "react-toast-notifications";
+import { updatePercentage, stopUploadAsset } from "store/slices/assets.slice";
+import { useToasts } from "react-toast-notifications";
 const useTusUploadInstance = (
   file: File,
   tusEndpoint: string,
@@ -21,21 +22,21 @@ const useTusUploadInstance = (
           filetype: file.type,
         },
         uploadSize: file.size,
-        
+
         onError(err) {
           console.error("Error uploading file:", err);
         },
         onProgress(bytesUploaded, bytesTotal) {
           const percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
           console.log("Uploaded " + percentage + "%");
-          dispatch(updatePercentage({percentage: percentage}));
+          dispatch(updatePercentage({ percentage: percentage }));
         },
         onSuccess() {
           addToast("Asset uploaded successfully", {
-              appearance: "success",
-              autoDismiss: true,
-          })
-          dispatch(stopUploadAsset())
+            appearance: "success",
+            autoDismiss: true,
+          });
+          dispatch(stopUploadAsset());
           console.log("Upload finished:", (uploadInstance as any).url);
         },
       });

@@ -5,7 +5,7 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { IStreamVOD, ILiveStream } from "components/stream/definitions";
-import {  useMemo } from "react";
+import { useMemo } from "react";
 type Props = {
   columns: any;
   streams: (IStreamVOD | ILiveStream)[];
@@ -21,17 +21,21 @@ const StreamTable: React.FC<Props> = ({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageIndex: 0,
+        pageSize: 5,
+      },
+    },
   });
-  const rowModel = useMemo(() => table.getRowModel(), [table]);
   const headerGroups = useMemo(() => table.getHeaderGroups(), [table]);
   const pageCount = useMemo(() => table.getPageCount(), [table]);
-  const pagination = useMemo(() => table.getState().pagination, [table]);
-  const canPreviousPage = useMemo(() => table.getCanPreviousPage(), [table]);
-  const canNextPage = useMemo(() => table.getCanNextPage(), [table]);
-
+  const canPreviousPage =  table.getCanPreviousPage()
+  const pagination =  table.getState().pagination;
+  const rowModel = useMemo(() => table.getRowModel(), [table, pagination]);
+  const canNextPage =  table.getCanNextPage()
   return (
     <div className="container pt-5">
-      
       <table className="border-third  border rounded w-[100%]">
         <thead>
           {headerGroups.map((headerGroup) => (

@@ -5,26 +5,48 @@ export const columnsDefinition = (
   copySuccess: boolean,
   handleSelectStream: Function
 ) => [
-  columnHelper.accessor("status", {
-    id: "status",
+  columnHelper.accessor("streamStatus", {
+    id: "streamStatus",
     header: () => <span className="font-montserratbold">Status</span>,
-    cell: (info: any) =>
-      false ? (
-        <div className="flex justify-center flex-row items-center">
-          <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
-          <span className="text-[14px]">Suspended</span>
-        </div>
-      ) : info.row.original.streamInfo.IsActive ? (
-        <div className="flex justify-center flex-row items-center">
-          <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-green-600" />
-          <span className="text-[14px]">Live</span>
-        </div>
-      ) : (
-        <div className="flex justify-center flex-row items-center">
+    cell: (info: any) =>{
+    switch (info.getValue()) {
+      case "Upcoming":
+        return (
+          <div className="flex justify-center flex-row items-center">
+            <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-sky-400" />
+            <span className="text-[14px]">Upcoming</span>
+          </div>
+        );
+      case "Idle":
+        return (
+          <div className="flex justify-center flex-row items-center">
           <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-gray-600" />
           <span className="text-[14px]">Idle</span>
         </div>
-      ),
+        );
+      case "Live":
+        return (
+          <div className="flex justify-center flex-row items-center">
+          <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-green-600" />
+          <span className="text-[14px]">Live</span>
+        </div>
+        );
+      case "Suspended":
+        return (
+          <div className="flex justify-center flex-row items-center">
+          <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
+          <span className="text-[14px]">Suspended</span>
+        </div>
+        );
+      default:
+        return (
+          <div className="flex justify-center flex-row items-center">
+          <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
+          <span className="text-[14px]">Suspended</span>
+        </div>
+        );
+    }}
+    
   }),
   columnHelper.accessor("name", {
     id: "name",
@@ -90,37 +112,4 @@ export const columnsDefinition = (
       </span>
     ),
   }),
-  // columnHelper.accessor("actions", {
-  //   id: "actions",
-  //   header: () => <span className="font-montserratbold">Actions</span>,
-  //   cell: (info: any) => (
-  //     <div className="flex flex-row items-baseline justify-evenly">
-  //       <button
-  //         data-for="main"
-  //         className="flex w-[2rem] flex-row items-center justify-between hover:cursor-pointer  hover:transition hover:ease-linear  mx-auto p-1 rounded-sm"
-  //         data-iscapture="true"
-  //         data-tip={`Check Stream Info`}
-  //       >
-  //         <PreviewIcon />
-  //       </button>
-  //       <button
-  //         data-for="main"
-  //         className="flex w-[2rem] flex-row items-center justify-between hover:cursor-pointer  mx-auto p-1 rounded-sm"
-  //         data-iscapture="true"
-  //         data-tip={`Edit Stream`}
-  //         onClick={() => handleSelectStream(info.row.original, info.row.index)}
-  //       >
-  //         <EditIcon />{" "}
-  //       </button>
-  //       <button
-  //         data-for="main"
-  //         className="flex w-[1.7rem] flex-row items-center justify-between hover:cursor-pointer   mx-auto p-1 rounded-sm"
-  //         data-iscapture="true"
-  //         data-tip={`Delete Stream`}
-  //       >
-  //         <DeleteIcon />
-  //       </button>
-  //     </div>
-  //   ),
-  // }),
 ];
