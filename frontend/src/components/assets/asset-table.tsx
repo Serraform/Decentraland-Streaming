@@ -22,6 +22,12 @@ const AssetTable: React.FC<Props> = ({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    initialState:{
+      pagination:{
+        pageIndex:0,
+        pageSize:5
+      }
+    }
   });
   const headerGroups = useMemo(() => table.getHeaderGroups(), [table]);
   const pageCount = useMemo(() => table.getPageCount(), [table]);
@@ -29,7 +35,6 @@ const AssetTable: React.FC<Props> = ({
   const rowModel = useMemo(() => table.getRowModel(), [table, pagination]);
   const canPreviousPage =  table.getCanPreviousPage()
   const canNextPage =  table.getCanNextPage()
-
   return (
     <div className="container pt-5">
       

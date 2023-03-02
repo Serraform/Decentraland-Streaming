@@ -3,15 +3,6 @@ export const columnsDefinition = (
   assetId: string,
   percentage: number
 ) => [
-  columnHelper.accessor("assetName", {
-    id: "assetName",
-    header: () => <span className="font-montserratbold">Name</span>,
-    cell: (info: any) => (
-      <span className="font-montserratregular text-[14.5px] text-start">
-         {info.getValue().length > 10 ? `${info.getValue().slice(0, 15)}...` : info.getValue()}
-      </span>
-    ),
-  }),
   columnHelper.accessor("status", {
     id: "status",
     header: () => <span className="font-montserratbold">Status</span>,
@@ -23,13 +14,23 @@ export const columnsDefinition = (
             Uploading: {percentage}%
           </span>
         );
-      } else if (info.row.original.uploadStatus) {
-        return (
-          <div className="flex justify-center flex-row items-center">
-            <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-green-600" />
-            <span className="text-[14px]">Uploaded</span>
-          </div>
-        );
+      } else if (info.row.original.uploadAssetStatus !== null) {
+        const uploadAssetInfo = JSON.parse(info.row.original.uploadAssetStatus);
+        if (uploadAssetInfo.Phase === "ready") {
+          return (
+            <div className="flex justify-center flex-row items-center">
+              <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-green-600" />
+              <span className="text-[14px]">Uploaded</span>
+            </div>
+          );
+        } else {
+          return (
+            <div className="flex justify-center flex-row items-center">
+              <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
+              <span className="text-[14px]">Upload incompleted</span>
+            </div>
+          );
+        }
       }
       return (
         <div className="flex justify-center flex-row items-center">
@@ -39,9 +40,20 @@ export const columnsDefinition = (
       );
     },
   }),
+  columnHelper.accessor("assetName", {
+    id: "assetName",
+    header: () => <span className="font-montserratbold">Name</span>,
+    cell: (info: any) => (
+      <span className="font-montserratregular text-[14.5px] text-start">
+        {info.getValue().length > 10
+          ? `${info.getValue().slice(0, 15)}...`
+          : info.getValue()}
+      </span>
+    ),
+  }),
   columnHelper.accessor("dateCreated", {
     id: "dateCreated",
-    header: () => <span className="font-montserratbold">Date Created</span>,
+    header: () => <span className="font-montserratbold">Last Update</span>,
     cell: (info: any) => {
       return (
         <span className="font-montserratregular text-[14.5px]">
