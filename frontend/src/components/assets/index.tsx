@@ -1,26 +1,29 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { columnsDefinition } from "components/assets/definitions/columns";
 import { IAsset } from "components/stream/definitions";
-// import { selectAsset, updateAssets } from "store/slices/assets.slice";
-import { useSelector } from "react-redux";
-// import type { AppDispatch } from "store/configStore";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "store/configStore";
 import AssetTable from "components/assets/asset-table";
-
-import { useFetchAssetsByWalletIdQuery } from "store/api/assets.api";
-// import { useNavigate } from "react-router-dom";
+import type { AppDispatch } from "store/configStore";
+import {
+  useFetchAssetsByWalletIdQuery,
+  useFetchAssetStatusQuery,
+} from "store/api/assets.api";
+import {
+  selectAsset,
+  stopUploadAsset
+} from 'store/slices/assets.slice';
 const Assets = () => {
-  // const useAppDispatch = () => useDispatch<AppDispatch>();
-  // const dispatch = useAppDispatch();
   const { walletID } = useSelector((state: RootState) => state.accountData);
-  // const navigate = useNavigate();
-
+  const useAppDispatch = () => useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const {
     data: assets,
     error,
     isLoading: loading,
+    refetch,
   } = useFetchAssetsByWalletIdQuery(walletID, {
     skip: walletID === "",
     refetchOnMountOrArgChange: true,
@@ -29,29 +32,30 @@ const Assets = () => {
   const { assetId, percentage } = useSelector(
     (state: RootState) => state.assetsData
   );
-
-  // useEffect(() => {
-  //   if (!isFetching && isSuccess) {
-  //     dispatch(updateAssets(assets));
-  //   }
-  // }, [isSuccess]);
-
+  const { isSuccess: isSuccessStatusQuery, isLoading: isLoadingAssetStatus} = useFetchAssetStatusQuery(assetId, {
+    skip: assetId === "" || percentage + "" !== "100.00",
+    refetchOnMountOrArgChange: true,
+  });
   const columnHelper = createColumnHelper<IAsset>();
-
-  // const handleSelectAsset = useCallback(
-  //   (selectedAsset: IAsset, index: number) => {
-  //     // const setSelectedAsset = { ...selectedAsset } as any;
-  //     // const navigateTo = `/asset/${setSelectedAsset.assetId}`;
-  //     // navigate(navigateTo);
-  //     // dispatch(selectAsset({ setSelectedAsset, index }));
-  //     return;
-  //   },
-  //   [dispatch, navigate]
-  // );
+  const selectAssetForRefetchStatus = (assetId: string) => {
+    dispatch(selectAsset(assetId));
+  };
   const columns = useMemo(
-    () => columnsDefinition(columnHelper, assetId, percentage),
-    [columnHelper, assetId, percentage]
+    () =>
+      columnsDefinition(
+        columnHelper,
+        assetId,
+        percentage,
+        selectAssetForRefetchStatus
+      ),
+    [columnHelper, assetId, percentage, selectAssetForRefetchStatus]
   );
+  useEffect(() => {
+    if (percentage + "" === "100.00" && isSuccessStatusQuery && !isLoadingAssetStatus) {
+      refetch();
+      dispatch(stopUploadAsset());
+    }
+  }, [percentage, isSuccessStatusQuery, isLoadingAssetStatus]);
   if ((loading || !assets) && !error)
     return (
       <>
@@ -82,14 +86,15 @@ const Assets = () => {
       <AssetTable
         columns={columns}
         assets={
-          assets?.map((asset: any) => ({
-            ...asset,
-            assetInfo: JSON.parse(asset.assetInfo),
-          })).sort(
-            (a, b) =>
-              (new Date(b.timestamp) as any) -
-              (new Date(a.timestamp) as any)
-          ) as any as IAsset[]
+          assets
+            ?.map((asset: any) => ({
+              ...asset,
+              assetInfo: JSON.parse(asset.assetInfo),
+            }))
+            .sort(
+              (a, b) =>
+                (new Date(b.timestamp) as any) - (new Date(a.timestamp) as any)
+            ) as any as IAsset[]
         }
         handleSelectAsset={() => null}
       />

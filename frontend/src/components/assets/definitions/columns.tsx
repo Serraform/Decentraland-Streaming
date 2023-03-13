@@ -1,7 +1,10 @@
+import RefreshIcon from "assets/icons/Refresh";
+
 export const columnsDefinition = (
   columnHelper: any,
   assetId: string,
-  percentage: number
+  percentage: number,
+  selectAssetForRefetchStatus: Function
 ) => [
   columnHelper.accessor("status", {
     id: "status",
@@ -23,11 +26,11 @@ export const columnsDefinition = (
               <span className="text-[14px]">Uploaded</span>
             </div>
           );
-        } else {
+        } else if (uploadAssetInfo.Phase === "waiting" || uploadAssetInfo.Phase === "processing") {
           return (
             <div className="flex justify-center flex-row items-center">
-              <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
-              <span className="text-[14px]">Upload incompleted</span>
+              <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-yellow-600" />
+              <span className="text-[14px]">Waiting for optimizations</span>
             </div>
           );
         }
@@ -59,6 +62,20 @@ export const columnsDefinition = (
         <span className="font-montserratregular text-[14.5px]">
           {new Date(info.row.original.timestamp).toDateString()}
         </span>
+      );
+    },
+  }),
+  columnHelper.accessor("reload", {
+    id: "reload",
+    header: () => <span className="font-montserratbold">Refresh asset</span>,
+    cell: (info: any) => {
+      return (
+        <button onClick={(e) => {
+          e.stopPropagation();
+          selectAssetForRefetchStatus(info.row.original.assetId);
+        }}>
+          <RefreshIcon />
+        </button>
       );
     },
   }),

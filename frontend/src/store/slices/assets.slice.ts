@@ -27,12 +27,19 @@ const assetSlice = createSlice({
         isUploading: true,
       };
     },
+    selectAsset(state: any, payload) {
+      return {
+        ...state,
+        assetId: payload.payload,
+        percentage: "100.00",
+      };
+    },
     stopUploadAsset(state: any) {
       return {
         ...state,
         title: "",
         assetId: "",
-        percentange: "",
+        percentage: "",
         isUploading: false,
       };
     },
@@ -46,7 +53,7 @@ const assetSlice = createSlice({
   },
 });
 
-export const { startUploadAsset, stopUploadAsset, updatePercentage } =
+export const { startUploadAsset, stopUploadAsset, updatePercentage, selectAsset } =
   assetSlice.actions;
 
 export default assetSlice.reducer;

@@ -19,6 +19,12 @@ export const assetsApi = createApi({
         method: "get",
       }),
     }),
+    fetchAssetStatus: builder.query<any[], string>({
+      query: (assetID) => ({
+        url: `api/Asset/GetAssetStatus/${assetID}`,
+        method: "get",
+      }),
+    }),
     requestAssetUploader: builder.query<any, any>({
       query: ({ walletID, assetName }) => ({
         url: `api/Asset/RequestUploadURL/${assetName}/${walletID}`,
@@ -32,4 +38,5 @@ export const {
   useFetchAssetsByWalletIdQuery,
   useRequestAssetUploaderQuery,
   useFetchAssetDetailsQuery,
+  useFetchAssetStatusQuery
 } = assetsApi;
