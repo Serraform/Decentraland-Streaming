@@ -52,8 +52,7 @@ const CommonForm: React.FC<Props> = ({
     ((isAfter(Date.now(), returnAsDate(values.streamStartDate)) &&
       isBefore(Date.now(), returnAsDate(values.streamEndDate))) ||
       isAfter(Date.now(), returnAsDate(values.streamEndDate)) ||
-      false);
-  //  values.streamInfo.Suspended);
+      values.streamInfo.streamStatus === "Suspended");
 
   useEffect(() => {
     if (streamIsHappeningOrHasHappened) {

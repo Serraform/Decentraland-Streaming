@@ -6,7 +6,8 @@ import { differenceInHours } from "date-fns";
 import FaqIcon from "assets/icons/Question";
 import ReactTooltip from "react-tooltip";
 import { checkDateRangeChange } from "components/stream/definitions";
-
+import Dropdown from "react-dropdown";
+import "react-dropdown/style.css";
 type Props = {
   values: any;
   handleChange: Function;
@@ -14,6 +15,9 @@ type Props = {
   initialValues: any;
   datesHasChange: Function;
 };
+
+const options = Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0'));
+
 
 const Calendar: React.FC<Props> = ({
   values,
@@ -97,7 +101,9 @@ const Calendar: React.FC<Props> = ({
                 <div
                   className="form-tooltip"
                   data-for="stream-calendar"
-                  data-tip={"Start and end date that you want to stream, the hours are in 24h format"}
+                  data-tip={
+                    "Start and end date that you want to stream, the hours are in 24h format"
+                  }
                   data-iscapture="true"
                 >
                   <FaqIcon />
@@ -111,13 +117,18 @@ const Calendar: React.FC<Props> = ({
                   {...startDateInputProps}
                   placeholder="Start date"
                 />
-                <input
-                  className={`mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border ${
-                    focus === "startDate" ? " -focused" : ""
-                  } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
-                  style={{ marginLeft: 16, width: 80 }}
+                <Dropdown
+                  options={options}
                   {...timeStartInputProps}
                   placeholder="HH"
+                  onChange={(e) => {
+                    timeStartInputProps.onChange({
+                      target: { value: e.value },
+                    });
+                  }}
+                  className={`mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border rounded ${
+                    focus === "startDate" ? " -focused" : ""
+                  } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none w-[80px] ml-[16px]`}
                 />
                 <span className="dark:text-white">to</span>{" "}
                 <input
@@ -127,14 +138,20 @@ const Calendar: React.FC<Props> = ({
                     focus === "endDate" ? " -focused" : ""
                   } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
                 />
-                <input
-                  className={`mb-[20px] mt-[10px] m-2 ml-2 w-[100%] border ${
-                    focus === "endDate" ? " -focused" : ""
-                  } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
-                  style={{ marginLeft: 16, width: 80 }}
+                 <Dropdown
+                  options={options}
                   {...timeEndInputProps}
                   placeholder="HH"
+                  onChange={(e) => {
+                    timeEndInputProps.onChange({
+                      target: { value: e.value },
+                    });
+                  }}
+                  className={`mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border rounded ${
+                    focus === "endDate" ? " -focused" : ""
+                  } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none w-[80px] ml-[16px]`}
                 />
+                
               </div>
               <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
                 {values.streamStartDate && values.streamEndDate ? (
