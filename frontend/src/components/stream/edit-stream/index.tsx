@@ -286,7 +286,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
             {renderDetail(
               "Created at",
               false,
-              new Date((selectedStream?.streamInfo).CreatedAt).toLocaleString()
+              new Date((selectedStream?.streamInfo).CreatedAt).toLocaleString().split(",")[0]
             )}
           </div>
         </div>

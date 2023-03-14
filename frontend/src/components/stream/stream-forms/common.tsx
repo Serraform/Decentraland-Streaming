@@ -6,6 +6,8 @@ import Calendar from "components/stream/stream-forms/calendar";
 import { isAfter, isBefore } from "date-fns";
 import { useToasts } from "react-toast-notifications";
 import FormButtons from "components/stream/stream-forms/form-buttons";
+import FaqIcon from "assets/icons/Question";
+import ReactTooltip from "react-tooltip";
 type Props = {
   values: any;
   initialValues: any;
@@ -40,7 +42,7 @@ const CommonForm: React.FC<Props> = ({
   handleDelete,
   formMode,
 }) => {
-  const {addToast} = useToasts()
+  const { addToast } = useToasts();
   const [needsToEstimateNewCost, setNeedsToEstimateNewCost] = useState(false);
   const [openSuspendModal, setOpenSuspendModal] = useState(false);
   const streamIsBeingCreated = values.streamInfo.CreatedAt === 0;
@@ -52,23 +54,24 @@ const CommonForm: React.FC<Props> = ({
       isAfter(Date.now(), returnAsDate(values.streamEndDate)) ||
       false);
   //  values.streamInfo.Suspended);
- 
+
   useEffect(() => {
-
-    if(streamIsHappeningOrHasHappened){
-      addToast("This stream cannot be modified because it has already passed.",  {
-        appearance: "warning",
-        autoDismiss: true,
-      })
+    if (streamIsHappeningOrHasHappened) {
+      addToast(
+        "This stream cannot be modified because it has already passed.",
+        {
+          appearance: "warning",
+          autoDismiss: true,
+        }
+      );
     }
-
-  }, [streamIsHappeningOrHasHappened, addToast])
+  }, [streamIsHappeningOrHasHappened, addToast]);
 
   const preventMinus = (e: any) => {
-    if (e.code === 'Minus') {
-        e.preventDefault();
+    if (e.code === "Minus") {
+      e.preventDefault();
     }
-};
+  };
 
   return (
     <>
@@ -77,11 +80,25 @@ const CommonForm: React.FC<Props> = ({
         handleAction={handleDelete}
         handleClose={setOpenSuspendModal}
       />
-      
+
       <div className="flex flex-row justify-between  items-baseline">
         <div className="mb-2 w-full mr-3">
-          <h2 className="font-montserratbold text-black text-[14px] dark:text-white">
+          <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center">
             Stream name
+            <ReactTooltip
+              id="stream-name"
+              place="top"
+              type={"dark"}
+              effect={"float"}
+            />
+            <div
+              className="form-tooltip"
+              data-for="stream-name"
+              data-tip={"Name of the stream"}
+              data-iscapture="true"
+            >
+              <FaqIcon />
+            </div>
           </h2>
           <Field
             type="text"
@@ -95,8 +112,22 @@ const CommonForm: React.FC<Props> = ({
           />
         </div>
         <div className="mb-2 w-full ml-3">
-          <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
+          <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center">
             Estimated number of attendees
+            <ReactTooltip
+              id="stream-attendees"
+              place="top"
+              type={"dark"}
+              effect={"float"}
+            />
+            <div
+              className="form-tooltip"
+              data-for="stream-attendees"
+              data-tip={"Estimated number of attendees of the stream"}
+              data-iscapture="true"
+            >
+              <FaqIcon />
+            </div>
           </h2>
           <Field
             type="number"
@@ -119,7 +150,7 @@ const CommonForm: React.FC<Props> = ({
         datesHasChange={setNeedsToEstimateNewCost}
         initialValues={initialValues}
       />
-     
+
       <div className="mt-auto flex flex-col justify-end items-end">
         {cost !== 0 && !loading && (
           <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem] dark:text-primary">
@@ -130,7 +161,7 @@ const CommonForm: React.FC<Props> = ({
             ${cost} USDC
           </h2>
         )}
- 
+
         <div className="flex">
           <FormButtons
             formMode={formMode}

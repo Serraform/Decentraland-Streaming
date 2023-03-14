@@ -312,3 +312,7 @@ input{
 
 .react-player__shadow, .react-player__play-icon{
   display: none!important;}
+
+  .form-tooltip svg{
+    @apply w-[15px] h-[15px] ml-1;
+  }
