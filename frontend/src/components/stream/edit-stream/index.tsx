@@ -53,7 +53,6 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   const { walletID } = useSelector((state: RootState) => state.accountData);
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
- 
 
   const [
     deleteStream,
@@ -96,7 +95,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
       editStream({
         streamValues: {
           ...streamValues,
-          cost: ""+cost,
+          cost: "" + cost,
         },
       });
     }
@@ -117,13 +116,15 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
           returnAsDate(selectedStream.streamStartDate),
           returnAsDate(selectedStream.streamEndDate),
           returnAsDate(values.streamStartDate),
-          returnAsDate(values.streamEndDate),
+          returnAsDate(values.streamEndDate)
         )
       ) {
         case 0:
-          
           costDifference = streamValues.cost - cost;
-          duration = differenceInMinutes(returnAsDate(values.streamEndDate), Date.now());
+          duration = differenceInMinutes(
+            returnAsDate(values.streamEndDate),
+            Date.now()
+          );
           durationUntilStart = differenceInMinutes(
             returnAsDate(values.streamStartDate),
             Date.now()
@@ -143,9 +144,12 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
           break;
         case 1:
           costDifference = cost - streamValues.cost;
-          duration = differenceInMinutes( returnAsDate(values.streamEndDate), Date.now());
+          duration = differenceInMinutes(
+            returnAsDate(values.streamEndDate),
+            Date.now()
+          );
           durationUntilStart = differenceInMinutes(
-             returnAsDate(values.streamStartDate),
+            returnAsDate(values.streamStartDate),
             Date.now()
           );
           dispatch(
@@ -161,7 +165,6 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
           // the date range has been extended
           break;
         case -1:
-          
           // the date range didn't change
           editStream({
             streamValues: {
@@ -214,7 +217,6 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
             selectedStream={{
               ...(selectedStream as ILiveStream),
             }}
-            
             formMode={"edit"}
             handleEstimateCost={handleEstimateCost}
             isLoading={isLoading}
@@ -262,7 +264,11 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
         <div className=" mt-[40px]">
           <h3 className="font-montserratbold dark:text-white">Details</h3>
           <div className="flex flex-col justify-between border-t-third border mt-1 border-l-0 border-r-0 border-b-0 dark:border-t-[#323739]">
-            {renderDetail("Stream ID", true, (selectedStream?.streamInfo).Id)}
+            {renderDetail(
+              "Playback URL",
+              true,
+              `https://livepeercdn.studio/hls/${selectedStream?.streamInfo.PlayBackId}/index.m3u8`
+            )}
             {renderDetail(
               "Stream Key",
               true,
@@ -273,20 +279,14 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
               true,
               "rtmp://rtmp.serraform.com/live"
             )}
-            {renderDetail(
-              "Playback ID",
-              true,
-              (selectedStream?.streamInfo).PlayBackId
-            )}
-            {renderDetail(
-              "Playback URL",
-              true,
-              `https://livepeercdn.studio/hls/${selectedStream?.streamInfo.PlayBackId}/index.m3u8`
-            )}
+            {renderDetail("Stream ID", true, (selectedStream?.streamInfo).Id)}
+
             {renderDetail(
               "Created at",
               false,
-              new Date((selectedStream?.streamInfo).CreatedAt).toLocaleString()
+              new Date((selectedStream?.streamInfo).CreatedAt)
+                .toLocaleString()
+                .split(",")[0]
             )}
           </div>
         </div>
