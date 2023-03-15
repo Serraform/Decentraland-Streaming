@@ -17,9 +17,9 @@ namespace SRFM.MediaServices.API
 
         public string WalletId { get; set; }
 
-        public string StreamId { get; set; }
+       // public string StreamId { get; set; }
 
-        public string StreamFrom { get; set; }
+       // public string StreamFrom { get; set; }
 
         public string FileName { get; set; }
 
