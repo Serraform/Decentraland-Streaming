@@ -59,7 +59,11 @@ const StreamTable: React.FC<Props> = ({
             <tr
               key={row.id}
               className="my-2 py-2 h-20 rounded  hover:opacity-2 hover:bg-[#f7f9fa] hover:cursor-pointer hover:transition-transform dark:hover:bg-[#1a1d1e]"
-              onClick={(e) => handleSelectStream(row.original)}
+              onClick={(e) => {
+                if((e.target as HTMLDivElement).nodeName === 'INPUT'){
+                  return;
+                }
+                handleSelectStream(row.original)}}
             >
               {row.getVisibleCells().map((cell) => (
                 <td

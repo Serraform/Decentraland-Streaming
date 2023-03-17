@@ -30,7 +30,7 @@ const WalletDrawer: React.FC<Props> = ({ openDrawer, setOpenDrawer }) => {
             </div>
             <div className="ml-2">
               <span className="font-montserratbold tracking-[0.1rem] dark:text-white">
-                My Serraform Wallet
+                My Admin Serraform Wallet
               </span>
             </div>
           </div>

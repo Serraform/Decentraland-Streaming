@@ -21,6 +21,17 @@ const Home = () => {
     <>
       <div className="container pt-10 flex flex-row justify-end">
         <form>
+        <label className="mr-2 font-montserratregular text-black  dark:text-white ">
+            <input
+              type="radio"
+              className="mr-1"
+              name="type"
+              value="streams"
+              checked={list.type === "streams"}
+              onClick={(e) => handleChangeType(e)}
+            />
+            Streams to pull
+          </label>
           <label className="mr-2 font-montserratregular text-black  dark:text-white ">
             <input
               type="radio"

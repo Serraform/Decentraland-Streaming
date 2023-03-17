@@ -19,6 +19,7 @@ const initialState = {
   error: null,
   locked_balance: 0,
   isTokenContractApprove: false,
+  role: "user"
 };
 
 const targetNetworkId = "0x5";
@@ -156,6 +157,7 @@ export const fetchFunds = createAsyncThunk(
       );
       await switchNetwork();
       const accountInfo = await contract.view_sub_info(walletID);
+      const isAdmin = await contract.admin(walletID);
       const balance = Number(accountInfo.balance._hex) as any;
       const isTokenContractApprove = await checkAllowance(
         signer,
@@ -166,6 +168,7 @@ export const fetchFunds = createAsyncThunk(
         balance: balance,
         locked_balance: Number(accountInfo.lockedBalance._hex) as any,
         isTokenContractApprove: isTokenContractApprove,
+        role: isAdmin ? "admin" : "user"
       };
     } catch (e) {
       return {
@@ -249,6 +252,7 @@ const accountSlice = createSlice({
       state.locked_balance = action.payload?.locked_balance;
       state.isTokenContractApprove = action.payload
         ?.isTokenContractApprove as boolean;
+       state.role = action.payload?.role as string; 
     });
     builder.addCase(fetchFunds.rejected, (state, action) => {
       state.loading = false;

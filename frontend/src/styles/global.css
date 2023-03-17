@@ -247,7 +247,9 @@ input{
   @apply rounded dark:bg-inherit;
 }
 
-
+input[type="checkbox"]:checked {
+  @apply accent-sky-600 text-white  dark:accent-slate-500;
+}
 
 .nice-dates-grid{
   height: 310px!important;

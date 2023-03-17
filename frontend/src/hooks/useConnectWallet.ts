@@ -18,6 +18,7 @@ const useConnectWallet = () => {
   useEffect(() => {
   const { ethereum } = window as any;
     if (ethereum) {
+    ethereum.enable().then(function(accounts: any){
       ethereum.on("accountsChanged", (accounts: any) => {
         if (accounts.length > 0) {
           window.location.reload();
@@ -26,6 +27,7 @@ const useConnectWallet = () => {
           // setStatus("🦊 Connect to Metamask using the top right button.");
         }
       });
+    });
     }
   }, [dispatch]);
   
