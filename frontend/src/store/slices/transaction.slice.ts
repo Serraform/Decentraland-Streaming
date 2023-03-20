@@ -164,7 +164,7 @@ export const editVault = createAsyncThunk(
         smartcontractABI,
         signer
       );
-      
+
       const amountToEdit = ethers.utils.parseUnits("" + amountToBeUnlock, "6");
       const tx = await contract.edit_vault(
         vaultContractId,
@@ -188,6 +188,48 @@ export const editVault = createAsyncThunk(
       }
     } catch (e) {
       addToast("We couldn't update your funds", {
+        appearance: "error",
+        autoDismiss: true,
+      });
+      throw new Error();
+    }
+  }
+);
+
+export const withdrawToTreasury = createAsyncThunk(
+  "transaction/withdrawToTreasury",
+  async (props: any) => {
+    // multiWithdraw
+    const { vaultsId, vaultsCosts, addToast } = props;
+    try {
+      const { ethereum } = window as any;
+      if (!ethereum) {
+        return;
+      }
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESS as string,
+        smartcontractABI,
+        signer
+      );
+      const tx = await contract.multiWithdraw(vaultsId, vaultsCosts);
+      addToast("Waiting for transaction approval", {
+        autoDismiss: true,
+      });
+      const receipt = await tx.wait();
+      if (receipt.status === 1) {
+        addToast("Vaults withdrawn succesfully", {
+          appearance: "success",
+          autoDismiss: true,
+        });
+        return receipt;
+      } else {
+        throw new Error();
+      }
+    } catch (e) {
+      addToast("We couldn't withdrawn funds", {
         appearance: "error",
         autoDismiss: true,
       });
@@ -251,6 +293,20 @@ const transactionSlice = createSlice({
       state.error = (action.error as any).message;
       state.cost = 0;
     });
+    builder.addCase(withdrawToTreasury.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(withdrawToTreasury.fulfilled, (state, action) => {
+      state.loading = false;
+      state.receipt = action.payload;
+      state.transactionType = "edit";
+    });
+    builder.addCase(withdrawToTreasury.rejected, (state, action) => {
+      state.loading = false;
+      state.error = (action.error as any).message;
+      state.cost = 0;
+    });
+
     builder.addCase(estimateCost.pending, (state) => {
       state.loading = true;
     });
