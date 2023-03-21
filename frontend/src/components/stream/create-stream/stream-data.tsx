@@ -144,6 +144,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
             handleDelete={() => null}
           />
         );
+        case "relay-service":
       default:
         <></>;
     }
