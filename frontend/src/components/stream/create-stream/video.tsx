@@ -94,7 +94,7 @@ const Video: React.FC<Props> = ({ values, video, handleChange }) => {
             playing={true}
             width="auto"
             height="100%"
-            light={!(data as any)?.streamInfo.isActive}
+            light={!((data as any)?.streamStatus === "Live")}
           ></ReactPlayer>
           {renderStatus()}
         </div>
