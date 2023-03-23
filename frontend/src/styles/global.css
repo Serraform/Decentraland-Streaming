@@ -304,7 +304,9 @@ input{
 
 .question-icon{
   @apply  fill-sky-500 dark:fill-slate-500 }
-
+.stroke-add{
+  @apply dark:!stroke-[#151719] !stroke-[#fdfdfd];
+}
 .react-player__preview{
   @apply bg-slate-800;
   pointer-events:none;

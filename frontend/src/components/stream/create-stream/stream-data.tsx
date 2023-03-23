@@ -11,7 +11,7 @@ import {
   finishTransaction,
   lockFunds,
 } from "store/slices/transaction.slice";
-import AssetUploader from 'components/stream/create-stream/asset-uploader';
+
 import { uploadStream } from "store/slices/stream.slice";
 import { fetchFunds } from "store/slices/account.slice";
 import { useDispatch, useSelector } from "react-redux";
@@ -130,7 +130,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     switch (streamType) {
       case "vod":
         return (
-          <AssetUploader />
+          <></>
         );
       case "live-stream":
         return (

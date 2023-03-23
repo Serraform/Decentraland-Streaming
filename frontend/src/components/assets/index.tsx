@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { columnsDefinition } from "components/assets/definitions/columns";
 import { IAsset } from "components/stream/definitions";
@@ -11,11 +11,11 @@ import {
   useFetchAssetsByWalletIdQuery,
   useFetchAssetStatusQuery,
 } from "store/api/assets.api";
-import {
-  selectAsset,
-  stopUploadAsset
-} from 'store/slices/assets.slice';
+import { selectAsset, stopUploadAsset } from "store/slices/assets.slice";
+import AddIcon from "assets/icons/Add";
+import AssetUploader from "components/stream/create-stream/asset-uploader";
 const Assets = () => {
+  const [openAssetUploader, setOpenAssetUploader] = useState(false);
   const { walletID } = useSelector((state: RootState) => state.accountData);
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
@@ -32,10 +32,11 @@ const Assets = () => {
   const { assetId, percentage } = useSelector(
     (state: RootState) => state.assetsData
   );
-  const { isSuccess: isSuccessStatusQuery, isLoading: isLoadingAssetStatus} = useFetchAssetStatusQuery(assetId, {
-    skip: assetId === "" || percentage + "" !== "100.00",
-    refetchOnMountOrArgChange: true,
-  });
+  const { isSuccess: isSuccessStatusQuery, isLoading: isLoadingAssetStatus } =
+    useFetchAssetStatusQuery(assetId, {
+      skip: assetId === "" || percentage + "" !== "100.00",
+      refetchOnMountOrArgChange: true,
+    });
   const columnHelper = createColumnHelper<IAsset>();
   const selectAssetForRefetchStatus = (assetId: string) => {
     dispatch(selectAsset(assetId));
@@ -51,7 +52,11 @@ const Assets = () => {
     [columnHelper, assetId, percentage, selectAssetForRefetchStatus]
   );
   useEffect(() => {
-    if (percentage + "" === "100.00" && isSuccessStatusQuery && !isLoadingAssetStatus) {
+    if (
+      percentage + "" === "100.00" &&
+      isSuccessStatusQuery &&
+      !isLoadingAssetStatus
+    ) {
       refetch();
       dispatch(stopUploadAsset());
     }
@@ -83,6 +88,18 @@ const Assets = () => {
     );
   return (
     <>
+      {openAssetUploader && (
+        <AssetUploader setOpenAssetUploader={setOpenAssetUploader} />
+      )}
+      <div className="container flex flex-row justify-end">
+        <button
+          className="btn-third flex flex-row items-center !pr-0"
+          onClick={() => setOpenAssetUploader(true)}
+        >
+          <AddIcon />{" "}
+          <span className="dark:text-white ml-2">Add new asset</span>
+        </button>
+      </div>
       <AssetTable
         columns={columns}
         assets={
