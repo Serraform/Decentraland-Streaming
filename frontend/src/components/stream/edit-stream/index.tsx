@@ -203,10 +203,13 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
         return (
           <StreamVOD
             handleSave={handleSave}
-            selectedStream={selectedStream as IStreamVOD}
+            selectedStream={{
+              ...(selectedStream as IStreamVOD),
+            }}
             formMode={"edit"}
             handleEstimateCost={handleEstimateCost}
             isLoading={isLoading}
+            cost={cost}
             handleDelete={handleDelete}
           />
         );

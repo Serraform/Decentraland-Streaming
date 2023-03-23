@@ -13,7 +13,7 @@ import {
 } from "store/api/assets.api";
 import { selectAsset, stopUploadAsset } from "store/slices/assets.slice";
 import AddIcon from "assets/icons/Add";
-import AssetUploader from "components/stream/create-stream/asset-uploader";
+import AssetUploader from "components/asset-uploader/asset-uploader";
 const Assets = () => {
   const [openAssetUploader, setOpenAssetUploader] = useState(false);
   const { walletID } = useSelector((state: RootState) => state.accountData);

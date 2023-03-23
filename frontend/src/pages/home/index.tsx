@@ -1,6 +1,6 @@
 import Streams from "components/streams";
 import Assets from "components/assets";
-import UploaderProgress from "components/uploader-progress";
+import UploaderProgress from "components/asset-uploader/uploader-progress";
 import { useReducer } from "react";
 
 import useConnectWallet from "hooks/useConnectWallet";
