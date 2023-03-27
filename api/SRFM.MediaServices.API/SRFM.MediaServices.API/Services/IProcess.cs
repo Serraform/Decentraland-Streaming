@@ -32,6 +32,8 @@ namespace SRFM.MediaServices.API
 
         public Task<object> DeleteAsset(AssetDB assetProps);
 
+        public Task<List<StreamDB>> ListStream();
+
         public Task<HttpResponseMessage> SuspendStream(string streamId, string walletId);
 
         public Task<HttpResponseMessage> UnSuspendStream(string streamId, string walletId);

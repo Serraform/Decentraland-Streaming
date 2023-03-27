@@ -152,6 +152,11 @@ namespace SRFM.MediaServices.API
             return await _tableReader.ListItemsAsync<StreamDB>("Stream", StorageAccount.PartitionKey);
         }
 
+        public async Task<List<StreamDB>> ListIsActiveItemsAsync(bool isActive)
+        {
+            return await _tableReader.ListIsActiveItemsAsync<StreamDB>("Stream", StorageAccount.PartitionKey, isActive);
+        }
+
         public async Task<List<StreamDB>> GetStreamsByWalletId(string walletId)
         {            
             return await _tableReader.ListItemsByWalletIdAsync<StreamDB>("Stream", walletId);

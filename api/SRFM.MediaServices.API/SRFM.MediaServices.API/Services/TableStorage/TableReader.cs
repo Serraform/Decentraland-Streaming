@@ -40,6 +40,25 @@ namespace SRFM.MediaServices.API
             return resultSegment.Results as List<T>;
         }
 
+        public async Task<List<T>> ListIsActiveItemsAsync<T>(string tableName, string partitionKey, bool isActive) where T : TableEntity, new()
+        {
+            var tableref = _tableClient.GetTableReference(tableName);
+
+            string welletIDQuery = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey);
+            string isActiveQuery = TableQuery.GenerateFilterConditionForBool("Active", QueryComparisons.Equal, isActive);
+            string combinedFilter = TableQuery.CombineFilters(welletIDQuery, TableOperators.And, isActiveQuery);
+
+            TableContinuationToken token = null;
+
+            TableQuery<T> query = new TableQuery<T>().Where(combinedFilter);
+
+            TableQuerySegment<T> resultSegment = await tableref.ExecuteQuerySegmentedAsync(query, token);
+            var entity = resultSegment.Results;
+
+            return resultSegment.Results as List<T>;
+
+        }
+
         public async Task<List<T>> ListItemsAsync<T>(string tableName, string partitionKey) where T : TableEntity, new()
         {
             var tableref = _tableClient.GetTableReference(tableName);
