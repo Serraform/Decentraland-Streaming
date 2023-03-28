@@ -37,19 +37,19 @@ namespace SRFM.MediaServices.API.Controllers
         [Route("ListUsers")]
         public async Task<List<UserDB>> ListUsers()
         {
-            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
-            var tokenWithBearer = headerValue.ToString();
-            var token = tokenWithBearer.Split(" ")[1];
-            bool isValidToken = TokenManager.ValidateToken(token);
-            if (isValidToken)
-            {
+            //Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            //var tokenWithBearer = headerValue.ToString();
+            //var token = tokenWithBearer.Split(" ")[1];
+            //bool isValidToken = TokenManager.ValidateToken(token);
+            //if (isValidToken)
+            //{
                 List<UserDB> user = await _process.ListUsers();
                 return user;
-            }
-            else
-            {
-                throw new CustomException("Token not valid.");
-            }   
+            //}
+            //else
+            //{
+            //    throw new CustomException("Token not valid.");
+            //}   
         }
 
         [HttpGet]
