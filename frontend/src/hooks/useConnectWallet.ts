@@ -6,7 +6,7 @@ import { RootState } from "store/configStore";
 const useConnectWallet = () => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
-  const { walletID, loading, error } = useSelector(
+  const { walletID, loading, error, role } = useSelector(
     (state: RootState) => state.accountData
   );
 
@@ -35,7 +35,7 @@ const useConnectWallet = () => {
     () =>dispatch(requestConnectWallet()),
     [dispatch]
   ) as any;
-  return { walletID, loading, connectWallet };
+  return { walletID, loading, connectWallet, role };
 };
 
 export default useConnectWallet;

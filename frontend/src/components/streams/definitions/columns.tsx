@@ -1,35 +1,10 @@
 import ReactTooltip from "react-tooltip";
-import IndeterminateCheckbox from "components/indeterminate-checkbox";
 export const columnsDefinition = (
   columnHelper: any,
   setCopy: Function,
   copySuccess: boolean,
   handleSelectStream: Function
 ) => [
-  {
-    id: "select",
-    header: ({ table }: any) => (
-      <IndeterminateCheckbox
-        {...{
-          checked: table.getIsAllRowsSelected(),
-          indeterminate: table.getIsSomeRowsSelected(),
-          onChange: table.getToggleAllRowsSelectedHandler(),
-        }}
-      />
-    ),
-    cell: ({ row }: any) => (
-      <div className="px-1">
-        <IndeterminateCheckbox
-          {...{
-            checked: row.getIsSelected(),
-            disabled: !row.getCanSelect(),
-            indeterminate: row.getIsSomeSelected(),
-            onChange: row.getToggleSelectedHandler(),
-          }}
-        />
-      </div>
-    ),
-  },
   columnHelper.accessor("streamStatus", {
     id: "streamStatus",
     header: () => <span className="font-montserratbold">Status</span>,

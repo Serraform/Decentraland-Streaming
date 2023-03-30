@@ -14,7 +14,7 @@ type Props = {
 };
 
 const WalletDrawer: React.FC<Props> = ({ openDrawer, setOpenDrawer }) => {
-  const { walletID, connectWallet } = useConnectWallet();
+  const { walletID, connectWallet, role } = useConnectWallet();
   return (
     <div
       className="wallet-drawer"
@@ -30,7 +30,7 @@ const WalletDrawer: React.FC<Props> = ({ openDrawer, setOpenDrawer }) => {
             </div>
             <div className="ml-2">
               <span className="font-montserratbold tracking-[0.1rem] dark:text-white">
-                My Admin Serraform Wallet
+                {role === "admin" ? "My Admin Serraform Wallet" : "My Serraform Wallet"}
               </span>
             </div>
           </div>

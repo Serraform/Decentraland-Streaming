@@ -1,9 +1,12 @@
 import Streams from "components/streams";
 import Assets from "components/assets";
+import StreamsPull from "components/streams-pull";
 import UploaderProgress from "components/uploader-progress";
 import { useReducer } from "react";
-type LIST_TYPE = "streams" | "assets";  
+import useConnectWallet from "hooks/useConnectWallet";
+type LIST_TYPE = "streams" | "assets" | "streams-to-pull";
 const Home = () => {
+  const { role } = useConnectWallet();
   const [list, setList] = useReducer(
     (prev: any, next: any) => {
       const newEvent = { ...prev, ...next };
@@ -17,21 +20,35 @@ const Home = () => {
   const handleChangeType = (event: any) => {
     setList({ [event.target.name]: event.target.value });
   };
+  const renderTable = () => {
+    switch (list.type) {
+      case "streams":
+        return <Streams />;
+      case "assets":
+        return <Assets />;
+      case "streams-to-pull":
+        return <StreamsPull />;
+      default:
+        return <Streams />;
+    }
+  };
   return (
     <>
       <div className="container pt-10 flex flex-row justify-end">
         <form>
-        <label className="mr-2 font-montserratregular text-black  dark:text-white ">
-            <input
-              type="radio"
-              className="mr-1"
-              name="type"
-              value="streams"
-              checked={list.type === "streams"}
-              onClick={(e) => handleChangeType(e)}
-            />
-            Streams to pull
-          </label>
+          {role === "admin" && (
+            <label className="mr-2 font-montserratregular text-black  dark:text-white ">
+              <input
+                type="radio"
+                className="mr-1"
+                name="type"
+                value="streams-to-pull"
+                checked={list.type === "streams-to-pull"}
+                onClick={(e) => handleChangeType(e)}
+              />
+              Streams to pull
+            </label>
+          )}
           <label className="mr-2 font-montserratregular text-black  dark:text-white ">
             <input
               type="radio"
@@ -56,7 +73,7 @@ const Home = () => {
           </label>
         </form>
       </div>
-      {list.type === "streams" ? <Streams /> : <Assets />}
+      {renderTable()}
       <UploaderProgress />
     </>
   );
