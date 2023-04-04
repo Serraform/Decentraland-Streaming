@@ -39,7 +39,7 @@ namespace SRFM.MediaServices.API
 
         public async Task<RequestUpload> RequestUploadURL(string fileName, string walletId)
         {
-            var reqUpload = await _assetManager.RequestUploadURL(fileName);
+            var reqUpload = await _assetManager.RequestUploadURL(fileName);            
 
             string jsonAssetString = JsonConvert.SerializeObject(reqUpload.Asset);
 
@@ -59,6 +59,7 @@ namespace SRFM.MediaServices.API
                         FileName = fileName,
                         Url = reqUpload.Url,
                         AssetName = fileName,
+                        PlayBackId = reqUpload.Asset.PlayBackId,
                         Active = true,
                         AssetInfo = jsonAssetString
                         //UploadStatus = reqUpload.Status //Need to check upload status in livepear                         
