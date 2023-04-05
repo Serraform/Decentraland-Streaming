@@ -39,9 +39,7 @@ const VOD: React.FC<Props> = ({
 const { walletID } = useSelector((state: RootState) => state.accountData);
   const {
     data: assets,
-    error,
     isLoading: loading,
-    refetch,
   } = useFetchAssetsByWalletIdQuery(walletID);
   const [liveStreamVideo] = useState<IStreamVOD>({
     ...selectedStream,
