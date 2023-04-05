@@ -1,12 +1,13 @@
 import Streams from "components/streams";
 import Assets from "components/assets";
 import StreamsPull from "components/streams-pull";
-import UploaderProgress from "components/uploader-progress";
 import { useReducer } from "react";
 import useConnectWallet from "hooks/useConnectWallet";
+import UploaderProgress from "components/asset-uploader/uploader-progress";
 type LIST_TYPE = "streams" | "assets" | "streams-to-pull";
+
 const Home = () => {
-  const { role } = useConnectWallet();
+  const { walletID, role } = useConnectWallet();
   const [list, setList] = useReducer(
     (prev: any, next: any) => {
       const newEvent = { ...prev, ...next };
@@ -35,7 +36,7 @@ const Home = () => {
   return (
     <>
       <div className="container pt-10 flex flex-row justify-end">
-        <form>
+        {walletID && "" && <form>
           {role === "admin" && (
             <label className="mr-2 font-montserratregular text-black  dark:text-white ">
               <input
@@ -71,7 +72,7 @@ const Home = () => {
             />
             Assets
           </label>
-        </form>
+        </form>}
       </div>
       {renderTable()}
       <UploaderProgress />
