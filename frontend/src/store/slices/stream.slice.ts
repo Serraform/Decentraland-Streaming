@@ -80,8 +80,7 @@ const streamSlice = createSlice({
       };
     },
     deleteStreamFromTable(state: any, payload) {
-      const streamToDelete = { ...payload.payload };
-
+      const streamToDelete = payload.payload;
       let newData = state.streams.filter((item: any) => item.Id === streamToDelete);
       
       return {

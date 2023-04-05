@@ -88,6 +88,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   };
 
   useEffect(() => {
+    
     if (receipt && receipt.status === 1 && transactionType === "cancel") {
       deleteStream({ streamId: selectedStream.streamInfo.Id });
     }
