@@ -110,7 +110,7 @@ namespace SRFM.MediaServices.API
                 var json = new
                 {
                     message = req.Message,
-                    profileId = req.Signature                   
+                    signature = req.Signature                   
                 };
 
                 string jsonString = JsonSerializer.Serialize(json);
