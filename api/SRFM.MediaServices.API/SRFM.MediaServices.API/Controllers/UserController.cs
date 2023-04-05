@@ -49,7 +49,7 @@ namespace SRFM.MediaServices.API.Controllers
             else
             {
                 throw new CustomException("Token not valid.");
-            }   
+            }
         }
 
         [HttpGet]

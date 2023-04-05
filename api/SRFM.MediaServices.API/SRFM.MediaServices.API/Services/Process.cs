@@ -39,7 +39,7 @@ namespace SRFM.MediaServices.API
 
         public async Task<RequestUpload> RequestUploadURL(string fileName, string walletId)
         {
-            var reqUpload = await _assetManager.RequestUploadURL(fileName);
+            var reqUpload = await _assetManager.RequestUploadURL(fileName);            
 
             string jsonAssetString = JsonConvert.SerializeObject(reqUpload.Asset);
 
@@ -59,6 +59,7 @@ namespace SRFM.MediaServices.API
                         FileName = fileName,
                         Url = reqUpload.Url,
                         AssetName = fileName,
+                        PlayBackId = reqUpload.Asset.PlayBackId,
                         Active = true,
                         AssetInfo = jsonAssetString
                         //UploadStatus = reqUpload.Status //Need to check upload status in livepear                         
@@ -150,6 +151,11 @@ namespace SRFM.MediaServices.API
         public async Task<List<StreamDB>> ListStream()
         {
             return await _tableReader.ListItemsAsync<StreamDB>("Stream", StorageAccount.PartitionKey);
+        }
+
+        public async Task<List<StreamDB>> ListIsActiveItemsAsync(bool isActive)
+        {
+            return await _tableReader.ListIsActiveItemsAsync<StreamDB>("Stream", StorageAccount.PartitionKey, isActive);
         }
 
         public async Task<List<StreamDB>> GetStreamsByWalletId(string walletId)
@@ -260,7 +266,7 @@ namespace SRFM.MediaServices.API
                     var createStream = await _tableWriter.AddAsync("Stream", streamProps);
 
                     //Suspend Stream
-                    var suspendStream = await this.SuspendStream(streamStatus.Id, streamProps.WalletId);
+                    //var suspendStream = await this.SuspendStream(streamStatus.Id, streamProps.WalletId);
 
                     await _queuesWriter.AddQueuesMessageAsync("queue-livestream", jsonStreamQueuesString);
 

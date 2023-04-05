@@ -29,6 +29,37 @@ namespace SRFM.MediaServices.API.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
+        [Route("ListAllEndStream")]
+        public async Task<List<StreamDB>> ListAllEndStream(DateTime? startDate, DateTime? endDate)
+        {
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
+            {
+                List<StreamDB> filteredResultsTwo = null; ;
+
+                List<StreamDB> streams = await _process.ListStream();
+
+                if (startDate == null && endDate == null)
+                {
+                    filteredResultsTwo = streams.Where(stream => stream.StreamEndDate <= DateTime.UtcNow).ToList();
+                }
+                else
+                {
+                    filteredResultsTwo = streams.Where(stream => stream.StreamEndDate >= startDate && stream.StreamEndDate <= endDate).ToList();
+                }
+
+                return filteredResultsTwo;
+            }
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
+        }
+
         [HttpPut]
         [Route("Suspend/{streamId}/{walletId}")]
         public async Task<HttpResponseMessage> SuspendStream(string streamId, string walletId, [FromBody] StreamLPStatus value)
