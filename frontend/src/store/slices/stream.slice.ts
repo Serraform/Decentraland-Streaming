@@ -15,9 +15,8 @@ const initialState: InitialState = {
     status: false,
     attendees: "",
     streamType: "",
-    video: "",
-    videoSize: "",
-    videoLenght: "",
+    playBackUrl: "",
+    asset: null,
     cost: "",
     vaultContractId: "",
     streamStartDate: undefined,
@@ -82,8 +81,10 @@ const streamSlice = createSlice({
     deleteStreamFromTable(state: any, payload) {
       const streamToDelete = { ...payload.payload };
 
-      let newData = state.streams.filter((item: any) => item.Id === streamToDelete);
-      
+      let newData = state.streams.filter(
+        (item: any) => item.Id === streamToDelete
+      );
+
       return {
         ...state,
         streams: newData,

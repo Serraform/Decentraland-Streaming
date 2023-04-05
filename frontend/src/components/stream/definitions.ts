@@ -32,9 +32,8 @@ interface IAsset {
 }
 
 type IStreamVOD = IStream & {
-  video: string;
-  videoSize: string;
-  videoLenght: string;
+  asset: IAsset | null;
+  playBackUrl: string;
 };
 
 type ILiveStream = IStream & {

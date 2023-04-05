@@ -22,7 +22,8 @@ const customStyles = {
     padding: "0",
   },
 };
-const AssetUploader = () => {
+const AssetUploader = (props: any) => {
+  const {setOpenAssetUploader} = props;
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
   const { addToast } = useToasts();
@@ -86,7 +87,7 @@ const AssetUploader = () => {
         isOpen={true}
         ariaHideApp={false}
         onRequestClose={() => {
-          navigate("/");
+          setOpenAssetUploader(false)
         }}
         style={{ content: { ...customStyles.content } }}
         contentLabel="Example Modal"
@@ -141,7 +142,7 @@ const AssetUploader = () => {
             </span>
             <div className="w-full flex flex-row justify-end">
               <button
-                onClick={() => navigate("/")}
+                onClick={() => setOpenAssetUploader(false)}
                 className="mt-[30px] btn-third"
               >
                 Cancel
