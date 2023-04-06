@@ -34,4 +34,4 @@ jobs:
       with:
         azcliversion: 2.30.0
         inlineScript: |
-          script --return --quiet -c "az container exec --resource-group rg-livestream-dev --name ffmpeglivestream --exec-command ./script/start_ffmpeg.sh'" /dev/null
+          az container exec --resource-group rg-livestream-dev --name ffmpeglivestream --exec-command ./script/start_ffmpeg.sh
