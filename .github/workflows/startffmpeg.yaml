@@ -18,7 +18,7 @@ name: AzureCLISampleForFile
 jobs:
 
   build-and-deploy:
-    runs-on: windows-2019
+    runs-on: ubuntu-latest
     steps:
 
     - name: Azure Login
