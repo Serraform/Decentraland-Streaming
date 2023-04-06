@@ -2,6 +2,8 @@
 # File: .github/workflows/workflowForFile.yml
 
 on:
+  repository_dispatch:
+    types: ffmpeg
   workflow_dispatch:
     inputs:
       m3u8_url:
