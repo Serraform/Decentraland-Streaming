@@ -12,6 +12,19 @@ on:
         description: ''
         required: true
         type: string
+      app_id:
+        description: ''
+        required: true
+        type: string
+      app_secret:
+        description: ''
+        required: true
+        type: string
+      tenant_id:
+        description: ''
+        required: true
+        type: string
+
 
 name: AzureCLISampleForFile
 
@@ -21,17 +34,9 @@ jobs:
     runs-on: self-hosted
     steps:
 
-    - name: Azure Login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    - name: Checkout
-      uses: actions/checkout@v1
-
-    - name: Azure CLI script file
-      uses: azure/CLI@v1
-      with:
-        azcliversion: 2.30.0
-        inlineScript: |
-          az container exec --resource-group rg-livestream-dev --name ffmpeglivestream --exec-command "ffmpeg -fflags +igndts -hide_banner -i ${{inputs.m3u8_url}} -bsf:a aac_adtstoasc -c copy -f flv rtmp://rtmp.livepeer.com/live/ef15-6p9j-vmm0-w55w" --debug
+    - name: Run Azure CLi
+      shell: bash
+      run : | 
+        az login --service-principal -u ${{inputs.app_id}} -p ${{inputs.app_secret}} --tenant ${{inputs.tenant_id}}
+        az container exec --resource-group rg-livestream-dev --name ffmpeglivestream --exec-command "ffmpeg -fflags +igndts -hide_banner -i ${{inputs.m3u8_url}} -bsf:a aac_adtstoasc -c copy -f flv rtmp://rtmp.livepeer.com/live/${{inputs.livestream_token}}" --debug
+  
