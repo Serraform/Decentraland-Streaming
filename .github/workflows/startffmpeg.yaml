@@ -31,4 +31,4 @@ jobs:
         azcliversion: 2.30.0
         inlineScript: |
           az account show
-          ${{ cli_command }}
+          ${{ inputs.cli_command }}
