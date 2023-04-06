@@ -35,8 +35,8 @@ const Home = () => {
   };
   return (
     <>
-      <div className="container pt-10 flex flex-row justify-end">
-        {walletID && "" && <form>
+      <div className="container pt-10 flex flex-row justify-start">
+        {walletID !== "" && <form>
           {role === "admin" && (
             <label className="mr-2 font-montserratregular text-black  dark:text-white ">
               <input

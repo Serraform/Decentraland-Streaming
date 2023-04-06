@@ -1,21 +1,36 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useMemo, useState, useCallback, useEffect } from "react";
+import { useMemo, useReducer, useCallback, useEffect } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { columnsDefinition } from "components/streams-pull/definitions/columns";
 import { IStream } from "components/stream/definitions";
-import { selectStream, updateStreams } from "store/slices/stream.slice";
+import { updateStreams } from "store/slices/stream.slice";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 import { RootState } from "store/configStore";
 import StreamTable from "components/streams-pull/stream-table";
-
 import { useFetchAllEndedStreamsQuery } from "store/api/streams.api";
 import { useNavigate } from "react-router-dom";
+import ReviewVaults from "components/streams-pull/review-vaults";
 const StreamsPull = () => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
   const { walletID } = useSelector((state: RootState) => state.accountData);
   const navigate = useNavigate();
+  const [transferFundsToTreasurySlice, setTransferFundsToTreasuryState] =
+    useReducer(
+      (prev: any, next: any) => {
+        if (next.vaultsId.length !== next.vaultsFunds.length) {
+          return { ...prev };
+        }
+        return { ...prev, ...next };
+      },
+      {
+        vaultsId: [],
+        vaultsFunds: [],
+        openModal: false,
+        vaultsName: [],
+      }
+    );
   const {
     data,
     error,
@@ -33,23 +48,37 @@ const StreamsPull = () => {
     }
   }, [isSuccess]);
 
-  const [copySuccess, setCopy] = useState(false);
-
   const columnHelper = createColumnHelper<IStream>();
 
   const handleSelectStream = useCallback(
-    (selectedStream: IStream, index: number) => {
-      // const setSelectedStream = { ...selectedStream } as any;
-      // const navigateTo = `/stream/${setSelectedStream.streamInfo.Id}`;
-      // navigate(navigateTo);
-      // dispatch(selectStream({ setSelectedStream, index }));
+    (selectedStreams: [IStream], index: number) => {
+      const mappedVaults = selectedStreams.reduce((map, obj: IStream) => {
+        const key = parseInt(obj.vaultContractId);
+        const value = parseFloat(obj.cost);
+        map.set(key, value);
+        return map;
+      }, new Map());
+      const mappedNameVaults = selectedStreams.reduce((map, obj: IStream) => {
+        const key = obj.name;
+        const value = obj.cost;
+        map.set(key, value);
+        return map;
+      }, new Map());
+      const vaultsId = Array.from(mappedVaults.keys());
+      const vaultsFunds = Array.from(mappedVaults.values());
+
+      setTransferFundsToTreasuryState({
+        vaultsName: mappedNameVaults,
+        vaultsId,
+        vaultsFunds,
+        openModal: true,
+      });
     },
     [dispatch, navigate]
   );
   const columns = useMemo(
-    () =>
-      columnsDefinition(columnHelper, setCopy, copySuccess, handleSelectStream),
-    [columnHelper, copySuccess, handleSelectStream]
+    () => columnsDefinition(columnHelper),
+    [columnHelper]
   );
   if ((loading || !data) && !error)
     return (
@@ -78,7 +107,13 @@ const StreamsPull = () => {
     );
   return (
     <>
-      
+      <ReviewVaults
+        openModal={transferFundsToTreasurySlice.openModal}
+        vaultsId={transferFundsToTreasurySlice.vaultsId}
+        vaultsFunds={transferFundsToTreasurySlice.vaultsFunds}
+        vaultsName={transferFundsToTreasurySlice.vaultsName}
+        setState={setTransferFundsToTreasuryState}
+      />
       <StreamTable
         columns={columns}
         streams={
@@ -88,7 +123,7 @@ const StreamsPull = () => {
               streamInfo: JSON.parse(stream.streamInfo),
             }))
             .sort(
-              (a:any, b:any) =>
+              (a: any, b: any) =>
                 (new Date(b.streamStartDate) as any) -
                 (new Date(a.streamStartDate) as any)
             ) as any

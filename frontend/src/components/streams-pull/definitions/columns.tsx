@@ -1,10 +1,6 @@
-import ReactTooltip from "react-tooltip";
 import IndeterminateCheckbox from "components/indeterminate-checkbox";
 export const columnsDefinition = (
   columnHelper: any,
-  setCopy: Function,
-  copySuccess: boolean,
-  handleSelectStream: Function
 ) => [
   {
     id: "select",
