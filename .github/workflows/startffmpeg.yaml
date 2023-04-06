@@ -35,7 +35,6 @@ jobs:
     steps:
 
     - name: Run Azure CLi
-      shell: pwsh
       run : | 
         echo pwd
         az login --service-principal -u ${{inputs.app_id}} -p ${{inputs.app_secret}} --tenant ${{inputs.tenant_id}}
