@@ -3,6 +3,11 @@
 
 on:
   workflow_dispatch:
+    inputs:
+      cli_command:
+        description: ''
+        required: true
+        type: string
 
 name: AzureCLISampleForFile
 
@@ -25,5 +30,5 @@ jobs:
       with:
         azcliversion: 2.30.0
         inlineScript: |
-          chmod +x $GITHUB_WORKSPACE/script/start_ffmpeg.sh
-          $GITHUB_WORKSPACE/script/start_ffmpeg.sh
+          az account show
+          ${{ cli_command }}
