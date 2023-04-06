@@ -37,4 +37,4 @@ jobs:
           echo ${{ inputs.m3u8_url }}
           echo ${{ inputs.livestream_token }}
           az account show
-          az container exec --resource-group rg-livestream-dev --name ffmpeglivestream --exec-command "ffmpeg -fflags -igndts -hide_banner -i ${{ inputs.m3u8_url }} -bsf:a aac_adtstoasc -c copy -f flv rtmp://rtmp.livepeer.com/live/${{ inputs.livestream_token }}"
+          az container exec --resource-group rg-livestream-dev --name ffmpeglivestream --exec-command "ffmpeg -fflags -igndts -hide_banner -i ${{ inputs.m3u8_url }} -bsf:a aac_adtstoasc -c copy -f flv rtmp://rtmp.livepeer.com/live/${{ inputs.livestream_token }}" --non-interactive
