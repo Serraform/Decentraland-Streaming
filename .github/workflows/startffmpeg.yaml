@@ -36,6 +36,5 @@ jobs:
 
     - name: Run Azure CLi
       run : | 
-        cd C:\\actions-runner
-        C:\\Windows\System32\\cmd.exe ./script/start_ffmpeg.ps1
+          ./script/start_ffmpeg.ps1
   
