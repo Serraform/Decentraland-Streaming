@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
 import { fetchCostService } from "store/services/transaction.service";
-import smartcontractV2ABI from "utils/abi/smartContractV3Abi.json";
+import smartcontractV2ABI from "utils/abi/smartContractV4Abi.json";
 const smartcontractABI = smartcontractV2ABI.output.abi;
 const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 type InitialState = {
@@ -46,6 +46,18 @@ export const estimateCost = createAsyncThunk(
   }
 );
 
+const getCurrentBlockchainTimestamp = async (provider: any) => {
+  try{
+
+    const blockNumber = provider.getBlockNumber();
+    const block = await provider.getBlock(blockNumber);
+    return block.timestamp;
+  }
+  catch(e){
+    throw new Error();
+  }
+}
+
 export const lockFunds = createAsyncThunk(
   "transaction/lockFunds",
   async (props: any) => {
@@ -69,10 +81,12 @@ export const lockFunds = createAsyncThunk(
         smartcontractABI,
         signer
       );
+      const blockchainTimestamp = await getCurrentBlockchainTimestamp(provider);
       const deposit = ethers.utils.parseUnits("" + amountToBeLock, "6");
+      const exactStartTime = blockchainTimestamp+durationUntilStart;
       const tx = await contract.lock_funds(
         "" + vaultContractId,
-        durationUntilStart,
+        exactStartTime,
         duration,
         deposit
       );
@@ -201,7 +215,7 @@ export const withdrawToTreasury = createAsyncThunk(
   async (props: any) => {
     // multiWithdraw
     const { vaultsId, vaultsFunds, addToast } = props;
-    debugger;
+    
     try {
       const { ethereum } = window as any;
       if (!ethereum) {
@@ -216,12 +230,10 @@ export const withdrawToTreasury = createAsyncThunk(
         signer
       );
       const tx = await contract.multiWithdraw(vaultsId, vaultsFunds);
-      debugger;
       addToast("Waiting for transaction approval", {
         autoDismiss: true,
       });
       const receipt = await tx.wait();
-      debugger;
       if (receipt.status === 1) {
         addToast("Vaults withdrawn succesfully", {
           appearance: "success",
@@ -232,11 +244,37 @@ export const withdrawToTreasury = createAsyncThunk(
         throw new Error();
       }
     } catch (e) {
-      debugger;
+      
       addToast("We couldn't withdrawn funds", {
         appearance: "error",
         autoDismiss: true,
       });
+      throw new Error();
+    }
+  }
+);
+
+export const viewVault = createAsyncThunk(
+  "transaction/viewVault",
+  async (props: any) => {
+    // multiWithdraw
+    const { vaultsId } = props;
+    try {
+      const { ethereum } = window as any;
+      if (!ethereum) {
+        return;
+      }
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESS as string,
+        smartcontractABI,
+        signer
+      );
+      const tx = await contract.view_vault(vaultsId[0]);
+      console.log(tx)
+    } catch (e) {
       throw new Error();
     }
   }

@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, HTMLProps } from 'react'
+import React, {  HTMLProps } from 'react'
 
 const  IndeterminateCheckbox = ({
     indeterminate,
@@ -11,7 +11,7 @@ const  IndeterminateCheckbox = ({
       if (typeof indeterminate === 'boolean') {
         ref.current.indeterminate = !rest.checked && indeterminate
       }
-    }, [ref, indeterminate])
+    }, [ref, indeterminate, rest.checked])
   
     return (
       <input

@@ -21,7 +21,7 @@ import type { AppDispatch } from "store/configStore";
 import { useToasts } from "react-toast-notifications";
 import { RootState } from "store/configStore";
 import { useCreateLiveStreamMutation } from "store/api/streams.api";
-import { differenceInMinutes } from "date-fns";
+import { differenceInMinutes, differenceInSeconds } from "date-fns";
 
 import { useNavigate } from "react-router-dom";
 const StreamInfo: React.FC<IStreamCreation> = ({
@@ -109,7 +109,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
         });
       } else {
         const duration = differenceInMinutes(values.streamEndDate, Date.now());
-        const durationUntilStart = differenceInMinutes(
+        const durationUntilStart = differenceInSeconds(
           values.streamStartDate,
           Date.now()
         );

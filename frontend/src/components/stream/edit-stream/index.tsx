@@ -112,6 +112,14 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
       let costDifference = 0;
       let durationUntilStart = 0;
       let duration = 0;
+      duration = differenceInMinutes(
+        returnAsDate(values.streamEndDate),
+        Date.now()
+      );
+      durationUntilStart = differenceInMinutes(
+        returnAsDate(values.streamStartDate),
+        Date.now()
+      );
       switch (
         checkDateRangeChange(
           returnAsDate(selectedStream.streamStartDate),
@@ -122,14 +130,6 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
       ) {
         case 0:
           costDifference = streamValues.cost - cost;
-          duration = differenceInMinutes(
-            returnAsDate(values.streamEndDate),
-            Date.now()
-          );
-          durationUntilStart = differenceInMinutes(
-            returnAsDate(values.streamStartDate),
-            Date.now()
-          );
           dispatch(
             editVault({
               vaultContractId: streamValues.vaultContractId,
@@ -145,14 +145,6 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
           break;
         case 1:
           costDifference = cost - streamValues.cost;
-          duration = differenceInMinutes(
-            returnAsDate(values.streamEndDate),
-            Date.now()
-          );
-          durationUntilStart = differenceInMinutes(
-            returnAsDate(values.streamStartDate),
-            Date.now()
-          );
           dispatch(
             editVault({
               vaultContractId: streamValues.vaultContractId,
@@ -167,11 +159,17 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
           break;
         case -1:
           // the date range didn't change
-          editStream({
-            streamValues: {
-              ...values,
-            },
-          });
+          dispatch(
+            editVault({
+              vaultContractId: streamValues.vaultContractId,
+              amountToBeUnlock: 0,
+              addToast,
+              duration,
+              durationUntilStart,
+            })
+          );
+          setStreamValues({ streamValues: { ...values } });
+         
           break;
       }
     },

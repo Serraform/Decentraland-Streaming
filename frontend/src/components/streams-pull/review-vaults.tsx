@@ -1,6 +1,11 @@
+import { useEffect } from "react";
 import Modal from "react-modal";
 import { RootState } from "store/configStore";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "store/configStore";
+import { fetchFunds } from "store/slices/account.slice";
+import { finishTransaction } from "store/slices/transaction.slice";
 const customStyles = {
   content: {
     top: "50%",
@@ -13,11 +18,29 @@ const customStyles = {
     padding: "0",
   },
 };
+
 const ReviewVaults = (props: any) => {
-	const { loading, error, receipt } = useSelector(
+  const { loading, receipt } = useSelector(
     (state: RootState) => state.transactionData
   );
-  const { openModal, vaultsId, vaultsFunds, vaultsName, setState, handleTransfering } = props;
+  const {
+    openModal,
+    vaultsId,
+    vaultsFunds,
+    vaultsName,
+    setState,
+    handleTransfering,
+  } = props;
+  const { walletID } = useSelector((state: RootState) => state.accountData);
+  const useAppDispatch = () => useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (receipt && receipt.status === 1) {
+      dispatch(finishTransaction());
+      dispatch(fetchFunds(walletID));
+      setState({ openModal: false, vaultsId, vaultsFunds });
+    }
+  }, [dispatch, receipt, setState, vaultsFunds, vaultsId, walletID]);
   return (
     <>
       <Modal
@@ -38,8 +61,12 @@ const ReviewVaults = (props: any) => {
                   const keyValue = (value as any)[1];
                   return (
                     <div className="flex flex-row justify-between border-b border-slate-500 pt-3">
-                      <span className="font-montserratregular text-dark dark:text-white">{key}</span>
-                      <span className="font-montserratregular text-dark dark:text-white">{keyValue} USDC</span>
+                      <span className="font-montserratregular text-dark dark:text-white">
+                        {key}
+                      </span>
+                      <span className="font-montserratregular text-dark dark:text-white">
+                        {keyValue} USDC
+                      </span>
                     </div>
                   );
                 })}
@@ -54,7 +81,10 @@ const ReviewVaults = (props: any) => {
                 >
                   Cancel
                 </button>
-                <button className="mt-[30px] btn-secondary flex flex-row" onClick={() => handleTransfering()}>
+                <button
+                  className="mt-[30px] btn-secondary flex flex-row"
+                  onClick={() => handleTransfering()}
+                >
                   {loading && <div className="basic mr-[1rem]" />}
                   Transfer to treasury
                 </button>
