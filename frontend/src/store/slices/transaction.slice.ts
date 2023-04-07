@@ -200,7 +200,8 @@ export const withdrawToTreasury = createAsyncThunk(
   "transaction/withdrawToTreasury",
   async (props: any) => {
     // multiWithdraw
-    const { vaultsId, vaultsCosts, addToast } = props;
+    const { vaultsId, vaultsFunds, addToast } = props;
+    debugger;
     try {
       const { ethereum } = window as any;
       if (!ethereum) {
@@ -214,11 +215,13 @@ export const withdrawToTreasury = createAsyncThunk(
         smartcontractABI,
         signer
       );
-      const tx = await contract.multiWithdraw(vaultsId, vaultsCosts);
+      const tx = await contract.multiWithdraw(vaultsId, vaultsFunds);
+      debugger;
       addToast("Waiting for transaction approval", {
         autoDismiss: true,
       });
       const receipt = await tx.wait();
+      debugger;
       if (receipt.status === 1) {
         addToast("Vaults withdrawn succesfully", {
           appearance: "success",
@@ -229,6 +232,7 @@ export const withdrawToTreasury = createAsyncThunk(
         throw new Error();
       }
     } catch (e) {
+      debugger;
       addToast("We couldn't withdrawn funds", {
         appearance: "error",
         autoDismiss: true,
@@ -299,7 +303,6 @@ const transactionSlice = createSlice({
     builder.addCase(withdrawToTreasury.fulfilled, (state, action) => {
       state.loading = false;
       state.receipt = action.payload;
-      state.transactionType = "edit";
     });
     builder.addCase(withdrawToTreasury.rejected, (state, action) => {
       state.loading = false;

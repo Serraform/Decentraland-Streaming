@@ -11,11 +11,18 @@ import StreamTable from "components/streams-pull/stream-table";
 import { useFetchAllEndedStreamsQuery } from "store/api/streams.api";
 import { useNavigate } from "react-router-dom";
 import ReviewVaults from "components/streams-pull/review-vaults";
+import { useToasts } from "react-toast-notifications";
+import { withdrawToTreasury } from "store/slices/transaction.slice";
+import { ethers } from "ethers";
+
 const StreamsPull = () => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
+  const { addToast } = useToasts();
   const { walletID } = useSelector((state: RootState) => state.accountData);
+
   const navigate = useNavigate();
+
   const [transferFundsToTreasurySlice, setTransferFundsToTreasuryState] =
     useReducer(
       (prev: any, next: any) => {
@@ -53,8 +60,8 @@ const StreamsPull = () => {
   const handleSelectStream = useCallback(
     (selectedStreams: [IStream], index: number) => {
       const mappedVaults = selectedStreams.reduce((map, obj: IStream) => {
-        const key = parseInt(obj.vaultContractId);
-        const value = parseFloat(obj.cost);
+        const key = obj.vaultContractId;
+        const value = ethers.utils.parseUnits(obj.cost, "6");
         map.set(key, value);
         return map;
       }, new Map());
@@ -76,6 +83,11 @@ const StreamsPull = () => {
     },
     [dispatch, navigate]
   );
+
+  const handleTransfering = () => {
+    const { vaultsId, vaultsFunds } = transferFundsToTreasurySlice;
+    dispatch(withdrawToTreasury({ vaultsId, vaultsFunds, addToast }));
+  };
   const columns = useMemo(
     () => columnsDefinition(columnHelper),
     [columnHelper]
@@ -113,6 +125,7 @@ const StreamsPull = () => {
         vaultsFunds={transferFundsToTreasurySlice.vaultsFunds}
         vaultsName={transferFundsToTreasurySlice.vaultsName}
         setState={setTransferFundsToTreasuryState}
+        handleTransfering={handleTransfering}
       />
       <StreamTable
         columns={columns}

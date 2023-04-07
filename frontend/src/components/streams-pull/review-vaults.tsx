@@ -1,15 +1,6 @@
 import Modal from "react-modal";
-import { useNavigate } from "react-router-dom";
-import { useRef, useReducer, useEffect } from "react";
-import Close from "assets/icons/Close";
-import { useRequestAssetUploaderQuery } from "store/api/assets.api";
-import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
-import { useToasts } from "react-toast-notifications";
-import useTusUploadInstance from "hooks/useTusUploadInstance";
-import { startUploadAsset } from "store/slices/assets.slice";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "store/configStore";
+import { useSelector } from "react-redux";
 const customStyles = {
   content: {
     top: "50%",
@@ -23,7 +14,10 @@ const customStyles = {
   },
 };
 const ReviewVaults = (props: any) => {
-  const { openModal, vaultsId, vaultsFunds, vaultsName, setState } = props;
+	const { loading, error, receipt } = useSelector(
+    (state: RootState) => state.transactionData
+  );
+  const { openModal, vaultsId, vaultsFunds, vaultsName, setState, handleTransfering } = props;
   return (
     <>
       <Modal
@@ -60,8 +54,8 @@ const ReviewVaults = (props: any) => {
                 >
                   Cancel
                 </button>
-                <button className="mt-[30px] btn-secondary flex flex-row">
-                  {/* {isLoading && <div className="basic mr-[1rem]" />} */}
+                <button className="mt-[30px] btn-secondary flex flex-row" onClick={() => handleTransfering()}>
+                  {loading && <div className="basic mr-[1rem]" />}
                   Transfer to treasury
                 </button>
               </div>
