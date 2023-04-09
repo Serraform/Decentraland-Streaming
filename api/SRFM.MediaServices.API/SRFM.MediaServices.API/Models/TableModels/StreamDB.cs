@@ -31,6 +31,8 @@ namespace SRFM.MediaServices.API
 
         public string StreamType { get; set; }
 
+        public string VId { get; set; }
+
         public string StreamDuration { get; set; }
 
         public DateTime StreamStartDate { get; set; }
@@ -46,6 +48,8 @@ namespace SRFM.MediaServices.API
         public string SuspendStatus { get; set; }
 
         public string StreamStatus { get; set; }
+
+        public bool Pulled { get; set; }
 
         public string PlayBackId { get; set; }
 

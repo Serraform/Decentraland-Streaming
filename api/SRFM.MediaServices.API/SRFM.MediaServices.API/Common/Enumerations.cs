@@ -7,4 +7,11 @@
         Live, // when the user starts streaming       
         Suspended //when its done
     }
+
+    public enum StreamType
+    {
+        liveStream,
+        vod,
+        relayService
+    }
 }
