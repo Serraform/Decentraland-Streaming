@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SRFM.MediaServices.API.Models.LivePeer;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -41,7 +42,7 @@ namespace SRFM.MediaServices.API.Controllers
             {
                 List<StreamDB> filteredResultsTwo = null; ;
 
-                List<StreamDB> streams = await _process.ListStream();
+                List<StreamDB> streams = await _process.ListIsActiveItemsAsync(true);
 
                 if (startDate == null && endDate == null)
                 {
@@ -106,6 +107,8 @@ namespace SRFM.MediaServices.API.Controllers
             var tokenWithBearer = headerValue.ToString();
             var token = tokenWithBearer.Split(" ")[1];
             bool isValidToken = TokenManager.ValidateToken(token);
+
+
             if (isValidToken)
             {
                 if (streamProps != null)
@@ -117,11 +120,34 @@ namespace SRFM.MediaServices.API.Controllers
                     try
                     {
 
-                        var response = await _process.CreateNewStream(streamProps);
+                        if (streamProps.StreamType == StreamType.vod.ToString())
+                        {
+                            AssetDB getAsset = await _process.GetAssetByAssetId(streamProps.VId);
 
-                        string jsonString = JsonSerializer.Serialize(response);
-                        return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                            if (getAsset != null)
+                            {
+                                streamProps.PlayBackId = getAsset.PlayBackId;
+                                streamProps.StreamID = getAsset.AssetId;
+                                streamProps.RowKey = getAsset.AssetId;
 
+                                var response = await _process.CreateVODNewStream(streamProps);
+
+                                string jsonString = JsonSerializer.Serialize(response);
+                                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                            }
+                            else
+                            {
+                                throw new CustomException("Asset is not found");
+                            }
+                        }
+                        else
+                        {
+
+                            var response = await _process.CreateNewStream(streamProps);
+
+                            string jsonString = JsonSerializer.Serialize(response);
+                            return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                        }
                     }
                     catch (Exception ex)
                     {

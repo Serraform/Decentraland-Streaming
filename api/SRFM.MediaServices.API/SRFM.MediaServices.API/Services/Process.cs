@@ -95,6 +95,51 @@ namespace SRFM.MediaServices.API
             return await _tableWriter.UpdateAsync("Asset", assetProp);
         }
 
+        public async Task<object> CreateVODNewStream(StreamDB streamProps)
+        {
+
+            var checkUser = await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", streamProps.WalletId);
+            if (checkUser != null)
+            { 
+                var payLoadStreamQueues = new
+                {
+                    walletId = streamProps.WalletId,
+                    streamId = streamProps.StreamID,
+                    StartDateTime = streamProps.StreamStartDate,
+                    EndDateTime = streamProps.StreamEndDate
+                };
+
+                string jsonStreamQueuesString = JsonConvert.SerializeObject(payLoadStreamQueues);
+
+                //TODO update table storage with stream
+
+                if (!string.IsNullOrEmpty(streamProps.StreamID))
+                {
+                    //TODO : Create Stream
+
+                    streamProps.PartitionKey = StorageAccount.PartitionKey;
+                    //streamProps.StreamID = streamStatus.Id;
+                    //streamProps.RowKey = streamStatus.Id;
+                    //streamProps.Name = streamStatus.Name;
+                    //streamProps.StreamInfo = jsonStreamString;
+                    //streamProps.PlayBackId = streamStatus.PlayBackId;
+                    streamProps.Pulled = false;
+                    streamProps.SuspendStatus = "Normal";
+                    streamProps.StreamStatus = StreamStatus.Upcoming.ToString();
+                    streamProps.Active = true;
+
+                    var createStream = await _tableWriter.AddAsync("Stream", streamProps);
+                   
+                    await _queuesWriter.AddQueuesMessageAsync("queue-livestream", jsonStreamQueuesString);
+
+                    return createStream;
+                }
+               
+            }
+            throw new CustomException("Wrong wallet id for stream creation.");
+
+        }
+
         // Below are test methods
         public async Task<List<AssetDB>> ListAssets()
         {
@@ -259,6 +304,7 @@ namespace SRFM.MediaServices.API
                     streamProps.Name = streamStatus.Name;
                     streamProps.StreamInfo = jsonStreamString;
                     streamProps.PlayBackId = streamStatus.PlayBackId;
+                    streamProps.Pulled = false;
                     streamProps.SuspendStatus = streamStatus.Suspended ? "Suspended" : "Normal";
                     streamProps.StreamStatus = StreamStatus.Upcoming.ToString();
                     streamProps.Active = true;
