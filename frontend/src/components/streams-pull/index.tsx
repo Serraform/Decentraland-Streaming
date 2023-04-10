@@ -14,11 +14,16 @@ import ReviewVaults from "components/streams-pull/review-vaults";
 import { useToasts } from "react-toast-notifications";
 import { withdrawToTreasury } from "store/slices/transaction.slice";
 import { ethers } from "ethers";
-
+// import {
+//   useEditStreamMutation,
+// } from "store/api/streams.api";
 const StreamsPull = () => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
   const { addToast } = useToasts();
+  // const [editStream, { isLoading: isEditLoading, isSuccess: isEditSuccess }] =
+  // useEditStreamMutation();
+
   const { walletID } = useSelector((state: RootState) => state.accountData);
 
   const navigate = useNavigate();
@@ -36,6 +41,7 @@ const StreamsPull = () => {
         vaultsFunds: [],
         openModal: false,
         vaultsName: [],
+        streamIds: []
       }
     );
   const {
@@ -73,11 +79,12 @@ const StreamsPull = () => {
       }, new Map());
       const vaultsId = Array.from(mappedVaults.keys());
       const vaultsFunds = Array.from(mappedVaults.values());
-
+      const streamIds = selectedStreams.map((stream) => stream.streamInfo.Id);
       setTransferFundsToTreasuryState({
         vaultsName: mappedNameVaults,
         vaultsId,
         vaultsFunds,
+        streamIds,
         openModal: true,
       });
     },

@@ -15,6 +15,8 @@ const initialState: InitialState = {
     status: false,
     attendees: "",
     streamType: "",
+    pulled:false,
+    streamID: "",
     playBackUrl: "",
     asset: null,
     cost: "",

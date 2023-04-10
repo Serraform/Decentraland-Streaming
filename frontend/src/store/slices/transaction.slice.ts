@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
 import { fetchCostService } from "store/services/transaction.service";
-import smartcontractV2ABI from "utils/abi/smartContractV4Abi.json";
+import smartcontractV2ABI from "utils/abi/smartcontractV4ABI.json";
 const smartcontractABI = smartcontractV2ABI.output.abi;
 const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 type InitialState = {
