@@ -76,7 +76,7 @@ const Calendar: React.FC<Props> = ({
     highlight: "-highlight",
   };
   return (
-    <div>
+    <div className="mb-[10rem]">
       <DateRangePicker
         startDate={returnAsDate(values.streamStartDate)}
         endDate={returnAsDate(values.streamEndDate)}

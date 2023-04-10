@@ -45,14 +45,14 @@ const CommonForm: React.FC<Props> = ({
   const { addToast } = useToasts();
   const [needsToEstimateNewCost, setNeedsToEstimateNewCost] = useState(false);
   const [openSuspendModal, setOpenSuspendModal] = useState(false);
-  const streamIsBeingCreated = values.streamInfo.CreatedAt === 0;
+  const streamIsBeingCreated = values.streamInfo?.CreatedAt === 0;
 
   const streamIsHappeningOrHasHappened =
     !streamIsBeingCreated &&
     ((isAfter(Date.now(), returnAsDate(values.streamStartDate)) &&
       isBefore(Date.now(), returnAsDate(values.streamEndDate))) ||
       isAfter(Date.now(), returnAsDate(values.streamEndDate)) ||
-      values.streamInfo.streamStatus === "Suspended");
+      values.streamInfo?.streamStatus === "Suspended");
 
   useEffect(() => {
     if (streamIsHappeningOrHasHappened) {
@@ -142,6 +142,7 @@ const CommonForm: React.FC<Props> = ({
           />
         </div>
       </div>
+      
       <Calendar
         values={values}
         handleChange={handleChange}
@@ -161,7 +162,6 @@ const CommonForm: React.FC<Props> = ({
           </h2>
         )}
 
-        <div className="flex">
           <FormButtons
             formMode={formMode}
             cost={cost}
@@ -179,7 +179,6 @@ const CommonForm: React.FC<Props> = ({
             needsToEstimateNewCost={needsToEstimateNewCost}
           />
         </div>
-      </div>
     </>
   );
 };

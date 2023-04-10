@@ -63,7 +63,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
 
   useEffect(() => {
     if (isDeleteSuccess) {
-      dispatch(deleteStreamFromTable(selectedStream.streamInfo.Id));
+      dispatch(deleteStreamFromTable(selectedStream.streamInfo?.Id));
       addToast("Stream deleted", {
         appearance: "success",
         autoDismiss: true,
@@ -89,7 +89,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
 
   useEffect(() => {
     if (receipt && receipt.status === 1 && transactionType === "cancel") {
-      deleteStream({ streamId: selectedStream.streamInfo.Id });
+      deleteStream({ streamId: selectedStream.streamInfo?.Id });
     }
     if (receipt && receipt.status === 1 && transactionType === "edit") {
       editStream({
@@ -270,24 +270,24 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
             {renderDetail(
               "Playback URL",
               true,
-              `https://livepeercdn.studio/hls/${selectedStream?.streamInfo.PlayBackId}/index.m3u8`
+              `https://livepeercdn.studio/hls/${selectedStream?.streamInfo?.PlayBackId}/index.m3u8`
             )}
             {renderDetail(
               "Stream Key",
               true,
-              (selectedStream?.streamInfo).StreamKey
+              (selectedStream?.streamInfo)?.StreamKey
             )}
             {renderDetail(
               "RTMP ingest URL",
               true,
               "rtmp://rtmp.serraform.com/live"
             )}
-            {renderDetail("Stream ID", true, (selectedStream?.streamInfo).Id)}
+            {renderDetail("Stream ID", true, (selectedStream?.streamInfo)?.Id)}
 
             {renderDetail(
               "Created at",
               false,
-              new Date((selectedStream?.streamInfo).CreatedAt)
+              new Date((selectedStream?.streamInfo)?.CreatedAt)
                 .toLocaleString()
                 .split(",")[0]
             )}

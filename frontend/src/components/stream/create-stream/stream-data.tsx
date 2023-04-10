@@ -113,7 +113,6 @@ const StreamInfo: React.FC<IStreamCreation> = ({
           values.streamStartDate,
           Date.now()
         );
-        if (values.streamType === "live-stream") {
           dispatch(
             lockFunds({
               addToast,
@@ -123,7 +122,6 @@ const StreamInfo: React.FC<IStreamCreation> = ({
               vaultContractId: vaultContractId,
             })
           );
-        }
         setStreamValues(values);
       }
     },
