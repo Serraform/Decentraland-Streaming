@@ -197,7 +197,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   }, [dispatch]);
 
   const renderStreamForm = () => {
-    switch (selectedStream.streamType.toLowerCase()) {
+    switch (selectedStream.streamType) {
       case "vod":
         return (
           <StreamVOD
@@ -212,7 +212,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
             handleDelete={handleDelete}
           />
         );
-      case "live-stream":
+      case "liveStream":
         return (
           <LiveStream
             handleSave={handleSave}

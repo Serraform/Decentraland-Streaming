@@ -113,7 +113,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
           values.streamStartDate,
           Date.now()
         );
-        if (values.streamType === "live-stream") {
+        if (values.streamType === "liveStream") {
           dispatch(
             lockFunds({
               addToast,
@@ -148,7 +148,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
             handleDelete={() => null}
           />
         );
-      case "live-stream":
+      case "liveStream":
         return (
           <LiveStream
             isLoading={isLoading || isTransactionLoading}

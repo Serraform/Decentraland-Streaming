@@ -254,6 +254,51 @@ export const withdrawToTreasury = createAsyncThunk(
   }
 );
 
+export const transferTreasuryToWallet = createAsyncThunk(
+  "transaction/treasuryToWallet",
+  async (props: any) => {
+    // multiWithdraw
+    const { walletAddress, amount, addToast } = props;
+    const amountToTransfer = ethers.utils.parseUnits("" + amount, "6");
+    
+    try {
+      const { ethereum } = window as any;
+      if (!ethereum) {
+        return;
+      }
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESS as string,
+        smartcontractABI,
+        signer
+      );
+      const tx = await contract.treasuryWithdraw(walletAddress, amountToTransfer);
+      addToast("Waiting for transaction approval", {
+        autoDismiss: true,
+      });
+      const receipt = await tx.wait();
+      if (receipt.status === 1) {
+        addToast("Transfer to treasury succesfully", {
+          appearance: "success",
+          autoDismiss: true,
+        });
+        return receipt;
+      } else {
+        throw new Error();
+      }
+    } catch (e) {
+      
+      addToast("We couldn't transfer funds", {
+        appearance: "error",
+        autoDismiss: true,
+      });
+      throw new Error();
+    }
+  }
+);
+
 export const viewVault = createAsyncThunk(
   "transaction/viewVault",
   async (props: any) => {
@@ -347,7 +392,18 @@ const transactionSlice = createSlice({
       state.error = (action.error as any).message;
       state.cost = 0;
     });
-
+    builder.addCase(transferTreasuryToWallet.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(transferTreasuryToWallet.fulfilled, (state, action) => {
+      state.loading = false;
+      state.receipt = action.payload;
+    });
+    builder.addCase(transferTreasuryToWallet.rejected, (state, action) => {
+      state.loading = false;
+      state.error = (action.error as any).message;
+      state.cost = 0;
+    });
     builder.addCase(estimateCost.pending, (state) => {
       state.loading = true;
     });

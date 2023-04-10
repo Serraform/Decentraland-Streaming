@@ -18,6 +18,7 @@ const initialState = {
   loading: false,
   error: null,
   locked_balance: 0,
+  treasuryFunds: 0,
   isTokenContractApprove: false,
   role: "user"
 };
@@ -158,6 +159,10 @@ export const fetchFunds = createAsyncThunk(
       await switchNetwork();
       const accountInfo = await contract.view_sub_info(walletID);
       const isAdmin = await contract.admin(walletID);
+      let treasuryFunds = 0;
+      if(isAdmin){
+         treasuryFunds = await contract.treasury();
+      }
       const balance = Number(accountInfo.balance._hex) as any;
       const isTokenContractApprove = await checkAllowance(
         signer,
@@ -168,7 +173,8 @@ export const fetchFunds = createAsyncThunk(
         balance: balance,
         locked_balance: Number(accountInfo.lockedBalance._hex) as any,
         isTokenContractApprove: isTokenContractApprove,
-        role: isAdmin ? "admin" : "user"
+        role: isAdmin ? "admin" : "user",
+        treasuryFunds: treasuryFunds
       };
     } catch (e) {
       return {
@@ -178,6 +184,7 @@ export const fetchFunds = createAsyncThunk(
     }
   }
 );
+
 
 export const fundWallet = createAsyncThunk(
   "fund-wallet",
@@ -249,6 +256,7 @@ const accountSlice = createSlice({
     builder.addCase(fetchFunds.fulfilled, (state, action) => {
       state.loading = false;
       state.balance = action.payload?.balance;
+      state.treasuryFunds = action.payload?.treasuryFunds as number;
       state.locked_balance = action.payload?.locked_balance;
       state.isTokenContractApprove = action.payload
         ?.isTokenContractApprove as boolean;
