@@ -1,0 +1,29 @@
+
+# File: .github/workflows/workflowForFile.yml
+
+on:
+  repository_dispatch:
+    types: ffmpeg
+  workflow_dispatch:
+    inputs:
+      m3u8_url:
+        description: ''
+        required: true
+        type: string
+      livestream_token:
+        description: ''
+        required: true
+        type: string
+
+name: Iniatiate_ffmpeg_Stream.yaml
+
+jobs:
+
+  build-and-deploy:
+    runs-on: self-hosted
+    steps:
+
+    - name: Run Azure CLi
+      run : | 
+          az login --service-principal -u ${{secrets.AZURE_APP_ID}} -p ${{secrets.AZURE_APP_SECRET}} --tenant ${{secrets.AZURE_TENANT_ID}}
+          az container exec --resource-group rg-livestream-dev --name ffmpeglivestream --exec-command "ffmpeg -fflags -igndts -hide_banner -i ${{inputs.m3u8_url}} -bsf:a aac_adtstoasc -c copy -f flv rtmp://rtmp.livepeer.com/live/${{inputs.livestream_token}}"
