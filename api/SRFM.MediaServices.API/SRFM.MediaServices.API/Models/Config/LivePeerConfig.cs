@@ -9,5 +9,6 @@ namespace SRFM.MediaServices.API
     {
         public string BaseAddress { get; set; }
         public string ApiKey { get; set; }
+        public string WebhookId { get; set; }
     }
 }

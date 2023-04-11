@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Moralis.StreamsApi.Models;
 using SRFM.MediaServices.API.Models.LivePeer;
 using SRFM.MediaServices.API.Services.LivePeer;
 using System;
@@ -40,7 +41,12 @@ namespace SRFM.MediaServices.API
         {
             var json = new
             {
-                name = fileName
+                name = fileName,
+                playbackPolicy = new
+                {
+                    type = "webhook",
+                    webhookId = _livepeerConfig.WebhookId
+                }
             };
 
             string jsonString = JsonSerializer.Serialize(json);
