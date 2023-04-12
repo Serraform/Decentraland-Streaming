@@ -46,6 +46,8 @@ namespace SRFM.MediaServices.API
 
         public Task<object> UpdateStream(StreamDB streamProps);
 
+        public Task<object> UpdateStreamsIsPulled(List<string> streamIds, bool isPulled);
+
         public Task<HttpResponseMessage> DeleteStream(StreamDB streamProps);
 
         public Task<StreamDB> GetStreamByStreamId(string StreamId);

@@ -74,5 +74,13 @@ namespace SRFM.MediaServices.API
             TableResult result = await tableref.ExecuteAsync(retrieveOperation);
             return result.Result;
         }
+
+        public async Task<object> UpdateBatchAsync(string tableName,  TableBatchOperation entity)
+        {
+            var tableref = _tableClient.GetTableReference(tableName);           
+
+            return await tableref.ExecuteBatchAsync(entity);
+           
+        }
     }
 }
