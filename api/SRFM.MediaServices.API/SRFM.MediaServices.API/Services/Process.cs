@@ -352,9 +352,17 @@ namespace SRFM.MediaServices.API
             {
                 streamLog = await _tableReader.GetItemsByRowKeyAsync<StreamDB>("Stream", stream);
 
-                streamLog.Pulled = isPulled;
-                entityBatch.Replace(streamLog);
-            }           
+                if (streamLog != null)
+                {
+                    streamLog.Pulled = isPulled;
+                    entityBatch.Replace(streamLog);
+                }
+            }
+
+            if (entityBatch.Count == 0)
+            {
+                throw new CustomException("Stream id not found");               
+            }
 
             return await _tableWriter.UpdateBatchAsync("Stream", entityBatch);
         }
