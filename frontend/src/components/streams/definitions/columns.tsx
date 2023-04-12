@@ -8,45 +8,45 @@ export const columnsDefinition = (
   columnHelper.accessor("streamStatus", {
     id: "streamStatus",
     header: () => <span className="font-montserratbold">Status</span>,
-    cell: (info: any) =>{
-    switch (info.getValue()) {
-      case "Upcoming":
-        return (
-          <div className="flex justify-center flex-row items-center">
-            <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-sky-400" />
-            <span className="text-[14px]">Upcoming</span>
-          </div>
-        );
-      case "Idle":
-        return (
-          <div className="flex justify-center flex-row items-center">
-          <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-gray-600" />
-          <span className="text-[14px]">Idle</span>
-        </div>
-        );
-      case "Live":
-        return (
-          <div className="flex justify-center flex-row items-center">
-          <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-green-600" />
-          <span className="text-[14px]">Live</span>
-        </div>
-        );
-      case "Suspended":
-        return (
-          <div className="flex justify-center flex-row items-center">
-          <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
-          <span className="text-[14px]">Suspended</span>
-        </div>
-        );
-      default:
-        return (
-          <div className="flex justify-center flex-row items-center">
-          <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
-          <span className="text-[14px]">Suspended</span>
-        </div>
-        );
-    }}
-    
+    cell: (info: any) => {
+      switch (info.getValue()) {
+        case "Upcoming":
+          return (
+            <div className="flex justify-center flex-row items-center">
+              <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-sky-400" />
+              <span className="text-[14px]">Upcoming</span>
+            </div>
+          );
+        case "Idle":
+          return (
+            <div className="flex justify-center flex-row items-center">
+              <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-gray-600" />
+              <span className="text-[14px]">Idle</span>
+            </div>
+          );
+        case "Live":
+          return (
+            <div className="flex justify-center flex-row items-center">
+              <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-green-600" />
+              <span className="text-[14px]">Live</span>
+            </div>
+          );
+        case "Suspended":
+          return (
+            <div className="flex justify-center flex-row items-center">
+              <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
+              <span className="text-[14px]">Suspended</span>
+            </div>
+          );
+        default:
+          return (
+            <div className="flex justify-center flex-row items-center">
+              <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
+              <span className="text-[14px]">Suspended</span>
+            </div>
+          );
+      }
+    },
   }),
   columnHelper.accessor("name", {
     id: "name",
@@ -60,7 +60,11 @@ export const columnsDefinition = (
   columnHelper.accessor("streamType", {
     id: "streamType",
     header: () => <span className="font-montserratbold">Type</span>,
-    cell: (info: any) =>     <span className="font-montserratregular text-[14px]">{info.getValue()}</span>,
+    cell: (info: any) => (
+      <span className="font-montserratregular text-[14px]">
+        {info.getValue()}
+      </span>
+    ),
   }),
   columnHelper.accessor("playBackUrl", {
     id: "playBackUrl",
@@ -83,14 +87,14 @@ export const columnsDefinition = (
             data-iscapture="true"
           >
             <span className="font-montserratregular text-[14px]">
-            {playBackUrl.slice(8, 25)}...
+              {playBackUrl.slice(8, 25)}...
             </span>
           </div>
         </>
       );
     },
   }),
-  
+
   columnHelper.accessor("dates", {
     id: "dates",
     header: () => <span className="font-montserratbold">Dates</span>,

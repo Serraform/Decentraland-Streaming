@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SRFM.MediaServices.API.Models.LivePeer;
@@ -340,6 +341,30 @@ namespace SRFM.MediaServices.API
             await _queuesWriter.AddQueuesMessageAsync("queue-livestream", jsonStreamQueuesString);
 
             return await _tableWriter.UpdateAsync("Stream", streamProp);
+        }
+
+        public async Task<object> UpdateStreamsIsPulled(List<string> streamIds, bool isPulled)
+        {
+            StreamDB streamLog = null;
+            TableBatchOperation entityBatch = new TableBatchOperation();
+
+            foreach (string stream in streamIds)
+            {
+                streamLog = await _tableReader.GetItemsByRowKeyAsync<StreamDB>("Stream", stream);
+
+                if (streamLog != null)
+                {
+                    streamLog.Pulled = isPulled;
+                    entityBatch.Replace(streamLog);
+                }
+            }
+
+            if (entityBatch.Count == 0)
+            {
+                throw new CustomException("Stream id not found");               
+            }
+
+            return await _tableWriter.UpdateBatchAsync("Stream", entityBatch);
         }
 
         public async Task<HttpResponseMessage> DeleteStream(StreamDB streamProp)

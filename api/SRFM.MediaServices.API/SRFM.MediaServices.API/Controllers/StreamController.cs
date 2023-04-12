@@ -206,7 +206,7 @@ namespace SRFM.MediaServices.API.Controllers
 
                 if (getStream != null)
                 {
-                    getStream.Name = streamProps.Name;                
+                    getStream.Name = streamProps.Name;
                     getStream.StreamStartDate = streamProps.StreamStartDate;
                     getStream.StreamEndDate = streamProps.StreamEndDate;
                     getStream.StreamDuration = streamProps.StreamDuration;
@@ -266,7 +266,7 @@ namespace SRFM.MediaServices.API.Controllers
             bool isValidToken = TokenManager.ValidateToken(token);
             if (isValidToken)
             {
-                TimeSpan ts = streamEndDate - streamStartDate;               
+                TimeSpan ts = streamEndDate - streamStartDate;
 
                 var number = Math.Ceiling(ts.TotalHours);
 
@@ -341,5 +341,27 @@ namespace SRFM.MediaServices.API.Controllers
             }
         }
 
+        [HttpPatch]
+        [Route("UpdateStreamsIsPulled/isPulled")]
+        public async Task<HttpResponseMessage> UpdateStreamsIsPulled([FromBody]List<string> streamIds, bool isPulled)
+        {
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
+            {
+                var response = await _process.UpdateStreamsIsPulled(streamIds, isPulled);
+
+                string jsonString = JsonSerializer.Serialize(response);
+                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+            }
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
+
+        }
+       
     }
 }

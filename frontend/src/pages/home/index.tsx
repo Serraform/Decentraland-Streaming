@@ -1,12 +1,13 @@
 import Streams from "components/streams";
 import Assets from "components/assets";
-import UploaderProgress from "components/asset-uploader/uploader-progress";
+import StreamsPull from "components/streams-pull";
 import { useReducer } from "react";
-
 import useConnectWallet from "hooks/useConnectWallet";
-type LIST_TYPE = "streams" | "assets";
+import UploaderProgress from "components/asset-uploader/uploader-progress";
+type LIST_TYPE = "streams" | "assets" | "streams-to-pull";
+
 const Home = () => {
-  const { walletID } = useConnectWallet();
+  const { walletID, role } = useConnectWallet();
   const [list, setList] = useReducer(
     (prev: any, next: any) => {
       const newEvent = { ...prev, ...next };
@@ -20,37 +21,60 @@ const Home = () => {
   const handleChangeType = (event: any) => {
     setList({ [event.target.name]: event.target.value });
   };
+  const renderTable = () => {
+    switch (list.type) {
+      case "streams":
+        return <Streams />;
+      case "assets":
+        return <Assets />;
+      case "streams-to-pull":
+        return <StreamsPull />;
+      default:
+        return <Streams />;
+    }
+  };
   return (
     <>
       <div className="container pt-10 flex flex-row justify-start">
-        {walletID && (
-          <form>
+        {walletID !== "" && <form>
+          {role === "admin" && (
             <label className="mr-2 font-montserratregular text-black  dark:text-white ">
               <input
                 type="radio"
                 className="mr-1"
                 name="type"
-                value="streams"
-                checked={list.type === "streams"}
+                value="streams-to-pull"
+                checked={list.type === "streams-to-pull"}
                 onClick={(e) => handleChangeType(e)}
               />
-              Streams
+              Streams to pull
             </label>
-            <label className="ml-2 font-montserratregular text-black  dark:text-white ">
-              <input
-                type="radio"
-                className="mr-1"
-                name="type"
-                value="assets"
-                checked={list.type === "assets"}
-                onClick={(e) => handleChangeType(e)}
-              />
-              Assets
-            </label>
-          </form>
-        )}
+          )}
+          <label className="mr-2 font-montserratregular text-black  dark:text-white ">
+            <input
+              type="radio"
+              className="mr-1"
+              name="type"
+              value="streams"
+              checked={list.type === "streams"}
+              onClick={(e) => handleChangeType(e)}
+            />
+            Streams
+          </label>
+          <label className="ml-2 font-montserratregular text-black  dark:text-white ">
+            <input
+              type="radio"
+              className="mr-1"
+              name="type"
+              value="assets"
+              checked={list.type === "assets"}
+              onClick={(e) => handleChangeType(e)}
+            />
+            Assets
+          </label>
+        </form>}
       </div>
-      {list.type === "streams" ? <Streams /> : <Assets />}
+      {renderTable()}
       <UploaderProgress />
     </>
   );

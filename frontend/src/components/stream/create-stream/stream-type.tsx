@@ -71,11 +71,11 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
                         <Field
                           type="radio"
                           onChange={handleChange}
-                          id={"live-stream"}
+                          id={"liveStream"}
                           name="streamType"
-                          value={"live-stream"}
+                          value={"liveStream"}
                         />
-                        <label htmlFor={"live-stream"}>Live</label>
+                        <label htmlFor={"liveStream"}>Live</label>
                       </div>
                     </>
                     <>

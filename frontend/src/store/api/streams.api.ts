@@ -18,6 +18,13 @@ export const streamsApi = createApi({
         method: "get",
       }),
     }),
+
+    fetchAllEndedStreams: builder.query<any, any>({
+      query: () => ({
+        url: `api/Stream/ListAllEndStream`,
+        method: "get",
+      }),
+    }),
     createLiveStream: builder.mutation<any, any>({
       query: ({ walletID, streamValues }) => {
         const { name, attendees, streamStartDate, streamEndDate, streamType, cost, vaultContractId, VId } =
@@ -34,17 +41,23 @@ export const streamsApi = createApi({
             streamDuration: "",
             streamStartDate: streamStartDate.toISOString(),
             streamEndDate: streamEndDate.toISOString(),
-            attendees: ""+attendees,
-            cost: ""+cost,
-            vaultContractId: ""+vaultContractId
+            attendees: "" + attendees,
+            cost: "" + cost,
+            vaultContractId: "" + vaultContractId,
           },
         };
       },
     }),
-   editStream: builder.mutation<any, any>({
+    editStream: builder.mutation<any, any>({
       query: ({ streamValues }) => {
-        
-        const { name, attendees, streamStartDate, streamEndDate, cost, streamID } = streamValues;
+        const {
+          name,
+          attendees,
+          streamStartDate,
+          streamEndDate,
+          cost,
+          streamID,
+        } = streamValues;
         return {
           url: `api/Stream/UpdateStream`,
           method: "PATCH",
@@ -54,7 +67,8 @@ export const streamsApi = createApi({
             Cost: cost,
             StreamStartDate: streamStartDate,
             StreamEndDate: streamEndDate,
-            Attendees: typeof attendees === "number" ? ""+attendees: attendees,
+            Attendees:
+              typeof attendees === "number" ? "" + attendees : attendees,
           },
         };
       },
@@ -77,15 +91,24 @@ export const streamsApi = createApi({
         method: "delete",
       }),
     }),
+    markPulledStreams: builder.mutation<any, any>({
+      query: (body) => ({
+        url: `api/Stream/UpdateStreamsIsPulled?isPulled=true`,
+        method: "PATCH",
+        data: body.streamsIds,
+      }),
+    }),
   }),
 });
 
 export const {
   useFetchStreamsByWalletIdQuery,
   useCreateLiveStreamMutation,
+  useFetchAllEndedStreamsQuery,
   useSuspendLiveStreamMutation,
   useUnSuspendLiveStreamMutation,
   useDeleteStreamMutation,
   useFetchStreamDetailsQuery,
-  useEditStreamMutation
+  useEditStreamMutation,
+  useMarkPulledStreamsMutation
 } = streamsApi;
