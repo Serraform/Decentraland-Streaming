@@ -342,8 +342,8 @@ namespace SRFM.MediaServices.API.Controllers
         }
 
         [HttpPatch]
-        [Route("UpdateStreamsIsPulled")]
-        public async Task<HttpResponseMessage> UpdateStreamsIsPulled([FromBody] List<string> streamIds, bool isPulled)
+        [Route("UpdateStreamsIsPulled/isPulled")]
+        public async Task<HttpResponseMessage> UpdateStreamsIsPulled([FromBody]List<string> streamIds, bool isPulled)
         {
             Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
             var tokenWithBearer = headerValue.ToString();
