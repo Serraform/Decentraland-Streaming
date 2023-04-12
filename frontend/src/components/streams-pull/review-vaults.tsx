@@ -6,6 +6,8 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 import { fetchFunds } from "store/slices/account.slice";
 import { finishTransaction } from "store/slices/transaction.slice";
+import { useMarkPulledStreamsMutation } from "store/api/streams.api";
+
 const customStyles = {
   content: {
     top: "50%",
@@ -20,27 +22,39 @@ const customStyles = {
 };
 
 const ReviewVaults = (props: any) => {
-  const { loading, receipt } = useSelector(
-    (state: RootState) => state.transactionData
-  );
   const {
     openModal,
     vaultsId,
     vaultsFunds,
+    streamIds,
     vaultsName,
     setState,
     handleTransfering,
+    loading,
+    receipt,
   } = props;
+  const [markStreamsAsPulled] = useMarkPulledStreamsMutation();
   const { walletID } = useSelector((state: RootState) => state.accountData);
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
   useEffect(() => {
     if (receipt && receipt.status === 1) {
       dispatch(finishTransaction());
+      markStreamsAsPulled({ streamsIds: streamIds });
+
       dispatch(fetchFunds(walletID));
       setState({ openModal: false, vaultsId, vaultsFunds });
     }
-  }, [dispatch, receipt, setState, vaultsFunds, vaultsId, walletID]);
+  }, [
+    dispatch,
+    markStreamsAsPulled,
+    receipt,
+    setState,
+    streamIds,
+    vaultsFunds,
+    vaultsId,
+    walletID,
+  ]);
   return (
     <>
       <Modal

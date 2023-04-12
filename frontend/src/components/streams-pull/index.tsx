@@ -14,16 +14,14 @@ import ReviewVaults from "components/streams-pull/review-vaults";
 import { useToasts } from "react-toast-notifications";
 import { withdrawToTreasury } from "store/slices/transaction.slice";
 import { ethers } from "ethers";
-// import {
-//   useEditStreamMutation,
-// } from "store/api/streams.api";
 const StreamsPull = () => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
   const { addToast } = useToasts();
-  // const [editStream, { isLoading: isEditLoading, isSuccess: isEditSuccess }] =
-  // useEditStreamMutation();
 
+  const { loading: loadingTransaction, receipt } = useSelector(
+    (state: RootState) => state.transactionData
+  );
   const { walletID } = useSelector((state: RootState) => state.accountData);
 
   const navigate = useNavigate();
@@ -41,7 +39,7 @@ const StreamsPull = () => {
         vaultsFunds: [],
         openModal: false,
         vaultsName: [],
-        streamIds: []
+        streamIds: [],
       }
     );
   const {
@@ -52,7 +50,7 @@ const StreamsPull = () => {
     isFetching,
   } = useFetchAllEndedStreamsQuery({
     skip: walletID === "",
-    refetchOnMountOrArgChange: true,
+    refetchOnMountOrArgChange: true || (receipt && receipt.status === 1),
   });
 
   useEffect(() => {
@@ -79,7 +77,7 @@ const StreamsPull = () => {
       }, new Map());
       const vaultsId = Array.from(mappedVaults.keys());
       const vaultsFunds = Array.from(mappedVaults.values());
-      const streamIds = selectedStreams.map((stream) => stream.streamInfo.Id);
+      const streamIds = selectedStreams.map((stream) => stream.streamID);
       setTransferFundsToTreasuryState({
         vaultsName: mappedNameVaults,
         vaultsId,
@@ -130,9 +128,12 @@ const StreamsPull = () => {
         openModal={transferFundsToTreasurySlice.openModal}
         vaultsId={transferFundsToTreasurySlice.vaultsId}
         vaultsFunds={transferFundsToTreasurySlice.vaultsFunds}
+        streamIds={transferFundsToTreasurySlice.streamIds}
         vaultsName={transferFundsToTreasurySlice.vaultsName}
         setState={setTransferFundsToTreasuryState}
         handleTransfering={handleTransfering}
+        loading={loadingTransaction}
+        receipt={receipt}
       />
       <StreamTable
         columns={columns}
@@ -142,6 +143,7 @@ const StreamsPull = () => {
               ...stream,
               streamInfo: JSON.parse(stream.streamInfo),
             }))
+            .filter((stream: any) => !stream.pulled)
             .sort(
               (a: any, b: any) =>
                 (new Date(b.streamStartDate) as any) -

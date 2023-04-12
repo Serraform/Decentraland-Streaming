@@ -97,6 +97,13 @@ export const streamsApi = createApi({
         method: "delete",
       }),
     }),
+    markPulledStreams: builder.mutation<any, any>({
+      query: (body) => ({
+        url: `api/Stream/UpdateStreamsIsPulled?isPulled=true`,
+        method: "PATCH",
+        data: body.streamsIds,
+      }),
+    }),
   }),
 });
 
@@ -109,4 +116,5 @@ export const {
   useDeleteStreamMutation,
   useFetchStreamDetailsQuery,
   useEditStreamMutation,
+  useMarkPulledStreamsMutation
 } = streamsApi;

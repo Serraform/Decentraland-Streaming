@@ -70,7 +70,7 @@ export const columnsDefinition = (
     id: "playBackUrl",
     header: () => <span className="font-montserratbold">Playback URL</span>,
     cell: (info: any) => {
-      const playbackId = info.row.original.streamInfo.PlayBackId;
+      const playbackId = info.row.original.streamInfo?.PlayBackId;
       const playBackUrl = `https://livepeercdn.studio/hls/${playbackId}/index.m3u8`;
       return (
         <>
