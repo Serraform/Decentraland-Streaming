@@ -6,7 +6,7 @@ import { RootState } from "store/configStore";
 const useConnectWallet = () => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
-  const { walletID, loading, error } = useSelector(
+  const { walletID, loading, error, role } = useSelector(
     (state: RootState) => state.accountData
   );
 
@@ -18,6 +18,7 @@ const useConnectWallet = () => {
   useEffect(() => {
   const { ethereum } = window as any;
     if (ethereum) {
+    ethereum.enable().then(function(accounts: any){
       ethereum.on("accountsChanged", (accounts: any) => {
         if (accounts.length > 0) {
           window.location.reload();
@@ -26,6 +27,7 @@ const useConnectWallet = () => {
           // setStatus("🦊 Connect to Metamask using the top right button.");
         }
       });
+    });
     }
   }, [dispatch]);
   
@@ -33,7 +35,7 @@ const useConnectWallet = () => {
     () =>dispatch(requestConnectWallet()),
     [dispatch]
   ) as any;
-  return { walletID, loading, connectWallet };
+  return { walletID, loading, connectWallet, role };
 };
 
 export default useConnectWallet;

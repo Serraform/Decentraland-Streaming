@@ -37,7 +37,7 @@ const LiveStream: React.FC<Props> = ({
     (values: any) => {
       const valuesToSend = {
         ...values,
-        streamType: "live-stream",
+        streamType: "liveStream",
       };
       handleSave(valuesToSend);
     },

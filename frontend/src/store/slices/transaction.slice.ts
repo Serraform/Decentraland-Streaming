@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { ethers } from "ethers";
 import { fetchCostService } from "store/services/transaction.service";
-import smartcontractV2ABI from "utils/abi/smartContractV3Abi.json";
+import smartcontractV2ABI from "utils/abi/smartcontractV4ABI.json";
 const smartcontractABI = smartcontractV2ABI.output.abi;
 const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 type InitialState = {
@@ -46,6 +46,18 @@ export const estimateCost = createAsyncThunk(
   }
 );
 
+const getCurrentBlockchainTimestamp = async (provider: any) => {
+  try{
+
+    const blockNumber = provider.getBlockNumber();
+    const block = await provider.getBlock(blockNumber);
+    return block.timestamp;
+  }
+  catch(e){
+    throw new Error();
+  }
+}
+
 export const lockFunds = createAsyncThunk(
   "transaction/lockFunds",
   async (props: any) => {
@@ -69,10 +81,12 @@ export const lockFunds = createAsyncThunk(
         smartcontractABI,
         signer
       );
+      const blockchainTimestamp = await getCurrentBlockchainTimestamp(provider);
       const deposit = ethers.utils.parseUnits("" + amountToBeLock, "6");
+      const exactStartTime = blockchainTimestamp+durationUntilStart;
       const tx = await contract.lock_funds(
         "" + vaultContractId,
-        durationUntilStart,
+        exactStartTime,
         duration,
         deposit
       );
@@ -164,7 +178,7 @@ export const editVault = createAsyncThunk(
         smartcontractABI,
         signer
       );
-      
+
       const amountToEdit = ethers.utils.parseUnits("" + amountToBeUnlock, "6");
       const tx = await contract.edit_vault(
         vaultContractId,
@@ -191,6 +205,121 @@ export const editVault = createAsyncThunk(
         appearance: "error",
         autoDismiss: true,
       });
+      throw new Error();
+    }
+  }
+);
+
+export const withdrawToTreasury = createAsyncThunk(
+  "transaction/withdrawToTreasury",
+  async (props: any) => {
+    // multiWithdraw
+    const { vaultsId, vaultsFunds, addToast } = props;
+    
+    try {
+      const { ethereum } = window as any;
+      if (!ethereum) {
+        return;
+      }
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESS as string,
+        smartcontractABI,
+        signer
+      );
+      const tx = await contract.multiWithdraw(vaultsId, vaultsFunds);
+      addToast("Waiting for transaction approval", {
+        autoDismiss: true,
+      });
+      const receipt = await tx.wait();
+      if (receipt.status === 1) {
+        addToast("Vaults withdrawn succesfully", {
+          appearance: "success",
+          autoDismiss: true,
+        });
+        return receipt;
+      } else {
+        throw new Error();
+      }
+    } catch (e) {
+      
+      addToast("We couldn't withdrawn funds", {
+        appearance: "error",
+        autoDismiss: true,
+      });
+      throw new Error();
+    }
+  }
+);
+
+export const transferTreasuryToWallet = createAsyncThunk(
+  "transaction/treasuryToWallet",
+  async (props: any) => {
+    // multiWithdraw
+    const { walletAddress, amount, addToast } = props;
+    const amountToTransfer = ethers.utils.parseUnits("" + amount, "6");
+    
+    try {
+      const { ethereum } = window as any;
+      if (!ethereum) {
+        return;
+      }
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESS as string,
+        smartcontractABI,
+        signer
+      );
+      const tx = await contract.treasuryWithdraw(walletAddress, amountToTransfer);
+      addToast("Waiting for transaction approval", {
+        autoDismiss: true,
+      });
+      const receipt = await tx.wait();
+      if (receipt.status === 1) {
+        addToast("Transfer to treasury succesfully", {
+          appearance: "success",
+          autoDismiss: true,
+        });
+        return receipt;
+      } else {
+        throw new Error();
+      }
+    } catch (e) {
+      
+      addToast("We couldn't transfer funds", {
+        appearance: "error",
+        autoDismiss: true,
+      });
+      throw new Error();
+    }
+  }
+);
+
+export const viewVault = createAsyncThunk(
+  "transaction/viewVault",
+  async (props: any) => {
+    // multiWithdraw
+    const { vaultsId } = props;
+    try {
+      const { ethereum } = window as any;
+      if (!ethereum) {
+        return;
+      }
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESS as string,
+        smartcontractABI,
+        signer
+      );
+      const tx = await contract.view_vault(vaultsId[0]);
+      console.log(tx)
+    } catch (e) {
       throw new Error();
     }
   }
@@ -247,6 +376,30 @@ const transactionSlice = createSlice({
       state.transactionType = "edit";
     });
     builder.addCase(editVault.rejected, (state, action) => {
+      state.loading = false;
+      state.error = (action.error as any).message;
+      state.cost = 0;
+    });
+    builder.addCase(withdrawToTreasury.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(withdrawToTreasury.fulfilled, (state, action) => {
+      state.loading = false;
+      state.receipt = action.payload;
+    });
+    builder.addCase(withdrawToTreasury.rejected, (state, action) => {
+      state.loading = false;
+      state.error = (action.error as any).message;
+      state.cost = 0;
+    });
+    builder.addCase(transferTreasuryToWallet.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(transferTreasuryToWallet.fulfilled, (state, action) => {
+      state.loading = false;
+      state.receipt = action.payload;
+    });
+    builder.addCase(transferTreasuryToWallet.rejected, (state, action) => {
       state.loading = false;
       state.error = (action.error as any).message;
       state.cost = 0;
