@@ -60,9 +60,15 @@ namespace SRFM.MediaServices.API
                 if (PlayBackId != null)
                 {
 
-                    return $"https://livepeercdn.studio/hls/{PlayBackId}/index.m3u8";
+                    if (this.StreamType == "vod")
+                    {
+                        return $"https://livepeercdn.studio/hls/{PlayBackId}/index.m3u8/accessKey={StreamID}";
+                    }
+                    else
+                    {
+                        return $"https://livepeercdn.studio/hls/{PlayBackId}/index.m3u8";
+                    }
                 }
-
                 else
                 {
                     return string.Empty;
