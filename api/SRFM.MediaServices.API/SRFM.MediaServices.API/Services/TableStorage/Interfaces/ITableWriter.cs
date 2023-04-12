@@ -17,6 +17,8 @@ namespace SRFM.MediaServices.API
         //Updates the entity.
         public Task<object> UpdateAsync(string tableName, TableEntity entity);
 
+        public Task<object> UpdateBatchAsync(string tableName, TableBatchOperation entity);
+
         public Task<object> DeleteAsync(string tableName, TableEntity entity);
 
 
