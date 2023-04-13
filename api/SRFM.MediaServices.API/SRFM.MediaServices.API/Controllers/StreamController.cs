@@ -126,10 +126,11 @@ namespace SRFM.MediaServices.API.Controllers
 
                             if (getAsset != null)
                             {
-                                
+                                var guid = Guid.NewGuid().ToString();
+
                                 streamProps.PlayBackId = getAsset.PlayBackId;
-                                streamProps.StreamID = getAsset.AssetId;
-                                streamProps.RowKey = Guid.NewGuid().ToString();
+                                streamProps.StreamID = guid;
+                                streamProps.RowKey = guid;
 
                                 var response = await _process.CreateVODNewStream(streamProps);
 
