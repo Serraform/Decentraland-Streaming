@@ -20,7 +20,7 @@
         {
             "type": "Microsoft.ContainerInstance/containerGroups",
             "apiVersion": "2022-10-01-preview",
-            "name": "[parameters('containerGroups_ffmpeglivestream01_name')]",
+            "name": "[parameters('containerGroups_name')]",
             "location": "eastus",
             "properties": {
                 "sku": "Standard",
