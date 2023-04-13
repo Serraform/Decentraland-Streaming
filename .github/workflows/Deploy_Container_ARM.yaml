@@ -1,19 +1,20 @@
 on: 
-repository_dispatch:
-    types: ffmpeg
-workflow_dispatch:
-    inputs:
-      m3u8_url:
-        description: ''
-        required: true
-        type: string
-      livestream_token:
-        description: ''
-        required: true
-        type: string
+    repository_dispatch:
+        types: ffmpeg
+    workflow_dispatch:
+        inputs:
+          m3u8_url:
+            description: ''
+            required: true
+            type: string
+          livestream_token:
+            description: ''
+            required: true
+            type: string
 
 name: Azure Container ARM Deployment
-  jobs:
+  
+jobs:
     build-and-deploy:
       runs-on: ubuntu-latest
       steps:
