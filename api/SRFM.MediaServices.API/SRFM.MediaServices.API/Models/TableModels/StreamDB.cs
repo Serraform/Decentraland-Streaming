@@ -62,11 +62,11 @@ namespace SRFM.MediaServices.API
 
                     if (this.StreamType == "vod")
                     {
-                        return $"https://livepeercdn.studio/hls/{PlayBackId}/index.m3u8/accessKey={StreamID}";
+                        return $"https://playback.livepeer.studio/asset/hls/{PlayBackId}/index.m3u8?accessKey={RowKey}";                    
                     }
                     else
                     {
-                        return $"https://livepeercdn.studio/hls/{PlayBackId}/index.m3u8";
+                        return $"https://livepeercdn.studio/hls/{PlayBackId}/index.m3u8";                    
                     }
                 }
                 else
