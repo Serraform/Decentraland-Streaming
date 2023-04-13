@@ -93,7 +93,7 @@ export const streamsApi = createApi({
     }),
     markPulledStreams: builder.mutation<any, any>({
       query: (body) => ({
-        url: `api/Stream/UpdateStreamsIsPulled/isPulled`,
+        url: `api/Stream/UpdateStreamsIsPulled?isPulled=true`,
         method: "PATCH",
         data: body.streamsIds,
       }),

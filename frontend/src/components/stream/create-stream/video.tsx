@@ -8,7 +8,7 @@ type Props = {
   suspended: boolean;
 };
 const Video: React.FC<Props> = ({ values, video, handleChange }) => {
-  const { data } = useFetchStreamDetailsQuery(values.streamInfo?.Id, {
+  const { data } = useFetchStreamDetailsQuery(values.streamID, {
     pollingInterval: 6000,
   });
 
@@ -54,7 +54,6 @@ const Video: React.FC<Props> = ({ values, video, handleChange }) => {
             playing={true}
             width="auto"
             height="100%"
-            light={!((data as any)?.streamStatus === "Live")}
           ></ReactPlayer>
           {renderStatus()}
         </div>
