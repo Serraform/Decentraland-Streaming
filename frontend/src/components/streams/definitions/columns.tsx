@@ -70,8 +70,7 @@ export const columnsDefinition = (
     id: "playBackUrl",
     header: () => <span className="font-montserratbold">Playback URL</span>,
     cell: (info: any) => {
-      const playbackId = info.row.original.streamInfo?.PlayBackId;
-      const playBackUrl = `https://livepeercdn.studio/hls/${playbackId}/index.m3u8`;
+      const playBackUrl =  info.row.original.playBackUrl;
       return (
         <>
           <ReactTooltip id="main" place="top" type={"dark"} effect={"float"} />

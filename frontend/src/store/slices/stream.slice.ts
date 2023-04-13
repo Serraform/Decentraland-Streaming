@@ -19,6 +19,7 @@ const initialState: InitialState = {
     streamID: "",
     playBackUrl: "",
     asset: null,
+    VId: "",
     cost: "",
     vaultContractId: "",
     streamStartDate: undefined,

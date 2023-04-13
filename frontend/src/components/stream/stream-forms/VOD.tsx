@@ -11,9 +11,7 @@ import Video from "components/stream/create-stream/video";
 import ReactTooltip from "react-tooltip";
 import FaqIcon from "assets/icons/Question";
 import { RootState } from "store/configStore";
-import {
-  useFetchAssetsByWalletIdQuery,
-} from "store/api/assets.api";
+import { useFetchAssetsByWalletIdQuery } from "store/api/assets.api";
 import { useSelector } from "react-redux";
 type Props = {
   handleSave: Function;
@@ -36,11 +34,9 @@ const VOD: React.FC<Props> = ({
 }) => {
   const isEditForm = formMode === "edit";
 
-const { walletID } = useSelector((state: RootState) => state.accountData);
-  const {
-    data: assets,
-    isLoading: loading,
-  } = useFetchAssetsByWalletIdQuery(walletID);
+  const { walletID } = useSelector((state: RootState) => state.accountData);
+  const { data: assets, isLoading: loading } =
+    useFetchAssetsByWalletIdQuery(walletID);
   const [liveStreamVideo] = useState<IStreamVOD>({
     ...selectedStream,
   });
@@ -49,7 +45,7 @@ const { walletID } = useSelector((state: RootState) => state.accountData);
     (values: any) => {
       const valuesToSend = {
         ...values,
-        streamType: "relay-service",
+        streamType: "vod",
       };
       handleSave(valuesToSend);
     },
@@ -113,16 +109,28 @@ const { walletID } = useSelector((state: RootState) => state.accountData);
                       <FaqIcon />
                     </div>
                   </h2>
-                  {!loading ? <Field
-                    as="select"
-                    className="mb-[20px] mt-[10px] w-[100%] border bg-transparent  border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
-                  >
-                    { assets && Object.keys(assets).map((key: any) => {
-                      return (
-                        <option value={assets[key]?.assetId}>{assets[key]?.assetName}</option>
-                      )
-                    })}
-                  </Field> : <div className="mb-[20px] mt-[10px] basic" /> }
+                  {!loading ? (
+                    <Field
+                      as="select"
+                      name="VId"
+                      disabled={isEditForm}
+                      required
+                      onChange={handleChange}
+                      className="mb-[20px] mt-[10px] w-[100%] border bg-transparent  border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
+                    >
+                         <option value="">Select an asset</option>
+                      {assets &&
+                        Object.keys(assets).map((key: any) => {
+                          return (
+                            <option value={assets[key]?.assetId}>
+                              {assets[key]?.assetName}
+                            </option>
+                          );
+                        })}
+                    </Field>
+                  ) : (
+                    <div className="mb-[20px] mt-[10px] basic" />
+                  )}
                 </div>
                 <CommonForm
                   initialValues={initialValues}

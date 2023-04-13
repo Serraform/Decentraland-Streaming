@@ -101,8 +101,7 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
                           value={"vod"}
                         />
                         <label htmlFor={"vod"}>
-                          Video On Demand <br />
-                          (COMING SOON)
+                          Video On Demand 
                         </label>
                       </div>
                     </>
