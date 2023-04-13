@@ -126,9 +126,10 @@ namespace SRFM.MediaServices.API.Controllers
 
                             if (getAsset != null)
                             {
+                                
                                 streamProps.PlayBackId = getAsset.PlayBackId;
                                 streamProps.StreamID = getAsset.AssetId;
-                                streamProps.RowKey = getAsset.AssetId;
+                                streamProps.RowKey = Guid.NewGuid().ToString();
 
                                 var response = await _process.CreateVODNewStream(streamProps);
 
@@ -342,7 +343,7 @@ namespace SRFM.MediaServices.API.Controllers
         }
 
         [HttpPatch]
-        [Route("UpdateStreamsIsPulled/isPulled")]
+        [Route("UpdateStreamsIsPulled")]
         public async Task<HttpResponseMessage> UpdateStreamsIsPulled([FromBody]List<string> streamIds, bool isPulled)
         {
             Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
