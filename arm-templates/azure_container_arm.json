@@ -32,7 +32,7 @@
                             "command": [
                                 "/bin/bash",
                                 "-c",
-                              "[concat('ffmpeg -fflags -igndts -hide_banner -i ', parameters('containerGroups_name'), ' -bsf:a aac_adtstoasc -c copy -f flv rtmp://rtmp.livepeer.com/live/', parameters('m3u8_url'))]"
+                              "[concat('ffmpeg -fflags -igndts -hide_banner -i ', parameters('m3u8_url'), ' -bsf:a aac_adtstoasc -c copy -f flv rtmp://rtmp.livepeer.com/live/', parameters('livepeer_key'))]"
                             ],
                             "ports": [
                                 {
