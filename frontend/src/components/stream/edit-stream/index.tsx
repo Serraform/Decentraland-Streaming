@@ -269,7 +269,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
             {renderDetail(
               "Playback URL",
               true,
-              `https://livepeercdn.studio/hls/${selectedStream?.streamInfo?.PlayBackId}/index.m3u8`
+              selectedStream.playBackUrl
             )}
             {renderDetail(
               "Stream Key",

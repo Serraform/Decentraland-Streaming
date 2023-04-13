@@ -40,7 +40,7 @@ const Streams = () => {
   const handleSelectStream = useCallback(
     (selectedStream: IStream, index: number) => {
       const setSelectedStream = { ...selectedStream } as any;
-      const navigateTo = `/stream/${setSelectedStream.streamInfo?.Id}`;
+      const navigateTo = `/stream/${setSelectedStream.streamID}`;
       navigate(navigateTo);
       dispatch(selectStream({ setSelectedStream, index }));
     },
