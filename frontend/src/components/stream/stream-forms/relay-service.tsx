@@ -39,7 +39,7 @@ const RelayService: React.FC<Props> = ({
     (values: any) => {
       const valuesToSend = {
         ...values,
-        streamType: "relay-service",
+        streamType: "relayService",
       };
       handleSave(valuesToSend);
     },

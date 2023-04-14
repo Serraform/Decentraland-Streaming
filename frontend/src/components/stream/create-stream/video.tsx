@@ -7,7 +7,7 @@ type Props = {
   values: any;
   suspended: boolean;
 };
-const Video: React.FC<Props> = ({ values, video, handleChange }) => {
+const Video: React.FC<Props> = ({ values, video }) => {
   const { data } = useFetchStreamDetailsQuery(values.streamID, {
     pollingInterval: 6000,
   });

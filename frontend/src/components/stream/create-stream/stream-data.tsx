@@ -5,9 +5,11 @@ import {
   ILiveStream,
   deepEqual,
   IStreamVOD,
+  IRelayService,
 } from "components/stream/definitions";
 import LiveStream from "components/stream/stream-forms/live-stream";
 import VODStream from "components/stream/stream-forms/VOD";
+import RelayStream from "components/stream/stream-forms/relay-service";
 import {
   estimateCost,
   finishTransaction,
@@ -113,15 +115,15 @@ const StreamInfo: React.FC<IStreamCreation> = ({
           values.streamStartDate,
           Date.now()
         );
-          dispatch(
-            lockFunds({
-              addToast,
-              duration: duration,
-              durationUntilStart: durationUntilStart,
-              amountToBeLock: cost,
-              vaultContractId: vaultContractId,
-            })
-          );
+        dispatch(
+          lockFunds({
+            addToast,
+            duration: duration,
+            durationUntilStart: durationUntilStart,
+            amountToBeLock: cost,
+            vaultContractId: vaultContractId,
+          })
+        );
         setStreamValues(values);
       }
     },
@@ -158,9 +160,20 @@ const StreamInfo: React.FC<IStreamCreation> = ({
             handleDelete={() => null}
           />
         );
-        case "relay-service":
+      case "relayService":
+        return (
+          <RelayStream
+            isLoading={isLoading || isTransactionLoading}
+            handleSave={handleSave}
+            selectedStream={selectedStream as IRelayService}
+            formMode={"create"}
+            handleEstimateCost={handleEstimateCost}
+            cost={cost}
+            handleDelete={() => null}
+          />
+        );
       default:
-        <></>;
+        <div></div>;
     }
   };
   return (
