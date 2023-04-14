@@ -243,12 +243,20 @@ code {
   position:relative!important;
 }
 
-input{
+input, select {
   @apply rounded dark:bg-inherit;
 }
 
+input[type="checkbox"]:checked {
+  @apply accent-sky-600 text-white  dark:accent-slate-500;
+}
 
-
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
+}
 .nice-dates-grid{
   height: 310px!important;
 
@@ -304,7 +312,9 @@ input{
 
 .question-icon{
   @apply  fill-sky-500 dark:fill-slate-500 }
-
+.stroke-add{
+  @apply dark:!stroke-[#151719] !stroke-[#fdfdfd];
+}
 .react-player__preview{
   @apply bg-slate-800;
   pointer-events:none;

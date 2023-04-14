@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SRFM.MediaServices.API.Models.LivePeer;
@@ -39,7 +40,7 @@ namespace SRFM.MediaServices.API
 
         public async Task<RequestUpload> RequestUploadURL(string fileName, string walletId)
         {
-            var reqUpload = await _assetManager.RequestUploadURL(fileName);
+            var reqUpload = await _assetManager.RequestUploadURL(fileName);            
 
             string jsonAssetString = JsonConvert.SerializeObject(reqUpload.Asset);
 
@@ -59,6 +60,7 @@ namespace SRFM.MediaServices.API
                         FileName = fileName,
                         Url = reqUpload.Url,
                         AssetName = fileName,
+                        PlayBackId = reqUpload.Asset.PlayBackId,
                         Active = true,
                         AssetInfo = jsonAssetString
                         //UploadStatus = reqUpload.Status //Need to check upload status in livepear                         
@@ -92,6 +94,51 @@ namespace SRFM.MediaServices.API
         public async Task<object> DeleteAsset(AssetDB assetProp)
         {
             return await _tableWriter.UpdateAsync("Asset", assetProp);
+        }
+
+        public async Task<object> CreateVODNewStream(StreamDB streamProps)
+        {
+
+            var checkUser = await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", streamProps.WalletId);
+            if (checkUser != null)
+            { 
+                var payLoadStreamQueues = new
+                {
+                    walletId = streamProps.WalletId,
+                    streamId = streamProps.StreamID,
+                    StartDateTime = streamProps.StreamStartDate,
+                    EndDateTime = streamProps.StreamEndDate
+                };
+
+                string jsonStreamQueuesString = JsonConvert.SerializeObject(payLoadStreamQueues);
+
+                //TODO update table storage with stream
+
+                if (!string.IsNullOrEmpty(streamProps.StreamID))
+                {
+                    //TODO : Create Stream
+
+                    streamProps.PartitionKey = StorageAccount.PartitionKey;
+                    //streamProps.StreamID = streamStatus.Id;
+                    //streamProps.RowKey = streamStatus.Id;
+                    //streamProps.Name = streamStatus.Name;
+                    //streamProps.StreamInfo = jsonStreamString;
+                    //streamProps.PlayBackId = streamStatus.PlayBackId;
+                    streamProps.Pulled = false;
+                    streamProps.SuspendStatus = "Normal";
+                    streamProps.StreamStatus = StreamStatus.Upcoming.ToString();
+                    streamProps.Active = true;
+
+                    var createStream = await _tableWriter.AddAsync("Stream", streamProps);
+                   
+                    await _queuesWriter.AddQueuesMessageAsync("queue-livestream", jsonStreamQueuesString);
+
+                    return createStream;
+                }
+               
+            }
+            throw new CustomException("Wrong wallet id for stream creation.");
+
         }
 
         // Below are test methods
@@ -150,6 +197,11 @@ namespace SRFM.MediaServices.API
         public async Task<List<StreamDB>> ListStream()
         {
             return await _tableReader.ListItemsAsync<StreamDB>("Stream", StorageAccount.PartitionKey);
+        }
+
+        public async Task<List<StreamDB>> ListIsActiveItemsAsync(bool isActive)
+        {
+            return await _tableReader.ListIsActiveItemsAsync<StreamDB>("Stream", StorageAccount.PartitionKey, isActive);
         }
 
         public async Task<List<StreamDB>> GetStreamsByWalletId(string walletId)
@@ -253,6 +305,7 @@ namespace SRFM.MediaServices.API
                     streamProps.Name = streamStatus.Name;
                     streamProps.StreamInfo = jsonStreamString;
                     streamProps.PlayBackId = streamStatus.PlayBackId;
+                    streamProps.Pulled = false;
                     streamProps.SuspendStatus = streamStatus.Suspended ? "Suspended" : "Normal";
                     streamProps.StreamStatus = StreamStatus.Upcoming.ToString();
                     streamProps.Active = true;
@@ -260,7 +313,7 @@ namespace SRFM.MediaServices.API
                     var createStream = await _tableWriter.AddAsync("Stream", streamProps);
 
                     //Suspend Stream
-                    var suspendStream = await this.SuspendStream(streamStatus.Id, streamProps.WalletId);
+                    //var suspendStream = await this.SuspendStream(streamStatus.Id, streamProps.WalletId);
 
                     await _queuesWriter.AddQueuesMessageAsync("queue-livestream", jsonStreamQueuesString);
 
@@ -288,6 +341,30 @@ namespace SRFM.MediaServices.API
             await _queuesWriter.AddQueuesMessageAsync("queue-livestream", jsonStreamQueuesString);
 
             return await _tableWriter.UpdateAsync("Stream", streamProp);
+        }
+
+        public async Task<object> UpdateStreamsIsPulled(List<string> streamIds, bool isPulled)
+        {
+            StreamDB streamLog = null;
+            TableBatchOperation entityBatch = new TableBatchOperation();
+
+            foreach (string stream in streamIds)
+            {
+                streamLog = await _tableReader.GetItemsByRowKeyAsync<StreamDB>("Stream", stream);
+
+                if (streamLog != null)
+                {
+                    streamLog.Pulled = isPulled;
+                    entityBatch.Replace(streamLog);
+                }
+            }
+
+            if (entityBatch.Count == 0)
+            {
+                throw new CustomException("Stream id not found");               
+            }
+
+            return await _tableWriter.UpdateBatchAsync("Stream", entityBatch);
         }
 
         public async Task<HttpResponseMessage> DeleteStream(StreamDB streamProp)

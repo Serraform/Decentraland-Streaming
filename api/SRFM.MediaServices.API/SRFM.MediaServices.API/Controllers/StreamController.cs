@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SRFM.MediaServices.API.Models.LivePeer;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -27,6 +28,37 @@ namespace SRFM.MediaServices.API.Controllers
         {
             _process = process;
             _logger = logger;
+        }
+
+        [HttpGet]
+        [Route("ListAllEndStream")]
+        public async Task<List<StreamDB>> ListAllEndStream(DateTime? startDate, DateTime? endDate)
+        {
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
+            {
+                List<StreamDB> filteredResultsTwo = null; ;
+
+                List<StreamDB> streams = await _process.ListIsActiveItemsAsync(true);
+
+                if (startDate == null && endDate == null)
+                {
+                    filteredResultsTwo = streams.Where(stream => stream.StreamEndDate <= DateTime.UtcNow).ToList();
+                }
+                else
+                {
+                    filteredResultsTwo = streams.Where(stream => stream.StreamEndDate >= startDate && stream.StreamEndDate <= endDate).ToList();
+                }
+
+                return filteredResultsTwo;
+            }
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
         }
 
         [HttpPut]
@@ -75,6 +107,8 @@ namespace SRFM.MediaServices.API.Controllers
             var tokenWithBearer = headerValue.ToString();
             var token = tokenWithBearer.Split(" ")[1];
             bool isValidToken = TokenManager.ValidateToken(token);
+
+
             if (isValidToken)
             {
                 if (streamProps != null)
@@ -86,11 +120,36 @@ namespace SRFM.MediaServices.API.Controllers
                     try
                     {
 
-                        var response = await _process.CreateNewStream(streamProps);
+                        if (streamProps.StreamType == StreamType.vod.ToString())
+                        {
+                            AssetDB getAsset = await _process.GetAssetByAssetId(streamProps.VId);
 
-                        string jsonString = JsonSerializer.Serialize(response);
-                        return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                            if (getAsset != null)
+                            {
+                                var guid = Guid.NewGuid().ToString();
 
+                                streamProps.PlayBackId = getAsset.PlayBackId;
+                                streamProps.StreamID = guid;
+                                streamProps.RowKey = guid;
+
+                                var response = await _process.CreateVODNewStream(streamProps);
+
+                                string jsonString = JsonSerializer.Serialize(response);
+                                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                            }
+                            else
+                            {
+                                throw new CustomException("Asset is not found");
+                            }
+                        }
+                        else
+                        {
+
+                            var response = await _process.CreateNewStream(streamProps);
+
+                            string jsonString = JsonSerializer.Serialize(response);
+                            return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -149,7 +208,7 @@ namespace SRFM.MediaServices.API.Controllers
 
                 if (getStream != null)
                 {
-                    getStream.Name = streamProps.Name;                
+                    getStream.Name = streamProps.Name;
                     getStream.StreamStartDate = streamProps.StreamStartDate;
                     getStream.StreamEndDate = streamProps.StreamEndDate;
                     getStream.StreamDuration = streamProps.StreamDuration;
@@ -209,7 +268,7 @@ namespace SRFM.MediaServices.API.Controllers
             bool isValidToken = TokenManager.ValidateToken(token);
             if (isValidToken)
             {
-                TimeSpan ts = streamEndDate - streamStartDate;               
+                TimeSpan ts = streamEndDate - streamStartDate;
 
                 var number = Math.Ceiling(ts.TotalHours);
 
@@ -284,5 +343,27 @@ namespace SRFM.MediaServices.API.Controllers
             }
         }
 
+        [HttpPatch]
+        [Route("UpdateStreamsIsPulled")]
+        public async Task<HttpResponseMessage> UpdateStreamsIsPulled([FromBody]List<string> streamIds, bool isPulled)
+        {
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
+            {
+                var response = await _process.UpdateStreamsIsPulled(streamIds, isPulled);
+
+                string jsonString = JsonSerializer.Serialize(response);
+                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+            }
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
+
+        }
+       
     }
 }

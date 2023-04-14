@@ -31,6 +31,25 @@ namespace SRFM.MediaServices.API
 
         public string UploadAssetStatus { get; set; }
 
+        public string PlayBackId { get; set; }
+
+        public string PlayBackUrl
+        {
+            get
+            {
+                if (PlayBackId != null)
+                {
+
+                    return $"https://livepeercdn.studio/hls/{PlayBackId}/index.m3u8";
+                }
+
+                else
+                {
+                    return string.Empty;
+                }
+            }
+        }
+
         public bool Active { get; set; }
         //PartitionKey - USA
         // RowKey - AssetId(guid)

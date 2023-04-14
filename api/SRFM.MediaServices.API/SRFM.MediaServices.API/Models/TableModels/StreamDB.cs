@@ -31,6 +31,8 @@ namespace SRFM.MediaServices.API
 
         public string StreamType { get; set; }
 
+        public string VId { get; set; }
+
         public string StreamDuration { get; set; }
 
         public DateTime StreamStartDate { get; set; }
@@ -47,6 +49,8 @@ namespace SRFM.MediaServices.API
 
         public string StreamStatus { get; set; }
 
+        public bool Pulled { get; set; }
+
         public string PlayBackId { get; set; }
 
         public string PlayBackUrl
@@ -56,9 +60,15 @@ namespace SRFM.MediaServices.API
                 if (PlayBackId != null)
                 {
 
-                    return $"https://livepeercdn.studio/hls/{PlayBackId}/index.m3u8";
+                    if (this.StreamType == "vod")
+                    {
+                        return $"https://playback.livepeer.studio/asset/hls/{PlayBackId}/index.m3u8?accessKey={RowKey}";                    
+                    }
+                    else
+                    {
+                        return $"https://livepeercdn.studio/hls/{PlayBackId}/index.m3u8";                    
+                    }
                 }
-
                 else
                 {
                     return string.Empty;

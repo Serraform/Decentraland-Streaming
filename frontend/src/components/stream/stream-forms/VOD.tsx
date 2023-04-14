@@ -1,101 +1,157 @@
 import { Formik, Form } from "formik";
 import { IStreamVOD } from "components/stream/definitions";
-import Video from "components/stream/create-stream/video";
 import React, { useCallback, useState } from "react";
-import { validationSchema } from "components/stream/definitions";
+import {
+  validationSchema,
+  validateDateRange,
+} from "components/stream/definitions";
 import CommonForm from "components/stream/stream-forms/common";
-import { useSelector } from "react-redux";
+import { Field } from "formik";
+import Video from "components/stream/create-stream/video";
+import ReactTooltip from "react-tooltip";
+import FaqIcon from "assets/icons/Question";
 import { RootState } from "store/configStore";
+import { useFetchAssetsByWalletIdQuery } from "store/api/assets.api";
+import { useSelector } from "react-redux";
 type Props = {
   handleSave: Function;
   selectedStream: IStreamVOD;
   formMode: string;
   handleEstimateCost: Function;
   isLoading: boolean;
+  cost: number;
   handleDelete: Function;
-
 };
 
-const StreamVOD: React.FC<Props> = ({
+const VOD: React.FC<Props> = ({
   handleSave,
   selectedStream,
   formMode,
   handleEstimateCost,
   isLoading,
-  handleDelete
+  cost,
+  handleDelete,
 }) => {
-  const isCreateMode = formMode === "create"
-  const [streamInfoVOD] = useState<IStreamVOD>({
+  const isEditForm = formMode === "edit";
+
+  const { walletID } = useSelector((state: RootState) => state.accountData);
+  const { data: assets, isLoading: loading } =
+    useFetchAssetsByWalletIdQuery(walletID);
+  const [liveStreamVideo] = useState<IStreamVOD>({
     ...selectedStream,
   });
-  const { cost } = useSelector((state: RootState) => state.transactionData);
 
   const handleOnSubmit = useCallback(
     (values: any) => {
-      handleSave(values);
+      const valuesToSend = {
+        ...values,
+        streamType: "vod",
+      };
+      handleSave(valuesToSend);
     },
     [handleSave]
   );
-  const disabledEstimateCost = (values: IStreamVOD) => {
+  const disabledEstimateCost = (values: IStreamVOD, errors: any) => {
     return (
       values.name === "" ||
       values.attendees === "" ||
-      values.video === "" ||
-      values.videoSize === "" ||
       values.streamStartDate === undefined ||
-      values.streamEndDate === undefined
+      values.streamEndDate === undefined ||
+      errors.streamEndDate ||
+      errors.streamStartDate
     );
   };
+
   return (
     <Formik
-      initialValues={streamInfoVOD}
+      initialValues={liveStreamVideo}
       validationSchema={validationSchema}
       onSubmit={(values) => handleOnSubmit(values)}
+      validate={validateDateRange}
     >
-      {({ handleChange, values, errors
-      ,initialValues }) => (
-        <>
-          <Form className={`flex flex-row"justify-between" w-[100%] h-[40vh]`}>
-            {isCreateMode ? (
-              <Video
-                values={values}
-                suspended={false}
-                video={values.video}
-                handleChange={handleChange}
-              />
-            ) : (
-              <Video
-                values={values}
-                suspended={false}
-                video={values.video}
-                handleChange={() => null}
-              />
-            )}
-            <div
-              className="flex flex-col justify-top w-[50%]"
-              style={{
-                position: "relative",
-              }}
+      {({ handleChange, values, errors, initialValues }) => {
+        return (
+          <>
+            <Form
+              className={`flex flex-row ${
+                isEditForm ? "justify-between" : "justify-center"
+              } items-center w-[100%] h-[35vh]`}
             >
-              <CommonForm
-              initialValues={initialValues}
-                values={values}
-                handleChange={handleChange}
-                cost={cost}
-                formMode={formMode}
-                loading={isLoading}
-                handleEstimateCost={handleEstimateCost}
-                handleSave={handleSave}
-                disabledEstimateCost={disabledEstimateCost}
-                errors={errors}
-                handleDelete={handleDelete}
-              />
-            </div>
-          </Form>
-        </>
-      )}
+              {isEditForm && (
+                <Video
+                  values={values}
+                  suspended={false}
+                  video={values.playBackUrl}
+                  handleChange={() => null}
+                />
+              )}
+              <div
+                className="flex flex-col justify-top w-[50%] h-[100%]"
+                style={{ position: "relative" }}
+              >
+                <div className="mb-2 w-full mr-3">
+                  <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center">
+                    Select Asset
+                    <ReactTooltip
+                      id="asset"
+                      place="top"
+                      type={"dark"}
+                      effect={"float"}
+                    />
+                    <div
+                      className="form-tooltip"
+                      data-for="asset"
+                      data-tip={
+                        "Make sure that you previously uploaded your asset"
+                      }
+                      data-iscapture="true"
+                    >
+                      <FaqIcon />
+                    </div>
+                  </h2>
+                  {!loading ? (
+                    <Field
+                      as="select"
+                      name="VId"
+                      disabled={isEditForm}
+                      required
+                      onChange={handleChange}
+                      className="mb-[20px] mt-[10px] w-[100%] border bg-transparent  border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
+                    >
+                         <option value="">Select an asset</option>
+                      {assets &&
+                        Object.keys(assets).map((key: any) => {
+                          return (
+                            <option value={assets[key]?.assetId}>
+                              {assets[key]?.assetName}
+                            </option>
+                          );
+                        })}
+                    </Field>
+                  ) : (
+                    <div className="mb-[20px] mt-[10px] basic" />
+                  )}
+                </div>
+                <CommonForm
+                  initialValues={initialValues}
+                  values={values}
+                  handleChange={handleChange}
+                  cost={cost}
+                  loading={isLoading}
+                  errors={errors}
+                  formMode={formMode}
+                  handleEstimateCost={handleEstimateCost}
+                  handleSave={handleOnSubmit}
+                  disabledEstimateCost={disabledEstimateCost}
+                  handleDelete={handleDelete}
+                />
+              </div>
+            </Form>
+          </>
+        );
+      }}
     </Formik>
   );
 };
 
-export default StreamVOD;
+export default VOD;

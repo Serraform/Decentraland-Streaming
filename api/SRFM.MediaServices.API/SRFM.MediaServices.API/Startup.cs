@@ -22,6 +22,7 @@ using Azure.Storage.Queues;
 using Azure.Core.Extensions;
 using SRFM.MediaServices.API.Services.LivePeer;
 using Microsoft.Extensions.Options;
+using SRFM.MediaServices.API.Services.Moralis;
 
 namespace SRFM.MediaServices.API
 {
@@ -76,6 +77,7 @@ namespace SRFM.MediaServices.API
             services.AddSingleton<IQueuesWriter, QueuesWriter>();
             services.AddSingleton<IAssetManager, AssetManager>();
             services.AddSingleton<IProcess, Process>();
+            services.AddSingleton<IMoralisService, MoralisService>();
 
             // add tablestorage as singleton
             services.AddSingleton(factory =>

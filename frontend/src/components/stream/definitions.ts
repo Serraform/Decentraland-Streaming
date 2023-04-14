@@ -1,10 +1,12 @@
 import * as Yup from "yup";
 import { differenceInMinutes, isBefore } from "date-fns";
 interface IStream {
+  streamID: any;
   name: string;
   status: boolean;
   attendees: string;
   streamType: string;
+  pulled: boolean;
   streamStartDate: Date | undefined;
   streamEndDate: Date | undefined;
   cost: string;
@@ -33,9 +35,9 @@ interface IAsset {
 }
 
 type IStreamVOD = IStream & {
-  video: string;
-  videoSize: string;
-  videoLenght: string;
+  asset: IAsset | null;
+  playBackUrl: string;
+  VId: string;
 };
 
 type ILiveStream = IStream & {
@@ -62,6 +64,7 @@ const initialInfoState = {
   attendees: "",
   streamStartDate: Date.now(),
   streamEndDate: Date.now(),
+  pulled: false
 };
 
 const validationSchema = Yup.object().shape({

@@ -7,7 +7,7 @@ import {
   labelStyle,
   container,
 } from "./styles";
-
+import TransferTreasury from "components/funds/transfer-treasury";
 import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
 import { useEffect, useState } from "react";
@@ -18,11 +18,20 @@ import {
   fundWallet,
   approvePulling,
 } from "store/slices/account.slice";
+import { transferTreasuryToWallet } from "store/slices/transaction.slice";
+
 import { useToasts } from "react-toast-notifications";
 const Funds = () => {
   const [balanceInput, setBalanceInput] = useState("");
-  const { walletID, loading, balance, locked_balance, isTokenContractApprove } =
-    useSelector((state: RootState) => state.accountData);
+  const [openModal, setOpenModal] = useState(false);
+  const {
+    walletID,
+    loading,
+    balance,
+    locked_balance,
+    isTokenContractApprove,
+    treasuryFunds,
+  } = useSelector((state: RootState) => state.accountData);
   const { addToast } = useToasts();
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
@@ -32,30 +41,38 @@ const Funds = () => {
     }
   }, [walletID]);
 
+  const handleTransferTreasury = (address: string, amount: any) => {
+    dispatch(
+      transferTreasuryToWallet({ walletAddress: address, amount, addToast })
+    );
+  };
+
   return (
     <div className={container}>
-      
-        <div
-          className={`${balanceStyle} rounded  `}
-        >
-          <div className="text-center locked-funds">
-            <p className="font-montserratmedium dark:text-white">
+      <TransferTreasury
+        openModal={openModal}
+        closeModal={setOpenModal}
+        handleTransferTreasury={handleTransferTreasury}
+      />
+      <div className={`${balanceStyle} rounded  `}>
+        <div className="text-center locked-funds">
+          <p className="font-montserratmedium dark:text-white">
             Available Funds
-            </p>
-            <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem] dark:text-white">
+          </p>
+          <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem] dark:text-white">
             {balance ? parseFloat(balance.toString()) / 10 ** 6 : 0} USDC
-            </h3>
-          </div>
-          <a
-            href="https://docs.google.com/document/d/1Dz-a3iqXRFiSoAd4owAYohmHywOJKQIx/edit"
-            target="_blank"
-            className="font-montserratbold tracking-[0.1rem] text-[0.8rem] text-center hidden read-more dark:text-white pr-1 pl-1"
-            rel="noreferrer"
-          >
-            For more info on Available Funds and Locked Funds, click here.
-          </a>
+          </h3>
         </div>
-     
+        <a
+          href="https://docs.google.com/document/d/1Dz-a3iqXRFiSoAd4owAYohmHywOJKQIx/edit"
+          target="_blank"
+          className="font-montserratbold tracking-[0.1rem] text-[0.8rem] text-center hidden read-more dark:text-white pr-1 pl-1"
+          rel="noreferrer"
+        >
+          For more info on Available Funds and Locked Funds, click here.
+        </a>
+      </div>
+
       {locked_balance && locked_balance !== 0 ? (
         <div
           className={`${balanceStyle} rounded mt-5 bg-slate-100 dark:bg-[#151719]`}
@@ -80,7 +97,29 @@ const Funds = () => {
       ) : (
         <></>
       )}
-
+      {treasuryFunds && treasuryFunds !== 0 ? (
+        <div
+          className={`${balanceStyle} rounded mt-5 bg-slate-100 dark:bg-[#151719]`}
+        >
+          <div className="text-center locked-funds">
+            <p className="font-montserratmedium dark:text-white">
+              Treasury funds
+            </p>
+            <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem] dark:text-white">
+              {parseFloat(treasuryFunds.toString()) / 10 ** 6} USDC
+            </h3>
+          </div>
+          <button
+            onClick={() => setOpenModal(true)}
+            className="font-montserratbold tracking-[0.1rem] text-[0.8rem] text-center hidden read-more dark:text-white pr-1 pl-1"
+          >
+            This funds are ready to be transfer to a wallet, click here to start
+            transfering.
+          </button>
+        </div>
+      ) : (
+        <></>
+      )}
       {!isTokenContractApprove && (
         <div>
           <p className="font-montserratmedium mt-[24px] dark:text-white">

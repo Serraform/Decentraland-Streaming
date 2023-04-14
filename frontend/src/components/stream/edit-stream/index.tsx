@@ -63,7 +63,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
 
   useEffect(() => {
     if (isDeleteSuccess) {
-      dispatch(deleteStreamFromTable(selectedStream.streamInfo.Id));
+      dispatch(deleteStreamFromTable(selectedStream.streamInfo?.Id));
       addToast("Stream deleted", {
         appearance: "success",
         autoDismiss: true,
@@ -88,8 +88,9 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   };
 
   useEffect(() => {
+    
     if (receipt && receipt.status === 1 && transactionType === "cancel") {
-      deleteStream({ streamId: selectedStream.streamInfo.Id });
+      deleteStream({ streamId: selectedStream.streamInfo?.Id });
     }
     if (receipt && receipt.status === 1 && transactionType === "edit") {
       editStream({
@@ -111,6 +112,14 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
       let costDifference = 0;
       let durationUntilStart = 0;
       let duration = 0;
+      duration = differenceInMinutes(
+        returnAsDate(values.streamEndDate),
+        Date.now()
+      );
+      durationUntilStart = differenceInMinutes(
+        returnAsDate(values.streamStartDate),
+        Date.now()
+      );
       switch (
         checkDateRangeChange(
           returnAsDate(selectedStream.streamStartDate),
@@ -121,14 +130,6 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
       ) {
         case 0:
           costDifference = streamValues.cost - cost;
-          duration = differenceInMinutes(
-            returnAsDate(values.streamEndDate),
-            Date.now()
-          );
-          durationUntilStart = differenceInMinutes(
-            returnAsDate(values.streamStartDate),
-            Date.now()
-          );
           dispatch(
             editVault({
               vaultContractId: streamValues.vaultContractId,
@@ -144,14 +145,6 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
           break;
         case 1:
           costDifference = cost - streamValues.cost;
-          duration = differenceInMinutes(
-            returnAsDate(values.streamEndDate),
-            Date.now()
-          );
-          durationUntilStart = differenceInMinutes(
-            returnAsDate(values.streamStartDate),
-            Date.now()
-          );
           dispatch(
             editVault({
               vaultContractId: streamValues.vaultContractId,
@@ -166,11 +159,17 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
           break;
         case -1:
           // the date range didn't change
-          editStream({
-            streamValues: {
-              ...values,
-            },
-          });
+          dispatch(
+            editVault({
+              vaultContractId: streamValues.vaultContractId,
+              amountToBeUnlock: 0,
+              addToast,
+              duration,
+              durationUntilStart,
+            })
+          );
+          setStreamValues({ streamValues: { ...values } });
+         
           break;
       }
     },
@@ -198,19 +197,22 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   }, [dispatch]);
 
   const renderStreamForm = () => {
-    switch (selectedStream.streamType.toLowerCase()) {
+    switch (selectedStream.streamType) {
       case "vod":
         return (
           <StreamVOD
             handleSave={handleSave}
-            selectedStream={selectedStream as IStreamVOD}
+            selectedStream={{
+              ...(selectedStream as IStreamVOD),
+            }}
             formMode={"edit"}
             handleEstimateCost={handleEstimateCost}
             isLoading={isLoading}
+            cost={cost}
             handleDelete={handleDelete}
           />
         );
-      case "live-stream":
+      case "liveStream":
         return (
           <LiveStream
             handleSave={handleSave}
@@ -267,24 +269,24 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
             {renderDetail(
               "Playback URL",
               true,
-              `https://livepeercdn.studio/hls/${selectedStream?.streamInfo.PlayBackId}/index.m3u8`
+              selectedStream.playBackUrl
             )}
             {renderDetail(
               "Stream Key",
               true,
-              (selectedStream?.streamInfo).StreamKey
+              (selectedStream?.streamInfo)?.StreamKey
             )}
             {renderDetail(
               "RTMP ingest URL",
               true,
               "rtmp://rtmp.serraform.com/live"
             )}
-            {renderDetail("Stream ID", true, (selectedStream?.streamInfo).Id)}
+            {renderDetail("Stream ID", true, (selectedStream?.streamInfo)?.Id)}
 
             {renderDetail(
               "Created at",
               false,
-              new Date((selectedStream?.streamInfo).CreatedAt)
+              new Date((selectedStream?.streamInfo)?.CreatedAt)
                 .toLocaleString()
                 .split(",")[0]
             )}

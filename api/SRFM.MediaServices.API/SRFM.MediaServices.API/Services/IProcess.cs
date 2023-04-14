@@ -22,6 +22,8 @@ namespace SRFM.MediaServices.API
 
         public Task<List<AssetDB>> ListAssets();
 
+        public Task<object> CreateVODNewStream(StreamDB streamName);
+
         public Task<List<AssetDB>> GetAssetByWalletId(string WalletId);
 
         public Task<AssetDB> GetAssetByAssetId(string assetId);
@@ -32,6 +34,10 @@ namespace SRFM.MediaServices.API
 
         public Task<object> DeleteAsset(AssetDB assetProps);
 
+        public Task<List<StreamDB>> ListStream();
+
+        public Task<List<StreamDB>> ListIsActiveItemsAsync(bool isActive);
+
         public Task<HttpResponseMessage> SuspendStream(string streamId, string walletId);
 
         public Task<HttpResponseMessage> UnSuspendStream(string streamId, string walletId);
@@ -39,6 +45,8 @@ namespace SRFM.MediaServices.API
         public Task<StreamLP> CreateNewStream(StreamDB streamName);
 
         public Task<object> UpdateStream(StreamDB streamProps);
+
+        public Task<object> UpdateStreamsIsPulled(List<string> streamIds, bool isPulled);
 
         public Task<HttpResponseMessage> DeleteStream(StreamDB streamProps);
 

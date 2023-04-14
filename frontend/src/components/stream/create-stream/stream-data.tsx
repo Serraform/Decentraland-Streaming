@@ -4,14 +4,16 @@ import {
   IStreamCreation,
   ILiveStream,
   deepEqual,
+  IStreamVOD,
 } from "components/stream/definitions";
 import LiveStream from "components/stream/stream-forms/live-stream";
+import VODStream from "components/stream/stream-forms/VOD";
 import {
   estimateCost,
   finishTransaction,
   lockFunds,
 } from "store/slices/transaction.slice";
-import AssetUploader from 'components/stream/create-stream/asset-uploader';
+
 import { uploadStream } from "store/slices/stream.slice";
 import { fetchFunds } from "store/slices/account.slice";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +21,7 @@ import type { AppDispatch } from "store/configStore";
 import { useToasts } from "react-toast-notifications";
 import { RootState } from "store/configStore";
 import { useCreateLiveStreamMutation } from "store/api/streams.api";
-import { differenceInMinutes } from "date-fns";
+import { differenceInMinutes, differenceInSeconds } from "date-fns";
 
 import { useNavigate } from "react-router-dom";
 const StreamInfo: React.FC<IStreamCreation> = ({
@@ -46,7 +48,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     loading: isTransactionLoading,
     receipt,
     vaultContractId,
-    transactionType
+    transactionType,
   } = useSelector((state: RootState) => state.transactionData);
   const { walletID } = useSelector((state: RootState) => state.accountData);
   const [createLiveStream, { isLoading, isSuccess }] =
@@ -61,8 +63,8 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     if (isSuccess) {
       const newStream = {
         ...streamValues,
-        cost: ""+cost,
-        vaultContractId: ""+vaultContractId,
+        cost: "" + cost,
+        vaultContractId: "" + vaultContractId,
         streamInfo: JSON.stringify({
           Name: streamValues?.name,
           CreatedAt: 0,
@@ -90,7 +92,10 @@ const StreamInfo: React.FC<IStreamCreation> = ({
 
   useEffect(() => {
     if (receipt && receipt.status === 1 && transactionType === "lock") {
-      createLiveStream({ walletID: walletID, streamValues: {...streamValues, cost, vaultContractId} });
+      createLiveStream({
+        walletID: walletID,
+        streamValues: { ...streamValues, cost, vaultContractId },
+      });
     }
   }, [receipt, cost, transactionType]);
 
@@ -104,18 +109,19 @@ const StreamInfo: React.FC<IStreamCreation> = ({
         });
       } else {
         const duration = differenceInMinutes(values.streamEndDate, Date.now());
-        const durationUntilStart = differenceInMinutes(values.streamStartDate, Date.now());
-        if (values.streamType === "live-stream") {
+        const durationUntilStart = differenceInSeconds(
+          values.streamStartDate,
+          Date.now()
+        );
           dispatch(
             lockFunds({
               addToast,
               duration: duration,
-              durationUntilStart:durationUntilStart,
+              durationUntilStart: durationUntilStart,
               amountToBeLock: cost,
-              vaultContractId: vaultContractId
+              vaultContractId: vaultContractId,
             })
           );
-        }
         setStreamValues(values);
       }
     },
@@ -130,9 +136,17 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     switch (streamType) {
       case "vod":
         return (
-          <AssetUploader />
+          <VODStream
+            isLoading={isLoading || isTransactionLoading}
+            handleSave={handleSave}
+            selectedStream={selectedStream as IStreamVOD}
+            formMode={"create"}
+            handleEstimateCost={handleEstimateCost}
+            cost={cost}
+            handleDelete={() => null}
+          />
         );
-      case "live-stream":
+      case "liveStream":
         return (
           <LiveStream
             isLoading={isLoading || isTransactionLoading}
