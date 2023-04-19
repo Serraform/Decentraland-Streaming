@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Field } from "formik";
 import "react-nice-dates/build/style.css";
 import SuspendModal from "components/stream/stream-forms/suspend-modal";
@@ -8,6 +8,7 @@ import { useToasts } from "react-toast-notifications";
 import FormButtons from "components/stream/stream-forms/form-buttons";
 import FaqIcon from "assets/icons/Question";
 import ReactTooltip from "react-tooltip";
+
 type Props = {
   values: any;
   initialValues: any;
@@ -45,16 +46,29 @@ const CommonForm: React.FC<Props> = ({
   const { addToast } = useToasts();
   const [needsToEstimateNewCost, setNeedsToEstimateNewCost] = useState(false);
   const [openSuspendModal, setOpenSuspendModal] = useState(false);
-  const streamIsBeingCreated = values.streamInfo?.CreatedAt === 0;
+  
+  const streamIsBeingCreated = useMemo(
+    () => values.streamInfo?.CreatedAt === 0,
+    [values.streamInfo?.CreatedAt]
+  );
 
-  const streamIsHappeningOrHasHappened =
-    !streamIsBeingCreated &&
-    ((isAfter(Date.now(), returnAsDate(values.streamStartDate)) &&
-      isBefore(Date.now(), returnAsDate(values.streamEndDate))) ||
-      isAfter(Date.now(), returnAsDate(values.streamEndDate)) ||
-      values.streamInfo?.streamStatus === "Suspended");
+  const streamIsHappeningOrHasHappened = useMemo(
+    () =>
+      !streamIsBeingCreated &&
+      ((isAfter(Date.now(), returnAsDate(values.streamStartDate)) &&
+        isBefore(Date.now(), returnAsDate(values.streamEndDate))) ||
+        isAfter(Date.now(), returnAsDate(values.streamEndDate)) ||
+        values.streamInfo?.streamStatus === "Suspended"),
+    [
+      streamIsBeingCreated,
+      values.streamEndDate,
+      values.streamInfo?.streamStatus,
+      values.streamStartDate,
+    ]
+  );
 
   useEffect(() => {
+    console.log("streamIsHappeningOrHasHappened has re execute");
     if (streamIsHappeningOrHasHappened) {
       addToast(
         "This stream cannot be modified because it has already passed.",
@@ -142,7 +156,7 @@ const CommonForm: React.FC<Props> = ({
           />
         </div>
       </div>
-      
+
       <Calendar
         values={values}
         handleChange={handleChange}
@@ -162,23 +176,23 @@ const CommonForm: React.FC<Props> = ({
           </h2>
         )}
 
-          <FormButtons
-            formMode={formMode}
-            cost={cost}
-            isDisabled={
-              disabledEstimateCost(values, errors) ||
-              loading ||
-              streamIsHappeningOrHasHappened
-            }
-            loading={loading}
-            streamIsBeingCreated={streamIsBeingCreated}
-            setOpenSuspendModal={setOpenSuspendModal}
-            handleEstimateCost={handleEstimateCost}
-            handleSave={handleSave}
-            values={values}
-            needsToEstimateNewCost={needsToEstimateNewCost}
-          />
-        </div>
+        <FormButtons
+          formMode={formMode}
+          cost={cost}
+          isDisabled={
+            disabledEstimateCost(values, errors) ||
+            loading ||
+            streamIsHappeningOrHasHappened
+          }
+          loading={loading}
+          streamIsBeingCreated={streamIsBeingCreated}
+          setOpenSuspendModal={setOpenSuspendModal}
+          handleEstimateCost={handleEstimateCost}
+          handleSave={handleSave}
+          values={values}
+          needsToEstimateNewCost={needsToEstimateNewCost}
+        />
+      </div>
     </>
   );
 };

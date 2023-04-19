@@ -98,6 +98,12 @@ export const streamsApi = createApi({
         data: body.streamsIds,
       }),
     }),
+    verifyRelayLink: builder.query<any, any>({
+      query: (body) => ({
+        url: `api/Stream/VerifyRelayLink?relayLink=${body.relayServiceLink}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -110,5 +116,6 @@ export const {
   useDeleteStreamMutation,
   useFetchStreamDetailsQuery,
   useEditStreamMutation,
-  useMarkPulledStreamsMutation
+  useMarkPulledStreamsMutation,
+  useLazyVerifyRelayLinkQuery
 } = streamsApi;

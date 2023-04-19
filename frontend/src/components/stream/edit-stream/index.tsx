@@ -3,6 +3,7 @@ import { useEffect, useCallback, useReducer } from "react";
 import {
   IStreamVOD,
   ILiveStream,
+  IRelayService,
   checkDateRangeChange,
 } from "components/stream/definitions";
 import StreamVOD from "components/stream/stream-forms/VOD";
@@ -31,7 +32,7 @@ import { RootState } from "store/configStore";
 import { useNavigate } from "react-router-dom";
 import { differenceInMinutes } from "date-fns";
 type Props = {
-  selectedStream: IStreamVOD | ILiveStream;
+  selectedStream: IStreamVOD | ILiveStream | IRelayService;
 };
 const EditStream: React.FC<Props> = ({ selectedStream }) => {
   const [streamValues, setStreamValues] = useReducer(
