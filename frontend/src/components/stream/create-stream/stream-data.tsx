@@ -101,6 +101,10 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     }
   }, [receipt, cost, transactionType]);
 
+  const handlePreSave = useCallback((values: any) => {
+    console.log(values)
+  }, [])
+
   const handleSave = useCallback(
     (values: any) => {
       if (!deepEqual(values, streamValues)) {
@@ -167,6 +171,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
             handleSave={handleSave}
             selectedStream={selectedStream as IRelayService}
             formMode={"create"}
+            handlePreSave={handlePreSave}
             handleEstimateCost={handleEstimateCost}
             cost={cost}
             handleDelete={() => null}

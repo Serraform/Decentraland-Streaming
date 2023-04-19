@@ -16,6 +16,7 @@ import ErrorIcon from "assets/icons/Error";
 import { useToasts } from "react-toast-notifications";
 type Props = {
   handleSave: Function;
+  handlePreSave: Function;
   selectedStream: IRelayService;
   formMode: string;
   handleEstimateCost: Function;
@@ -26,6 +27,7 @@ type Props = {
 
 const RelayService: React.FC<Props> = ({
   handleSave,
+  handlePreSave,
   selectedStream,
   formMode,
   handleEstimateCost,
@@ -74,9 +76,16 @@ const RelayService: React.FC<Props> = ({
         ...values,
         streamType: "relayService",
       };
-      handleSave(valuesToSend);
+      if(!relayServiceLinkIsVerified){
+        //execute presaved
+
+        handlePreSave(valuesToSend);
+      }
+      else{
+        handleSave(valuesToSend);
+      }
     },
-    [handleSave]
+    [handleSave, relayServiceLinkIsVerified, handlePreSave]
   );
   const disabledEstimateCost = (values: IRelayService, errors: any) => {
     return (
