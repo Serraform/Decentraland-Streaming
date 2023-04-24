@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SRFM.MediaServices.API.Models.LivePeer;
+using SRFM.MediaServices.API.Services.Twitch;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,11 +23,13 @@ namespace SRFM.MediaServices.API.Controllers
     public class StreamController : ControllerBase
     {
         private readonly IProcess _process;
+        private readonly ITwitchService _twitch;
         private readonly ILogger<StreamController> _logger;
 
-        public StreamController(IProcess process, ILogger<StreamController> logger)
+        public StreamController(IProcess process, ITwitchService twitch, ILogger<StreamController> logger)
         {
             _process = process;
+            _twitch = twitch;
             _logger = logger;
         }
 
@@ -54,6 +57,46 @@ namespace SRFM.MediaServices.API.Controllers
                 }
 
                 return filteredResultsTwo;
+            }
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
+        }
+
+        [HttpGet]
+        [Route("VerifyM3U8Url/{twitchUrl}")]
+        public async Task<bool> VerifyM3U8Url(string twitchUrl)
+        {
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
+            {
+                var response = await _twitch.VerifyRelayM3U8Status(twitchUrl);
+                return response;
+            }
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
+        }
+
+        [HttpPost]
+        [Route("TriggerWrokflow/{twitchUrl}/{streamKey}")]
+        public async Task<HttpResponseMessage> TriggerWrokflow(string twitchUrl,string streamKey)
+        {
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
+            {
+                var response = await _twitch.TriggerWrokflow(twitchUrl, streamKey);
+
+                string jsonString = JsonSerializer.Serialize(response);
+                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
             }
             else
             {
@@ -132,7 +175,7 @@ namespace SRFM.MediaServices.API.Controllers
                                 streamProps.StreamID = guid;
                                 streamProps.RowKey = guid;
 
-                                var response = await _process.CreateVODNewStream(streamProps);
+                                var response = await _process.SaveNewStream(streamProps);
 
                                 string jsonString = JsonSerializer.Serialize(response);
                                 return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
@@ -140,6 +183,30 @@ namespace SRFM.MediaServices.API.Controllers
                             else
                             {
                                 throw new CustomException("Asset is not found");
+                            }
+                        }
+                        else if (streamProps.StreamType == StreamType.relayService.ToString())
+                        {
+                            var m3u8Status = await _twitch.VerifyRelayM3U8Status(System.Web.HttpUtility.UrlEncode(streamProps.relayUrl));
+
+                            if (m3u8Status)
+                            {
+                                var response = await _process.CreateNewStream(streamProps);
+
+                                string jsonString = JsonSerializer.Serialize(response);
+                                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                            }
+                            else
+                            {
+                                var guid = Guid.NewGuid().ToString();
+
+                                streamProps.StreamID = guid;
+                                streamProps.RowKey = guid;
+
+                                var response = await _process.SaveNewStream(streamProps);
+
+                                string jsonString = JsonSerializer.Serialize(response);
+                                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
                             }
                         }
                         else
@@ -213,7 +280,7 @@ namespace SRFM.MediaServices.API.Controllers
                     getStream.StreamEndDate = streamProps.StreamEndDate;
                     getStream.StreamDuration = streamProps.StreamDuration;
                     getStream.Cost = streamProps.Cost;
-                    getStream.Attendees = streamProps.Attendees;
+                    getStream.Attendees = streamProps.Attendees;                    
 
                     var response = await _process.UpdateStream(getStream);
 
