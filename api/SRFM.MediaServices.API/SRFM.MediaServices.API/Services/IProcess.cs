@@ -22,7 +22,7 @@ namespace SRFM.MediaServices.API
 
         public Task<List<AssetDB>> ListAssets();
 
-        public Task<object> CreateVODNewStream(StreamDB streamName);
+        public Task<object> SaveNewStream(StreamDB streamName);
 
         public Task<List<AssetDB>> GetAssetByWalletId(string WalletId);
 

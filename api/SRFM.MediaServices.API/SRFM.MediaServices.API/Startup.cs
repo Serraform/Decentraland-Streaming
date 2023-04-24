@@ -23,6 +23,8 @@ using Azure.Core.Extensions;
 using SRFM.MediaServices.API.Services.LivePeer;
 using Microsoft.Extensions.Options;
 using SRFM.MediaServices.API.Services.Moralis;
+using SRFM.MediaServices.API.Models.Config;
+using SRFM.MediaServices.API.Services.Twitch;
 
 namespace SRFM.MediaServices.API
 {
@@ -71,11 +73,13 @@ namespace SRFM.MediaServices.API
 
             services.Configure<LivePeerConfig>(options => Configuration.GetSection("LivePeerConfig").Bind(options));
             services.Configure<MoralisConfig>(options => Configuration.GetSection("MoralisConfig").Bind(options));
+            services.Configure<TwitchConfig>(options => Configuration.GetSection("TwitchConfig").Bind(options));
 
             services.AddSingleton<ITableReader, TableReader>();   //ITableWriter
             services.AddSingleton<ITableWriter, TableWriter>();
             services.AddSingleton<IQueuesWriter, QueuesWriter>();
             services.AddSingleton<IAssetManager, AssetManager>();
+            services.AddSingleton<ITwitchService, TwitchService>();
             services.AddSingleton<IProcess, Process>();
             services.AddSingleton<IMoralisService, MoralisService>();
 

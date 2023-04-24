@@ -4,8 +4,10 @@ using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SRFM.MediaServices.API.Models.LivePeer;
+using SRFM.MediaServices.API.Services.Twitch;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -19,14 +21,16 @@ namespace SRFM.MediaServices.API
         private readonly ITableWriter _tableWriter;
         private readonly IQueuesWriter _queuesWriter;
         private readonly IAssetManager _assetManager;
+        private readonly ITwitchService _twitch;
         private readonly ILogger<Process> _logger;
 
 
-        public Process(ITableReader tableReader, ITableWriter tablewriter, IQueuesWriter queueswriter, IAssetManager assetManager, ILogger<Process> logger)
+        public Process(ITableReader tableReader, ITableWriter tablewriter, IQueuesWriter queueswriter, IAssetManager assetManager, ITwitchService twitch, ILogger<Process> logger)
         {
             _tableReader = tableReader;
             _tableWriter = tablewriter;
             _queuesWriter = queueswriter;
+            _twitch = twitch;
             _logger = logger;
             _assetManager = assetManager;
         }
@@ -96,7 +100,7 @@ namespace SRFM.MediaServices.API
             return await _tableWriter.UpdateAsync("Asset", assetProp);
         }
 
-        public async Task<object> CreateVODNewStream(StreamDB streamProps)
+        public async Task<object> SaveNewStream(StreamDB streamProps)
         {
 
             var checkUser = await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", streamProps.WalletId);
@@ -275,9 +279,10 @@ namespace SRFM.MediaServices.API
         {
 
             var checkUser = await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", streamProps.WalletId);
+
             if (checkUser != null)
             {
-                StreamLP  streamLP= new StreamLP { Name = streamProps.Name };
+                StreamLP streamLP = new StreamLP { Name = streamProps.Name };
 
                 var streamStatus = await _assetManager.CreateNewStream(streamLP);
 
@@ -286,12 +291,18 @@ namespace SRFM.MediaServices.API
                 var payLoadStreamQueues = new
                 {
                     walletId = streamProps.WalletId,
-                    streamId= streamStatus.Id,
-                    StartDateTime =streamProps.StreamStartDate,
+                    streamId = streamStatus.Id,
+                    StartDateTime = streamProps.StreamStartDate,
                     EndDateTime = streamProps.StreamEndDate
                 };
 
                 string jsonStreamQueuesString = JsonConvert.SerializeObject(payLoadStreamQueues);
+
+                if (streamProps.StreamType == StreamType.relayService.ToString())
+                {
+                    var twitch = await _twitch.TriggerWrokflow(System.Web.HttpUtility.UrlEncode(streamProps.relayUrl), streamStatus.StreamKey);
+                }
+
 
                 //TODO update table storage with stream
 
@@ -301,7 +312,7 @@ namespace SRFM.MediaServices.API
 
                     streamProps.PartitionKey = StorageAccount.PartitionKey;
                     streamProps.StreamID = streamStatus.Id;
-                    streamProps.RowKey = streamStatus.Id;                    
+                    streamProps.RowKey = streamStatus.Id;
                     streamProps.Name = streamStatus.Name;
                     streamProps.StreamInfo = jsonStreamString;
                     streamProps.PlayBackId = streamStatus.PlayBackId;
@@ -327,6 +338,27 @@ namespace SRFM.MediaServices.API
 
         public async Task<object> UpdateStream(StreamDB streamProp)
         {
+
+            if (streamProp.StreamType == StreamType.relayService.ToString())
+            {
+                var getStatus = _assetManager.GetStream(streamProp.StreamID);
+
+                if(getStatus == null)
+                {
+                    StreamLP streamLP = new StreamLP { Name = streamProp.Name };
+
+                    var streamStatus = await _assetManager.CreateNewStream(streamLP);
+
+                    string jsonStreamString = JsonConvert.SerializeObject(streamStatus);
+
+                    streamProp.StreamID = streamStatus.Id;
+                    streamProp.StreamInfo = jsonStreamString;
+                    streamProp.PlayBackId = streamStatus.PlayBackId;
+
+                    var twitch = await _twitch.TriggerWrokflow(System.Web.HttpUtility.UrlEncode(streamProp.relayUrl), streamStatus.StreamKey);
+                }
+            }
+
             //Not possible to change stream name in livepeer
             var payLoadStreamQueues = new
             {
