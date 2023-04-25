@@ -89,7 +89,7 @@ const VOD: React.FC<Props> = ({
                 className="flex flex-col justify-top w-[50%] h-[100%]"
                 style={{ position: "relative" }}
               >
-                <div className="mb-2 w-full mr-3">
+                {!isEditForm ? (<div className="mb-2 w-full mr-3">
                   <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center">
                     Select Asset
                     <ReactTooltip
@@ -123,7 +123,6 @@ const VOD: React.FC<Props> = ({
                         Object.keys(
                           assets.filter(
                             (asset) =>{
-                              debugger;
                               return JSON.parse((asset as any).uploadAssetStatus)
                                 .Phase === "ready"}
                           )
@@ -138,7 +137,25 @@ const VOD: React.FC<Props> = ({
                   ) : (
                     <div className="mb-[20px] mt-[10px] basic" />
                   )}
-                </div>
+                </div>): <h2 className="mb-[20px] font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center">
+                    Video File Selected: {assets?.filter((asset) => asset.assetId === (values as any).vId)[0]?.assetName}
+                    <ReactTooltip
+                      id="asset"
+                      place="top"
+                      type={"dark"}
+                      effect={"float"}
+                    />
+                    <div
+                      className="form-tooltip"
+                      data-for="asset"
+                      data-tip={
+                        "This is the Video selected by you to stream, you cannot edit it"
+                      }
+                      data-iscapture="true"
+                    >
+                      <FaqIcon />
+                    </div>
+                  </h2>}
                 <CommonForm
                   initialValues={initialValues}
                   values={values}
