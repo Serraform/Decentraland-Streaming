@@ -26,7 +26,7 @@ export const columnsDefinition = (
               <span className="text-[14px]">Uploaded</span>
             </div>
           );
-        } else if (uploadAssetInfo.Phase === "waiting" || uploadAssetInfo.Phase === "processing") {
+        } else if (uploadAssetInfo.Phase === "waiting" || uploadAssetInfo.Phase === "processing" ||  uploadAssetInfo.Phase === "uploading") {
           return (
             <div className="flex justify-center flex-row items-center">
               <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-yellow-600" />

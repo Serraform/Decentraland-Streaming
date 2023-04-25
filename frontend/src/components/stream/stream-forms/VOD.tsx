@@ -118,9 +118,16 @@ const VOD: React.FC<Props> = ({
                       onChange={handleChange}
                       className="mb-[20px] mt-[10px] w-[100%] border bg-transparent  border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
                     >
-                         <option value="">Select an asset</option>
+                      <option value="">Select an asset</option>
                       {assets &&
-                        Object.keys(assets).map((key: any) => {
+                        Object.keys(
+                          assets.filter(
+                            (asset) =>{
+                              debugger;
+                              return JSON.parse((asset as any).uploadAssetStatus)
+                                .Phase === "ready"}
+                          )
+                        ).map((key: any) => {
                           return (
                             <option value={assets[key]?.assetId}>
                               {assets[key]?.assetName}
