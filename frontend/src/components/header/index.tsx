@@ -4,7 +4,7 @@ import WalletIcon from "assets/icons/Wallet";
 import WalletDrawer from "components/wallet-drawer";
 import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
-
+import FaqIcon from "assets/icons/Question";
 const Header = () => {
   const { walletID, avatar } = useSelector(
     (state: RootState) => state.accountData
@@ -25,13 +25,28 @@ const Header = () => {
           alt="logo"
         />
         {walletID !== "" && avatar ? (
-          <div className="flex flex-row">
+          <div className="flex flex-row items-center">
             <button
               className="border-2 rounded-full p-[0.2rem] border-primary flex justify-center items-center flex-row"
               onClick={() => setOpenDrawer(true)}
             >
               <div id="#jazzicon" className="flex" />
             </button>
+            <a
+               href="https://docs.google.com/document/d/1Dz-a3iqXRFiSoAd4owAYohmHywOJKQIx/edit"
+               target="_blank"
+              data-for="faq"
+              data-tip={"FAQ"}
+              data-iscapture="true"
+              type="button"
+              className="ml-2"
+              aria-haspopup="true"
+              aria-expanded="false"
+              data-headlessui-state=""
+              aria-labelledby="headlessui-listbox-label-3 headlessui-listbox-button-4" rel="noreferrer"
+            >
+              <FaqIcon />
+            </a>
           </div>
         ) : (
           <button onClick={() => setOpenDrawer(true)}>
