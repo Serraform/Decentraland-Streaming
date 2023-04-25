@@ -1,5 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import TrashIcon from "assets/icons/Trash";
+import { finishTransaction } from "store/slices/transaction.slice";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "store/configStore";
+
 const FormButtons = (props: any) => {
   const {
     formMode,
@@ -11,14 +15,20 @@ const FormButtons = (props: any) => {
     handleEstimateCost,
     handleSave,
     values,
-    needsToEstimateNewCost
+    needsToEstimateNewCost,
   } = props;
-  console.log(cost)
+  const useAppDispatch = () => useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
+
+  console.log(cost);
   const navigate = useNavigate();
   return (
     <div className="flex">
       <button
-        onClick={() => navigate("/")}
+        onClick={() => {
+          dispatch(finishTransaction());
+          navigate("/");
+        }}
         className=" btn-third mt-auto ml-0 mr-1"
       >
         Cancel
@@ -69,7 +79,9 @@ const FormButtons = (props: any) => {
           disabled={isDisabled}
         >
           {loading && <div className="basic mr-[1rem]" />}
-          {cost === 0 && needsToEstimateNewCost ? "Calculate Price" : "Edit Stream"}
+          {cost === 0 && needsToEstimateNewCost
+            ? "Calculate Price"
+            : "Save Edit"}
         </button>
       )}
     </div>

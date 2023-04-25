@@ -103,9 +103,9 @@ const AssetTable: React.FC<Props> = ({
         </button>
         <span className="flex items-center gap-1 dark:text-white">
           <div>Page</div>
-          <strong>
+         {pageCount !==0 &&  <strong>
             {pagination.pageIndex + 1} of {pageCount}
-          </strong>
+          </strong>}
         </span>
       </div>
     </div>

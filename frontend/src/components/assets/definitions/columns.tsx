@@ -38,7 +38,7 @@ export const columnsDefinition = (
       return (
         <div className="flex justify-center flex-row items-center">
           <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
-          <span className="text-[14px]">Upload incompleted</span>
+          <span className="text-[14px]">Upload incomplete</span>
         </div>
       );
     },
@@ -48,9 +48,7 @@ export const columnsDefinition = (
     header: () => <span className="font-montserratbold">Name</span>,
     cell: (info: any) => (
       <span className="font-montserratregular text-[14.5px] text-start">
-        {info.getValue().length > 10
-          ? `${info.getValue().slice(0, 15)}...`
-          : info.getValue()}
+        {info.getValue()}
       </span>
     ),
   }),

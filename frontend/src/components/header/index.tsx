@@ -4,10 +4,8 @@ import WalletIcon from "assets/icons/Wallet";
 import WalletDrawer from "components/wallet-drawer";
 import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
-type Props = {
-  openNewStream: Function;
-};
-const Header: React.FC<Props> = ({ openNewStream }) => {
+
+const Header = () => {
   const { walletID, avatar } = useSelector(
     (state: RootState) => state.accountData
   );
@@ -28,13 +26,6 @@ const Header: React.FC<Props> = ({ openNewStream }) => {
         />
         {walletID !== "" && avatar ? (
           <div className="flex flex-row">
-            <button
-              onClick={() => openNewStream()}
-              disabled={walletID === ""}
-              className="btn-third"
-            >
-              Schedule new stream
-            </button>
             <button
               className="border-2 rounded-full p-[0.2rem] border-primary flex justify-center items-center flex-row"
               onClick={() => setOpenDrawer(true)}

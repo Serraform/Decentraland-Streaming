@@ -16,9 +16,14 @@ type Props = {
   datesHasChange: Function;
 };
 
-const options = Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0'));
+const hourOptions = Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0'));
+let hoursArr = [] as any;
 
-
+for (let i = 0; i < 24; i++) {
+  let hour = i % 12 || 12;
+  let amPm = i < 12 ? "am" : "pm";
+  hoursArr.push(`${hour} ${amPm}`);
+}
 const Calendar: React.FC<Props> = ({
   values,
   handleChange,
@@ -118,12 +123,13 @@ const Calendar: React.FC<Props> = ({
                   placeholder="Start date"
                 />
                 <Dropdown
-                  options={options}
+                  options={hoursArr}
                   {...timeStartInputProps}
                   placeholder="HH"
                   onChange={(e) => {
+                    const position = hoursArr.indexOf(e.value);
                     timeStartInputProps.onChange({
-                      target: { value: e.value },
+                      target: { value: hourOptions[position] },
                     });
                   }}
                   className={`mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border rounded ${
@@ -139,12 +145,13 @@ const Calendar: React.FC<Props> = ({
                   } border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none`}
                 />
                  <Dropdown
-                  options={options}
+                  options={hoursArr}
                   {...timeEndInputProps}
                   placeholder="HH"
                   onChange={(e) => {
+                    const position = hoursArr.indexOf(e.value);
                     timeEndInputProps.onChange({
-                      target: { value: e.value },
+                      target: { value: hourOptions[position] },
                     });
                   }}
                   className={`mb-[20px] mt-[10px] m-2 ml-0 w-[100%] border rounded ${
@@ -154,7 +161,10 @@ const Calendar: React.FC<Props> = ({
                 
               </div>
               <h2 className="font-montserratbold text-black text-[15px] dark:text-white">
-                {values.streamStartDate && values.streamEndDate ? (
+                {values.streamStartDate && values.streamEndDate && (differenceInHours(
+                      returnAsDate(values.streamEndDate),
+                      returnAsDate(values.streamStartDate)
+                    ) > 0) ? (
                   <>
                     <span className="font-montserratregular">
                       Stream duration:
