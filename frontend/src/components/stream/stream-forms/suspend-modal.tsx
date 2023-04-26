@@ -39,7 +39,7 @@ const SuspendModal: React.FC<Props> = ({
             className="pt-[15px] text-black
 dark:text-white"
           >
-            Deleting your stream will unlock funds back to your funds
+            Deleting your stream will unlock funds back to your available funds
           </p>
           <div className="pt-[20px] flex flex-row justify-end">
             <button

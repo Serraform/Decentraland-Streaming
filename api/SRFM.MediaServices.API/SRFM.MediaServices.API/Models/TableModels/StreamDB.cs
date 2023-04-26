@@ -33,6 +33,8 @@ namespace SRFM.MediaServices.API
 
         public string VId { get; set; }
 
+        public string relayUrl { get; set; }
+
         public string StreamDuration { get; set; }
 
         public DateTime StreamStartDate { get; set; }

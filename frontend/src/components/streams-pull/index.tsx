@@ -118,7 +118,7 @@ const StreamsPull = () => {
     return (
       <div className="container pt-10">
         <h1 className="font-montserratbold text-primary text-center pt-20 pb-20 border-third border-r-0 border-t-0">
-          Please refresh your browser to see your streams.
+          Your session has expired, please refresh your browser to see your streams.
         </h1>
       </div>
     );

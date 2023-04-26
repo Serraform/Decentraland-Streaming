@@ -9,11 +9,14 @@ export const client = axios.create({
   timeout: 50000,
   headers: {
     Authorization: `Bearer ${jwtToken}`,
-    "content-type": "application/json"
+    "content-type": "application/json",
   },
 });
 
-
+window.addEventListener("storage", () => {
+  const jwtToken = localStorage.getItem("token");
+  client.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`;
+});
 
 export const axiosBaseQuery =
   (
@@ -30,8 +33,16 @@ export const axiosBaseQuery =
   > =>
   async ({ url, method, data, params }) => {
     try {
-      
-      const result = await client({ url: baseUrl + url, method, data, params });
+      const jwtToken = localStorage.getItem("token");
+      const result = await client({
+        url: baseUrl + url,
+        method,
+        data,
+        params,
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      });
       return { data: result.data };
     } catch (axiosError) {
       let err = axiosError as AxiosError;

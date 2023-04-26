@@ -82,7 +82,7 @@ const Assets = () => {
     return (
       <div className="container pt-10">
         <h1 className="font-montserratbold text-primary text-center pt-20 pb-20 border-third border-r-0 border-t-0">
-          Please refresh your browser to see your assets.
+          Your session has expired, please refresh your browser to see your video files.
         </h1>
       </div>
     );
@@ -97,7 +97,7 @@ const Assets = () => {
           onClick={() => setOpenAssetUploader(true)}
         >
           <AddIcon />{" "}
-          <span className="dark:text-white ml-2">Add new asset</span>
+          <span className="dark:text-white ml-2">Add new video file</span>
         </button>
       </div>
       <AssetTable

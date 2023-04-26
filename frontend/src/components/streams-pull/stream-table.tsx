@@ -130,9 +130,9 @@ const StreamTable: React.FC<Props> = ({
           </button>
           <span className="flex items-center gap-1 dark:text-white">
             <div>Page</div>
-            <strong>
-              {pagination.pageIndex + 1} of {pageCount}
-            </strong>
+            {pageCount !==0 &&  <strong>
+            {pagination.pageIndex + 1} of {pageCount}
+          </strong>}
           </span>
         </div>
       </div>

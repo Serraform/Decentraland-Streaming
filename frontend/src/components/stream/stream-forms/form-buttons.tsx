@@ -1,5 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import TrashIcon from "assets/icons/Trash";
+import { finishTransaction } from "store/slices/transaction.slice";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "store/configStore";
+
 const FormButtons = (props: any) => {
   const {
     formMode,
@@ -14,15 +18,22 @@ const FormButtons = (props: any) => {
     needsToEstimateNewCost,
   } = props;
   const navigate = useNavigate();
+  const useAppDispatch = () => useDispatch<AppDispatch>();
+  console.log(cost);
+  const dispatch = useAppDispatch();
   if ((values.relayServiceLinkIsVerified !== undefined && !(values.relayServiceLinkIsVerified))) {
-    return (
-      <div className="flex">
-        <button
-          onClick={() => navigate("/")}
-          className=" btn-third mt-auto ml-0 mr-1"
-        >
-          Cancel
-        </button>
+
+  return (
+    <div className="flex">
+      <button
+        onClick={() => {
+          dispatch(finishTransaction());
+          navigate("/");
+        }}
+        className=" btn-third mt-auto ml-0 mr-1"
+      >
+        Cancel
+      </button>
         <button
           onClick={() => {
             handleSave(values);
@@ -39,7 +50,7 @@ const FormButtons = (props: any) => {
     return (
       <div className="flex">
         <button
-          onClick={() => navigate("/")}
+          onClick={() => { dispatch(finishTransaction()); navigate("/")}}
           className=" btn-third mt-auto ml-0 mr-1"
         >
           Cancel
@@ -92,7 +103,7 @@ const FormButtons = (props: any) => {
             {loading && <div className="basic mr-[1rem]" />}
             {cost === 0 && needsToEstimateNewCost
               ? "Calculate Price"
-              : "Edit Stream"}
+              : "Save Changes"}
           </button>
         )}
       </div>

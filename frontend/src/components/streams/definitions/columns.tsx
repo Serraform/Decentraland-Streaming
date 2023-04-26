@@ -60,17 +60,34 @@ export const columnsDefinition = (
   columnHelper.accessor("streamType", {
     id: "streamType",
     header: () => <span className="font-montserratbold">Type</span>,
-    cell: (info: any) => (
-      <span className="font-montserratregular text-[14px]">
-        {info.getValue()}
-      </span>
-    ),
+    cell: (info: any) => {
+      switch (info.getValue()) {
+        case "vod":
+          return (
+            <span className="font-montserratregular text-[14px]">VOD</span>
+          );
+        case "liveStream":
+          return (
+            <span className="font-montserratregular text-[14px]">Live</span>
+          );
+        case "relayService":
+          return (
+            <span className="font-montserratregular text-[14px]">
+              Broadcast
+            </span>
+          );
+        default:
+          return (
+            <span className="font-montserratregular text-[14px]">Live</span>
+          );
+      }
+    },
   }),
   columnHelper.accessor("playBackUrl", {
     id: "playBackUrl",
     header: () => <span className="font-montserratbold">Playback URL</span>,
     cell: (info: any) => {
-      const playBackUrl =  info.row.original.playBackUrl;
+      const playBackUrl = info.row.original.playBackUrl;
       return (
         <>
           <ReactTooltip id="main" place="top" type={"dark"} effect={"float"} />
