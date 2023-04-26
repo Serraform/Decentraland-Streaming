@@ -249,7 +249,7 @@ namespace SRFM.MediaServices.API
 
                 if (stream != null)
                 {
-                    stream.SuspendStatus = "Suspended";
+                    //stream.SuspendStatus = "Suspended";
                     stream.StreamStatus = "Suspended";
                     var update = await _tableWriter.UpdateAsync("Stream", stream);
                 }
@@ -324,7 +324,7 @@ namespace SRFM.MediaServices.API
                     var createStream = await _tableWriter.AddAsync("Stream", streamProps);
 
                     //Suspend Stream
-                    //var suspendStream = await this.SuspendStream(streamStatus.Id, streamProps.WalletId);
+                    var suspendStream = await this.SuspendStream(streamStatus.Id, streamProps.WalletId);
 
                     await _queuesWriter.AddQueuesMessageAsync("queue-livestream", jsonStreamQueuesString);
 
