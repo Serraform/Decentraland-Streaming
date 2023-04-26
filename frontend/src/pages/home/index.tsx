@@ -70,7 +70,7 @@ const Home = () => {
               checked={list.type === "assets"}
               onClick={(e) => handleChangeType(e)}
             />
-            Assets
+            Video files
           </label>
         </form>}
       </div>

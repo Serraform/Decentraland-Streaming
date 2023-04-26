@@ -4,10 +4,8 @@ import WalletIcon from "assets/icons/Wallet";
 import WalletDrawer from "components/wallet-drawer";
 import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
-type Props = {
-  openNewStream: Function;
-};
-const Header: React.FC<Props> = ({ openNewStream }) => {
+import FaqIcon from "assets/icons/Question";
+const Header = () => {
   const { walletID, avatar } = useSelector(
     (state: RootState) => state.accountData
   );
@@ -27,20 +25,28 @@ const Header: React.FC<Props> = ({ openNewStream }) => {
           alt="logo"
         />
         {walletID !== "" && avatar ? (
-          <div className="flex flex-row">
-            <button
-              onClick={() => openNewStream()}
-              disabled={walletID === ""}
-              className="btn-third"
-            >
-              Schedule new stream
-            </button>
+          <div className="flex flex-row items-center">
             <button
               className="border-2 rounded-full p-[0.2rem] border-primary flex justify-center items-center flex-row"
               onClick={() => setOpenDrawer(true)}
             >
               <div id="#jazzicon" className="flex" />
             </button>
+            <a
+               href="https://docs.google.com/document/d/1Dz-a3iqXRFiSoAd4owAYohmHywOJKQIx/edit"
+               target="_blank"
+              data-for="faq"
+              data-tip={"FAQ"}
+              data-iscapture="true"
+              type="button"
+              className="ml-2"
+              aria-haspopup="true"
+              aria-expanded="false"
+              data-headlessui-state=""
+              aria-labelledby="headlessui-listbox-label-3 headlessui-listbox-button-4" rel="noreferrer"
+            >
+              <FaqIcon />
+            </a>
           </div>
         ) : (
           <button onClick={() => setOpenDrawer(true)}>

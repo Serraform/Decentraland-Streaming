@@ -100,7 +100,7 @@ const checkAllowance = async (signer: any, provider: any, account: any) => {
 export const requestConnectWallet = createAsyncThunk(
   "connect-wallet",
   async () => {
-    const { ethereum } = window as any;
+    const { ethereum, dispatchEvent } = window as any;
     if (!ethereum) {
       return;
     }
@@ -130,6 +130,7 @@ export const requestConnectWallet = createAsyncThunk(
         JSON.stringify(verifyData)
       );
       localStorage.setItem("token", signatureVerified.data as string);
+     dispatchEvent(new Event("storage"));
       await createAccount(accounts[0], signatureVerified.data);
       const addr = accounts[0].slice(2, 10);
       const identicon = jazzicon(40, parseInt(addr, 20));

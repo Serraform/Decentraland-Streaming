@@ -143,7 +143,9 @@ const Funds = () => {
       {isTokenContractApprove && (
         <>
           <p className="font-montserratmedium mt-[24px] dark:text-white">
-            In order to create a stream, you must fund your account with USDC
+            {!balance
+              ? "In order to create a stream, you must fund your account with USDC"
+              : ""}
           </p>
           <div className={bottomFormStyle}>
             <p
@@ -167,7 +169,7 @@ const Funds = () => {
               }
               className={`${buttonStyle} bg-primary rounded rounded-t-none flex justify-center dark:hover:bg-transparent dark:border-primary dark:border`}
             >
-              {loading ? <div className="basic" /> : <>Send transaction</>}
+              {loading ? <div className="basic" /> : <>Fund Account</>}
             </button>
           </div>
         </>

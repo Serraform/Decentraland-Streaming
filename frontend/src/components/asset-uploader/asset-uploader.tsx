@@ -156,6 +156,7 @@ const AssetUploader = (props: any) => {
                       appearance: "success",
                       autoDismiss: true,
                     });
+                    setOpenAssetUploader(false)
                     navigate("/");
                   }
                 }}

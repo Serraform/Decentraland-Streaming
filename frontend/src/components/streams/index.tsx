@@ -8,9 +8,11 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 import { RootState } from "store/configStore";
 import StreamTable from "components/streams/stream-table";
-
+import AddIcon from "assets/icons/Add";
 import { useFetchStreamsByWalletIdQuery } from "store/api/streams.api";
 import { useNavigate } from "react-router-dom";
+import { clearSelectStream } from "store/slices/stream.slice";
+
 const Streams = () => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
@@ -51,6 +53,11 @@ const Streams = () => {
       columnsDefinition(columnHelper, setCopy, copySuccess, handleSelectStream),
     [columnHelper, copySuccess, handleSelectStream]
   );
+  const handleOpenNewStream = () => {
+    dispatch(clearSelectStream());
+    navigate("/stream/new");
+  };
+
   if ((loading || !data) && !error)
     return (
       <>
@@ -72,13 +79,22 @@ const Streams = () => {
     return (
       <div className="container pt-10">
         <h1 className="font-montserratbold text-primary text-center pt-20 pb-20 border-third border-r-0 border-t-0">
-          Please refresh your browser to see your streams.
+          Your session has expired, please refresh your browser to see your streams.
         </h1>
       </div>
     );
   return (
     <>
-      
+      <div className="container flex flex-row justify-end">
+        <button
+          className="btn-third flex flex-row items-center !pr-0"
+          onClick={() => handleOpenNewStream()}
+          disabled={walletID === ""}
+        >
+          <AddIcon />{" "}
+          <span className="dark:text-white ml-2">Add new stream</span>
+        </button>
+      </div>
       <StreamTable
         columns={columns}
         streams={
