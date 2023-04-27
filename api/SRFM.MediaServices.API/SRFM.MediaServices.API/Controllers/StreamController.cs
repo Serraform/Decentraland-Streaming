@@ -64,9 +64,9 @@ namespace SRFM.MediaServices.API.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("VerifyM3U8Url/{twitchUrl}")]
-        public async Task<bool> VerifyM3U8Url(string twitchUrl)
+        [HttpPost]
+        [Route("VerifyM3U8Url")]
+        public async Task<bool> VerifyM3U8Url([FromBody]string twitchUrl)
         {
             Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
             var tokenWithBearer = headerValue.ToString();
