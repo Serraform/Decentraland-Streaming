@@ -54,7 +54,7 @@ const RelayService: React.FC<Props> = ({
         appearance: "success",
         autoDismiss: true,
       });
-      setIsVerfied(verifyRelayLinkResponse.response)
+      setIsVerfied(verifyRelayLinkResponse);
     } else if (isError) {
       addToast(
         "Broadcast url could'nt be verified, please read here for more info: ",
@@ -76,12 +76,11 @@ const RelayService: React.FC<Props> = ({
         ...values,
         streamType: "relayService",
       };
-      if(!relayServiceLinkIsVerified){
+      if (!relayServiceLinkIsVerified) {
         //execute presaved
 
         handlePreSave(valuesToSend);
-      }
-      else{
+      } else {
         handleSave(valuesToSend);
       }
     },
@@ -144,7 +143,7 @@ const RelayService: React.FC<Props> = ({
                       <FaqIcon />
                     </div>
                   </h2>
-                  <div className="flex flex-row items-baseline">
+                  <div className="flex flex-row items-center mb-[20px] mt-[10px]">
                     <Field
                       type="text"
                       value={values.relayServiceLink}
@@ -152,7 +151,7 @@ const RelayService: React.FC<Props> = ({
                       required
                       onChange={handleChange}
                       placeholder="Relay service link"
-                      className="mb-[20px] mt-[10px] w-[100%] mr-5 border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
+                      className=" w-[100%] mr-5 border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
                     />
                     <button
                       className=" btn-secondary flex flex-row items-center w-[35%] justify-center"
@@ -163,15 +162,16 @@ const RelayService: React.FC<Props> = ({
                       onClick={() => verifyRelayLink(values.relayServiceLink)}
                     >
                       {verifingRelayLink && <div className="basic" />}
-                      {isSuccess && <SuccessIcon />}
-                      {isError && <ErrorIcon />}
+                      {isSuccess && verifyRelayLinkResponse && <SuccessIcon />}
+                      {isSuccess && !verifyRelayLinkResponse && <ErrorIcon />}
+
                       <span className="ml-2">Verify Link</span>
                     </button>
                   </div>
                 </div>
                 <CommonForm
                   initialValues={initialValues}
-                  values={{...values, relayServiceLinkIsVerified}}
+                  values={{ ...values, relayServiceLinkIsVerified }}
                   handleChange={handleChange}
                   cost={cost}
                   loading={isLoading}

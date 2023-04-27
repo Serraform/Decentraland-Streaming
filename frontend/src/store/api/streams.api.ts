@@ -100,7 +100,7 @@ export const streamsApi = createApi({
     }),
     verifyRelayLink: builder.query<any, any>({
       query: (body) => ({
-        url: `api/Stream/VerifyRelayLink?relayLink=${body.relayServiceLink}`,
+        url: `api/Stream/VerifyM3U8Url/${body}`,
         method: "GET",
       }),
     }),
