@@ -27,13 +27,14 @@ export const streamsApi = createApi({
     }),
     createLiveStream: builder.mutation<any, any>({
       query: ({ walletID, streamValues }) => {
-        const { name, attendees, streamStartDate, streamEndDate, streamType, cost, vaultContractId, VId } =
+        const { name, attendees, streamStartDate, streamEndDate, streamType, cost, vaultContractId, VId, relayUrl } =
           streamValues;
         return {
           url: `api/Stream/CreateStream`,
           method: "POST",
           data: {
             name: name,
+            relayUrl: relayUrl,
             steamLP: {},
             streamType: streamType,
             VId: VId ? VId : "",
@@ -100,8 +101,11 @@ export const streamsApi = createApi({
     }),
     verifyRelayLink: builder.query<any, any>({
       query: (body) => ({
-        url: `api/Stream/VerifyM3U8Url/${body}`,
-        method: "GET",
+        url: `api/Stream/VerifyM3U8Url`,
+        method: "POST",
+        data:
+          body
+        
       }),
     }),
   }),

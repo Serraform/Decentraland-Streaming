@@ -10,7 +10,6 @@ const FormButtons = (props: any) => {
     cost,
     isDisabled,
     loading,
-    streamIsBeingCreated,
     setOpenSuspendModal,
     handleEstimateCost,
     handleSave,
@@ -21,19 +20,36 @@ const FormButtons = (props: any) => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   console.log(cost);
   const dispatch = useAppDispatch();
-  if ((values.relayServiceLinkIsVerified !== undefined && !(values.relayServiceLinkIsVerified))) {
-
-  return (
-    <div className="flex">
-      <button
-        onClick={() => {
-          dispatch(finishTransaction());
-          navigate("/");
-        }}
-        className=" btn-third mt-auto ml-0 mr-1"
-      >
-        Cancel
-      </button>
+  if (values.relayUrlIsVerified !== undefined && !values.relayUrlIsVerified) {
+    return (
+      <div className="flex">
+        <button
+          onClick={() => {
+            dispatch(finishTransaction());
+            navigate("/");
+          }}
+          className=" btn-third mt-auto ml-0 mr-1"
+        >
+          Cancel
+        </button>
+        {formMode === "edit" && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpenSuspendModal(true);
+            }}
+            type="button"
+            className=" btn-cancel flex flex-row items-center mt-auto ml-0 mr-5"
+            disabled={isDisabled}
+          >
+            {loading ? (
+              <div className="basic mr-[1rem] before:border-l-red-600" />
+            ) : (
+              <TrashIcon />
+            )}
+            Delete
+          </button>
+        )}
         <button
           onClick={() => {
             handleSave(values);
@@ -50,12 +66,15 @@ const FormButtons = (props: any) => {
     return (
       <div className="flex">
         <button
-          onClick={() => { dispatch(finishTransaction()); navigate("/")}}
+          onClick={() => {
+            dispatch(finishTransaction());
+            navigate("/");
+          }}
           className=" btn-third mt-auto ml-0 mr-1"
         >
           Cancel
         </button>
-        {!streamIsBeingCreated && (
+        {formMode === "edit" && (
           <button
             onClick={(e) => {
               e.stopPropagation();

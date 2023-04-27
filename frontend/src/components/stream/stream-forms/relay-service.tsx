@@ -1,6 +1,6 @@
 import { Formik, Form } from "formik";
 import { IRelayService } from "components/stream/definitions";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import {
   validationSchema,
   validateDateRange,
@@ -36,7 +36,7 @@ const RelayService: React.FC<Props> = ({
   handleDelete,
 }) => {
   const isEditForm = formMode === "edit";
-  const [relayServiceLinkIsVerified, setIsVerfied] = useState(false);
+  const [relayUrlIsVerified, setIsVerfied] = useState(false);
   const { addToast } = useToasts();
   const [
     verifyRelayLink,
@@ -48,16 +48,16 @@ const RelayService: React.FC<Props> = ({
     },
   ] = useLazyVerifyRelayLinkQuery();
 
-  useCallback(() => {
-    if (isSuccess) {
+  useEffect(() => {
+    if (isSuccess && verifyRelayLinkResponse) {
       addToast("Broadcast url could be verified", {
         appearance: "success",
         autoDismiss: true,
       });
       setIsVerfied(verifyRelayLinkResponse);
-    } else if (isError) {
+    } else if (isSuccess && !verifyRelayLinkResponse) {
       addToast(
-        "Broadcast url could'nt be verified, please read here for more info: ",
+        "Broadcast url couldn't be verified, please read here for more info: ",
         {
           appearance: "error",
           autoDismiss: true,
@@ -76,7 +76,7 @@ const RelayService: React.FC<Props> = ({
         ...values,
         streamType: "relayService",
       };
-      if (!relayServiceLinkIsVerified) {
+      if (!relayUrlIsVerified) {
         //execute presaved
 
         handlePreSave(valuesToSend);
@@ -84,7 +84,7 @@ const RelayService: React.FC<Props> = ({
         handleSave(valuesToSend);
       }
     },
-    [handleSave, relayServiceLinkIsVerified, handlePreSave]
+    [handleSave, relayUrlIsVerified, handlePreSave]
   );
   const disabledEstimateCost = (values: IRelayService, errors: any) => {
     return (
@@ -129,14 +129,14 @@ const RelayService: React.FC<Props> = ({
                   <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center">
                     Broadcast Url
                     <ReactTooltip
-                      id="relayServiceLink"
+                      id="relayUrl"
                       place="top"
                       type={"dark"}
                       effect={"float"}
                     />
                     <div
                       className="form-tooltip"
-                      data-for="relayServiceLink"
+                      data-for="relayUrl"
                       data-tip={"Link of your Twitch/YouTube/etc live stream"}
                       data-iscapture="true"
                     >
@@ -146,9 +146,8 @@ const RelayService: React.FC<Props> = ({
                   <div className="flex flex-row items-center mb-[20px] mt-[10px]">
                     <Field
                       type="text"
-                      value={values.relayServiceLink}
-                      name="relayServiceLink"
-                      required
+                      value={values.relayUrl}
+                      name="relayUrl"
                       onChange={handleChange}
                       placeholder="Relay service link"
                       className=" w-[100%] mr-5 border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
@@ -156,10 +155,10 @@ const RelayService: React.FC<Props> = ({
                     <button
                       className=" btn-secondary flex flex-row items-center w-[35%] justify-center"
                       disabled={
-                        values.relayServiceLink === "" ||
-                        values.relayServiceLink === null
+                        values.relayUrl === "" ||
+                        values.relayUrl === null
                       }
-                      onClick={() => verifyRelayLink(values.relayServiceLink)}
+                      onClick={() => verifyRelayLink(values.relayUrl)}
                     >
                       {verifingRelayLink && <div className="basic" />}
                       {isSuccess && verifyRelayLinkResponse && <SuccessIcon />}
@@ -171,7 +170,7 @@ const RelayService: React.FC<Props> = ({
                 </div>
                 <CommonForm
                   initialValues={initialValues}
-                  values={{ ...values, relayServiceLinkIsVerified }}
+                  values={{ ...values, relayUrlIsVerified }}
                   handleChange={handleChange}
                   cost={cost}
                   loading={isLoading}

@@ -21,7 +21,7 @@ const initialState: InitialState = {
     asset: null,
     VId: "",
     cost: "",
-    relayServiceLink:"",
+    relayUrl:"",
     vaultContractId: "",
     streamStartDate: undefined,
     streamEndDate: undefined,

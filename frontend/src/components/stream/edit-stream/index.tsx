@@ -8,6 +8,8 @@ import {
 } from "components/stream/definitions";
 import StreamVOD from "components/stream/stream-forms/VOD";
 import LiveStream from "components/stream/stream-forms/live-stream";
+
+import RelayStream from "components/stream/stream-forms/relay-service";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 import {
@@ -226,6 +228,21 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
             handleDelete={handleDelete}
           />
         );
+        case "relayService":
+          return (
+            <RelayStream
+              isLoading={isLoading}
+              handleSave={handleSave}
+              selectedStream={{
+                ...(selectedStream as IRelayService),
+              }}
+              formMode={"edit"}
+              handlePreSave={handleSave}
+              handleEstimateCost={handleEstimateCost}
+              cost={cost}
+              handleDelete={handleDelete}
+            />
+          );
       default:
         <></>;
     }

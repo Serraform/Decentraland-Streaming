@@ -102,8 +102,38 @@ const StreamInfo: React.FC<IStreamCreation> = ({
   }, [receipt, cost, transactionType]);
 
   const handlePreSave = useCallback((values: any) => {
-    console.log(values)
-  }, [])
+    createLiveStream({
+      walletID: walletID,
+      streamValues: {
+        ...values,
+        cost: "",
+        vaultContractId: "",
+        streamStatus: "Upcoming",
+      },
+    });
+    const newStream = {
+      ...values,
+      cost: "",
+      vaultContractId: "",
+      streamStatus: "Upcoming",
+
+      streamInfo: JSON.stringify({
+        Name: values?.name,
+        CreatedAt: 0,
+        Id: "",
+        IsActive: false,
+        PlayBackId: "",
+        Profiles: [],
+        Record: false,
+        StreamKey: "",
+        Suspended: false,
+        playBackUrl: "",
+        rtmpIngestUrl: "",
+      }),
+    };
+    dispatch(uploadStream(newStream));
+    navigate("/");
+  }, []);
 
   const handleSave = useCallback(
     (values: any) => {

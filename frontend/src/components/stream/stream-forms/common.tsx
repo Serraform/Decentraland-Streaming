@@ -48,8 +48,8 @@ const CommonForm: React.FC<Props> = ({
   const [openSuspendModal, setOpenSuspendModal] = useState(false);
   
   const streamIsBeingCreated = useMemo(
-    () => values.streamInfo?.CreatedAt === 0,
-    [values.streamInfo?.CreatedAt]
+    () => formMode==="edit",
+    [formMode]
   );
 
   const streamIsHappeningOrHasHappened = useMemo(
@@ -185,7 +185,6 @@ const CommonForm: React.FC<Props> = ({
             streamIsHappeningOrHasHappened
           }
           loading={loading}
-          streamIsBeingCreated={streamIsBeingCreated}
           setOpenSuspendModal={setOpenSuspendModal}
           handleEstimateCost={handleEstimateCost}
           handleSave={handleSave}
