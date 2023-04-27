@@ -17,7 +17,7 @@ const Video: React.FC<Props> = ({ values, video, handleChange }) => {
       case "Upcoming":
         return (
           <div className="flex justify-center flex-row items-center absolute bullet-status top-0">
-            <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-sky-400" />
+            <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-purple-400" />
             <span className="text-[14px]">Upcoming</span>
           </div>
         );
@@ -38,8 +38,8 @@ const Video: React.FC<Props> = ({ values, video, handleChange }) => {
       case "Suspended":
         return (
           <div className="flex justify-center flex-row items-center absolute bullet-status top-0">
-            <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-red-600" />
-            <span className="text-[14px]">Suspended</span>
+            <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-sky-600" />
+            <span className="text-[14px]">Done</span>
           </div>
         );
     }
