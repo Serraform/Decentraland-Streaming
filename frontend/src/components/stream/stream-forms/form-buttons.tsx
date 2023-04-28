@@ -20,7 +20,7 @@ const FormButtons = (props: any) => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   console.log(cost);
   const dispatch = useAppDispatch();
-  if (values.relayUrlIsVerified !== undefined && !values.relayUrlIsVerified) {
+  if (!values.relayUrlIsVerified) {
     return (
       <div className="flex">
         <button

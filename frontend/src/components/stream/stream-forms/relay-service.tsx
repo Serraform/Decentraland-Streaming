@@ -105,7 +105,6 @@ const RelayService: React.FC<Props> = ({
       validate={validateDateRange}
     >
       {({ handleChange, values, errors, initialValues }) => {
-        console.log(values);
         return (
           <>
             <Form
@@ -148,6 +147,7 @@ const RelayService: React.FC<Props> = ({
                       type="text"
                       value={values.relayUrl}
                       name="relayUrl"
+                      disabled={formMode === "edit" && (values as any)?.relayUrlIsVerified}
                       onChange={handleChange}
                       placeholder="Relay service link"
                       className=" w-[100%] mr-5 border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
@@ -156,7 +156,8 @@ const RelayService: React.FC<Props> = ({
                       className=" btn-secondary flex flex-row items-center w-[35%] justify-center"
                       disabled={
                         values.relayUrl === "" ||
-                        values.relayUrl === null
+                        values.relayUrl === null ||
+                        (formMode === "edit" && (values as any)?.relayUrlIsVerified)
                       }
                       onClick={() => verifyRelayLink(values.relayUrl)}
                     >
@@ -164,13 +165,13 @@ const RelayService: React.FC<Props> = ({
                       {isSuccess && verifyRelayLinkResponse && <SuccessIcon />}
                       {isSuccess && !verifyRelayLinkResponse && <ErrorIcon />}
 
-                      <span className="ml-2">Verify Link</span>
+                      <span className="ml-2 " style={{whiteSpace: "pre"}}>Verify Link</span>
                     </button>
                   </div>
                 </div>
                 <CommonForm
                   initialValues={initialValues}
-                  values={{ ...values, relayUrlIsVerified }}
+                  values={{ ...values, relayUrlIsVerified:  (relayUrlIsVerified || ((values as any)?.relayUrlIsVerified as boolean))  }}
                   handleChange={handleChange}
                   cost={cost}
                   loading={isLoading}

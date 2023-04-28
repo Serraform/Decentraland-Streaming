@@ -66,7 +66,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
 
   useEffect(() => {
     if (isDeleteSuccess) {
-      dispatch(deleteStreamFromTable(selectedStream.streamInfo?.Id));
+      dispatch(deleteStreamFromTable(selectedStream.streamID));
       addToast("Stream deleted", {
         appearance: "success",
         autoDismiss: true,
@@ -190,12 +190,18 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   };
 
   const handleDelete = useCallback(() => {
-    dispatch(
-      unLockAllFunds({
-        vaultContractId: selectedStream.vaultContractId,
-        addToast,
-      })
-    );
+    if(selectedStream.streamType === "relayService" && !(selectedStream as any)?.relayUrlIsVerified){
+      console.log(selectedStream?.streamID)
+      deleteStream({ streamId: selectedStream?.streamID });
+    }else{
+
+      dispatch(
+        unLockAllFunds({
+          vaultContractId: selectedStream.vaultContractId,
+          addToast,
+        })
+        );
+      }
   }, [dispatch]);
 
   const renderStreamForm = () => {
@@ -284,7 +290,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
           <h3 className="font-montserratbold dark:text-white">Details</h3>
           <div className="flex flex-col justify-between border-t-third border mt-1 border-l-0 border-r-0 border-b-0 dark:border-t-[#323739]">
             {renderDetail("Playback URL", true, selectedStream.playBackUrl)}
-            {selectedStream.streamType === "liveStream" && (
+            {(selectedStream.streamType === "liveStream" || selectedStream.streamType === "relayService") &&  (
               <>
                 {renderDetail(
                   "Stream Key",
