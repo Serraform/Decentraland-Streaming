@@ -30,14 +30,17 @@ namespace SRFM.MediaServices.API
 
         public async Task<bool> VerifyRelayM3U8Status(string twitchUrl)
         {
-            HttpResponseMessage response = await Client.GetAsync($"{_twitchConfig.M3U8BaseUrl}?code={_twitchConfig.M3U8Code}&twitch_url={twitchUrl}");
-
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            if (!string.IsNullOrEmpty(twitchUrl))
             {
-                return false;
+                HttpResponseMessage response = await Client.GetAsync($"{_twitchConfig.M3U8BaseUrl}?code={_twitchConfig.M3U8Code}&twitch_url={twitchUrl}");
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return true;
+                }
             }
 
-            return true;
+            return false;
         }
 
         public async Task<string> VerifyRelayM3U8Url(string twitchUrl)
