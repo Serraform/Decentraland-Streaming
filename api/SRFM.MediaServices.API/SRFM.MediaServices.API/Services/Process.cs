@@ -129,7 +129,7 @@ namespace SRFM.MediaServices.API
                     //streamProps.StreamInfo = jsonStreamString;
                     //streamProps.PlayBackId = streamStatus.PlayBackId;
                     streamProps.Pulled = false;
-                    streamProps.SuspendStatus = "Normal";
+                    streamProps.SuspendStatus = "Suspended";
                     streamProps.StreamStatus = StreamStatus.Upcoming.ToString();
                     streamProps.Active = true;
 
@@ -249,8 +249,8 @@ namespace SRFM.MediaServices.API
 
                 if (stream != null)
                 {
-                    //stream.SuspendStatus = "Suspended";
-                    stream.StreamStatus = "Suspended";
+                    stream.SuspendStatus = "Suspended";
+                    //stream.StreamStatus = "Suspended";
                     var update = await _tableWriter.UpdateAsync("Stream", stream);
                 }
             }

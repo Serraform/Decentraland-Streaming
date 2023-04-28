@@ -35,6 +35,8 @@ namespace SRFM.MediaServices.API
 
         public string relayUrl { get; set; }
 
+        public bool relayUrlIsVerified { get; set; }
+
         public string StreamDuration { get; set; }
 
         public DateTime StreamStartDate { get; set; }
@@ -64,11 +66,18 @@ namespace SRFM.MediaServices.API
 
                     if (this.StreamType == "vod")
                     {
-                        return $"https://playback.livepeer.studio/asset/hls/{PlayBackId}/index.m3u8?accessKey={RowKey}";                    
+                        return $"https://playback.livepeer.studio/asset/hls/{PlayBackId}/index.m3u8?accessKey={RowKey}";
                     }
                     else
                     {
-                        return $"https://livepeercdn.studio/hls/{PlayBackId}/index.m3u8";                    
+                        if (string.IsNullOrEmpty(relayUrl))
+                        {
+                            return null;
+                        }
+                        else
+                        {
+                            return $"https://livepeercdn.studio/hls/{PlayBackId}/index.m3u8";
+                        }
                     }
                 }
                 else
