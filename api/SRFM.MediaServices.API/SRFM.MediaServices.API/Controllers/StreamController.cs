@@ -191,6 +191,7 @@ namespace SRFM.MediaServices.API.Controllers
 
                             if (m3u8Status)
                             {
+                                streamProps.relayUrlIsVerified = true;
                                 var response = await _process.CreateNewStream(streamProps);
 
                                 string jsonString = JsonSerializer.Serialize(response);
@@ -202,6 +203,7 @@ namespace SRFM.MediaServices.API.Controllers
 
                                 streamProps.StreamID = guid;
                                 streamProps.RowKey = guid;
+                                streamProps.relayUrlIsVerified = false;
 
                                 var response = await _process.SaveNewStream(streamProps);
 
