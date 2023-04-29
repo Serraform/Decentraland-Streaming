@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -229,10 +231,12 @@ namespace SRFM.MediaServices.API
         {
             //Need to discuss from where to show Stream detail to user , from LP or from DB or update StreamLP every time
             var httpStatus = await _assetManager.GetStream(streamId);
-
             var getStream = await _tableReader.GetItemsByRowKeyAsync<StreamDB>("Stream", streamId);
 
-            getStream.StreamInfo = JsonConvert.SerializeObject(httpStatus);
+            if (httpStatus.Id != null)
+            {
+                getStream.StreamInfo = JsonConvert.SerializeObject(httpStatus);
+            }
 
             return getStream;
         }
@@ -399,15 +403,23 @@ namespace SRFM.MediaServices.API
             return await _tableWriter.UpdateBatchAsync("Stream", entityBatch);
         }
 
-        public async Task<HttpResponseMessage> DeleteStream(StreamDB streamProp)
+        public async Task<object> DeleteStream(StreamDB streamProp)
         {
-            var httpStatus = await _assetManager.DeleteStream(streamProp.StreamID);
-            if (httpStatus.IsSuccessStatusCode)
+            if (streamProp.StreamType == StreamType.vod.ToString())
             {
                 var status = await _tableWriter.UpdateAsync("Stream", streamProp);
+                return status;
+            }
+            else
+            {
+                var httpStatus = await _assetManager.DeleteStream(streamProp.StreamID);
+
+                var status = await _tableWriter.UpdateAsync("Stream", streamProp);
+
+
+                return status;                
             }
 
-            return httpStatus;
         }
     
         #endregion
