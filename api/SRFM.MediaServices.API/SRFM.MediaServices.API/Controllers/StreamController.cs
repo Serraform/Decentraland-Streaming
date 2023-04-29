@@ -299,7 +299,7 @@ namespace SRFM.MediaServices.API.Controllers
 
         [HttpDelete]
         [Route("DeleteStreamByStreamId/{streamId}")]
-        public async Task<IActionResult> DeleteStreamByStreamId(string streamId)
+        public async Task<HttpResponseMessage> DeleteStreamByStreamId(string streamId)
         {
             Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
             var tokenWithBearer = headerValue.ToString();
@@ -314,9 +314,10 @@ namespace SRFM.MediaServices.API.Controllers
                 if (stream != null)
                 {
                     stream.Active = false;
-                    var statusCode = await _process.DeleteStream(stream);
-                    var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
-                    return ret;
+                    var response = await _process.DeleteStream(stream);
+                    
+                    string jsonString = JsonSerializer.Serialize(response);
+                    return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
 
                 }
                 throw new CustomException("Stream id not correct");
