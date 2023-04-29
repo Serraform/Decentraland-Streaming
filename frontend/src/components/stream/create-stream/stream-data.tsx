@@ -107,14 +107,14 @@ const StreamInfo: React.FC<IStreamCreation> = ({
       streamValues: {
         ...values,
         cost: "",
-        vaultContractId: "",
+        vaultContractId: vaultContractId,
         streamStatus: "Upcoming",
       },
     });
     const newStream = {
       ...values,
       cost: "",
-      vaultContractId: "",
+      vaultContractId: vaultContractId,
       streamStatus: "Upcoming",
 
       streamInfo: JSON.stringify({
@@ -133,7 +133,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     };
     dispatch(uploadStream(newStream));
     navigate("/");
-  }, []);
+  }, [vaultContractId]);
 
   const handleSave = useCallback(
     (values: any) => {

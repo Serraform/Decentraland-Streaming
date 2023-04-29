@@ -78,7 +78,6 @@ const RelayService: React.FC<Props> = ({
       };
       if (!relayUrlIsVerified) {
         //execute presaved
-
         handlePreSave(valuesToSend);
       } else {
         handleSave(valuesToSend);

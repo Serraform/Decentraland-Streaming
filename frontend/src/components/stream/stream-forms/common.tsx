@@ -52,6 +52,17 @@ const CommonForm: React.FC<Props> = ({
     [formMode]
   );
 
+  useEffect(() => {
+    if(values.relayUrl!==""){
+      setNeedsToEstimateNewCost(true)
+    }
+  }, [values.relayUrl])
+  useEffect(() => {
+    setNeedsToEstimateNewCost(false)
+  }, [cost])
+
+  
+
   const streamIsHappeningOrHasHappened = useMemo(
     () =>
       !streamIsBeingCreated &&
