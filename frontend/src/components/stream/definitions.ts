@@ -49,6 +49,7 @@ type ILiveStream = IStream & {
 type IRelayService = IStream & {
   relayUrl: string;
   playBackUrl: string;
+  relayUrlIsVerified: boolean;
 }
 
  type IStreamCreation = {

@@ -40,6 +40,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   const [streamValues, setStreamValues] = useReducer(
     (prev: any, next: any) => {
       const newEvent = { ...prev, ...next };
+      debugger;
       return newEvent;
     },
     {
@@ -95,12 +96,21 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
       deleteStream({ streamId: selectedStream.streamInfo?.Id });
     }
     if (receipt && receipt.status === 1 && transactionType === "edit") {
-      editStream({
-        streamValues: {
-          ...streamValues,
-          cost: "" + cost,
-        },
-      });
+      debugger;
+      if(cost===0){
+        editStream({
+          streamValues: {
+            ...streamValues,
+          },
+        });
+      }else{
+        editStream({
+          streamValues: {
+            ...streamValues,
+            cost: "" + cost,
+          },
+        });
+      }
     }
   }, [streamValues, receipt, cost, transactionType]);
 
@@ -142,7 +152,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
             })
           );
 
-          setStreamValues({ streamValues: { ...values, cost: cost } });
+          setStreamValues({ ...values, cost: cost });
           // The date range has been shortened
           break;
         case 1:
@@ -156,10 +166,11 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
               durationUntilStart,
             })
           );
-          setStreamValues({ streamValues: { ...values, cost: cost } });
+          setStreamValues({ ...values, cost: cost  });
           // the date range has been extended
           break;
         case -1:
+          debugger;
           // the date range didn't change
           dispatch(
             editVault({
@@ -170,7 +181,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
               durationUntilStart,
             })
           );
-          setStreamValues({ streamValues: { ...values } });
+          setStreamValues({  ...values  });
 
           break;
       }
@@ -190,18 +201,12 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   };
 
   const handleDelete = useCallback(() => {
-    if(selectedStream.streamType === "relayService" && !(selectedStream as any)?.relayUrlIsVerified){
-      console.log(selectedStream?.streamID)
-      deleteStream({ streamId: selectedStream?.streamID });
-    }else{
-
-      dispatch(
-        unLockAllFunds({
-          vaultContractId: selectedStream.vaultContractId,
-          addToast,
-        })
-        );
-      }
+    dispatch(
+      unLockAllFunds({
+        vaultContractId: selectedStream.vaultContractId,
+        addToast,
+      })
+    );
   }, [dispatch]);
 
   const renderStreamForm = () => {
@@ -234,21 +239,20 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
             handleDelete={handleDelete}
           />
         );
-        case "relayService":
-          return (
-            <RelayStream
-              isLoading={isLoading}
-              handleSave={handleSave}
-              selectedStream={{
-                ...(selectedStream as IRelayService),
-              }}
-              formMode={"edit"}
-              handlePreSave={handleSave}
-              handleEstimateCost={handleEstimateCost}
-              cost={cost}
-              handleDelete={handleDelete}
-            />
-          );
+      case "relayService":
+        return (
+          <RelayStream
+            isLoading={isLoading}
+            handleSave={handleSave}
+            selectedStream={{
+              ...(selectedStream as IRelayService),
+            }}
+            formMode={"edit"}
+            handleEstimateCost={handleEstimateCost}
+            cost={cost}
+            handleDelete={handleDelete}
+          />
+        );
       default:
         <></>;
     }
@@ -290,7 +294,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
           <h3 className="font-montserratbold dark:text-white">Details</h3>
           <div className="flex flex-col justify-between border-t-third border mt-1 border-l-0 border-r-0 border-b-0 dark:border-t-[#323739]">
             {renderDetail("Playback URL", true, selectedStream.playBackUrl)}
-            {(selectedStream.streamType === "liveStream") &&  (
+            {selectedStream.streamType === "liveStream" && (
               <>
                 {renderDetail(
                   "Stream Key",

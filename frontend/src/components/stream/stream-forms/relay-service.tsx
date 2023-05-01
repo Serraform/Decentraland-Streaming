@@ -16,7 +16,6 @@ import ErrorIcon from "assets/icons/Error";
 import { useToasts } from "react-toast-notifications";
 type Props = {
   handleSave: Function;
-  handlePreSave: Function;
   selectedStream: IRelayService;
   formMode: string;
   handleEstimateCost: Function;
@@ -27,7 +26,6 @@ type Props = {
 
 const RelayService: React.FC<Props> = ({
   handleSave,
-  handlePreSave,
   selectedStream,
   formMode,
   handleEstimateCost,
@@ -76,23 +74,20 @@ const RelayService: React.FC<Props> = ({
         ...values,
         streamType: "relayService",
       };
-      if (!relayUrlIsVerified) {
-        //execute presaved
-        handlePreSave(valuesToSend);
-      } else {
+    
         handleSave(valuesToSend);
-      }
     },
-    [handleSave, relayUrlIsVerified, handlePreSave]
+    [handleSave]
   );
   const disabledEstimateCost = (values: IRelayService, errors: any) => {
     return (
+      values.relayUrl === "" ||
+      !values.relayUrlIsVerified ||
       values.name === "" ||
       values.attendees === "" ||
       values.streamStartDate === undefined ||
       values.streamEndDate === undefined ||
-      errors.streamEndDate ||
-      errors.streamStartDate
+      errors.streamEndDate !== ""|| errors.streamStartDate!==""
     );
   };
 
@@ -125,7 +120,7 @@ const RelayService: React.FC<Props> = ({
               >
                 <div className="mb-2 w-full mr-3">
                   <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center">
-                    Broadcast Url
+                  Broadcast Link
                     <ReactTooltip
                       id="relayUrl"
                       place="top"
@@ -148,7 +143,8 @@ const RelayService: React.FC<Props> = ({
                       name="relayUrl"
                       disabled={formMode === "edit" && (values as any)?.relayUrlIsVerified}
                       onChange={handleChange}
-                      placeholder="Relay service link"
+                      placeholder="Broadcast Link"
+                      required
                       className=" w-[100%] mr-5 border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
                     />
                     <button
@@ -170,7 +166,7 @@ const RelayService: React.FC<Props> = ({
                 </div>
                 <CommonForm
                   initialValues={initialValues}
-                  values={{ ...values, relayUrlIsVerified:  (relayUrlIsVerified || ((values as any)?.relayUrlIsVerified as boolean))  }}
+                  values={{ ...values, relayUrlIsVerified:  (relayUrlIsVerified || ((values)?.relayUrlIsVerified as boolean))  }}
                   handleChange={handleChange}
                   cost={cost}
                   loading={isLoading}

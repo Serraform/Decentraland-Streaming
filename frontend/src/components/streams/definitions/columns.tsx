@@ -103,7 +103,7 @@ export const columnsDefinition = (
             data-iscapture="true"
           >
             <span className="font-montserratregular text-[14px]">
-              {playBackUrl.slice(8, 25)}...
+              {playBackUrl?.slice(8, 25)}...
             </span>
           </div>
         </>

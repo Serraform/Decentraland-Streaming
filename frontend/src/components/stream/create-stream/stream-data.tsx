@@ -101,40 +101,6 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     }
   }, [receipt, cost, transactionType]);
 
-  const handlePreSave = useCallback((values: any) => {
-    createLiveStream({
-      walletID: walletID,
-      streamValues: {
-        ...values,
-        cost: "",
-        vaultContractId: vaultContractId,
-        streamStatus: "Upcoming",
-      },
-    });
-    const newStream = {
-      ...values,
-      cost: "",
-      vaultContractId: vaultContractId,
-      streamStatus: "Upcoming",
-
-      streamInfo: JSON.stringify({
-        Name: values?.name,
-        CreatedAt: 0,
-        Id: "",
-        IsActive: false,
-        PlayBackId: "",
-        Profiles: [],
-        Record: false,
-        StreamKey: "",
-        Suspended: false,
-        playBackUrl: "",
-        rtmpIngestUrl: "",
-      }),
-    };
-    dispatch(uploadStream(newStream));
-    navigate("/");
-  }, [vaultContractId]);
-
   const handleSave = useCallback(
     (values: any) => {
       if (!deepEqual(values, streamValues)) {
@@ -201,7 +167,6 @@ const StreamInfo: React.FC<IStreamCreation> = ({
             handleSave={handleSave}
             selectedStream={selectedStream as IRelayService}
             formMode={"create"}
-            handlePreSave={handlePreSave}
             handleEstimateCost={handleEstimateCost}
             cost={cost}
             handleDelete={() => null}

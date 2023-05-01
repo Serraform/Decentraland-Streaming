@@ -65,8 +65,6 @@ const FormButtons = (props: any) => {
           {loading && <div className="basic mr-[1rem]" />}
           {cost === 0
             ? "Calculate Price"
-            : !values.relayUrlIsVerified
-            ? "Save Stream"
             : "Schedule Stream"}
         </button>
       ) : (
@@ -84,8 +82,6 @@ const FormButtons = (props: any) => {
           {loading && <div className="basic mr-[1rem]" />}
           {cost === 0 && needsToEstimateNewCost
             ? "Calculate Price"
-            : !values.relayUrlIsVerified
-            ? "Save Stream"
             : "Save Changes"}
         </button>
       )}

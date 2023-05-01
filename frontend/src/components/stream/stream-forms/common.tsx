@@ -53,11 +53,6 @@ const CommonForm: React.FC<Props> = ({
   );
 
   useEffect(() => {
-    if(values.relayUrl!==""){
-      setNeedsToEstimateNewCost(true)
-    }
-  }, [values.relayUrl])
-  useEffect(() => {
     setNeedsToEstimateNewCost(false)
   }, [cost])
 
