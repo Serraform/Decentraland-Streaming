@@ -391,6 +391,7 @@ namespace SRFM.MediaServices.API
                 if (streamLog != null)
                 {
                     streamLog.Pulled = isPulled;
+                    streamLog.Active = false;
                     entityBatch.Replace(streamLog);
                 }
             }
