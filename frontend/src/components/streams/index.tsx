@@ -61,7 +61,7 @@ const Streams = () => {
   if ((loading || !data) && !error)
     return (
       <>
-        <div className="container pt-10">
+        <div className="container flex flex-col justify-center items-center pt-10">
           {walletID === "" && (
             <h1 className="dark:text-primary text-center font-montserratbold">
               Please connect your wallet

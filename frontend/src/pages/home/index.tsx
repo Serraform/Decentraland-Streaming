@@ -23,7 +23,7 @@ const Home = () => {
   };
   return (
     <>
-      <div>
+      <div className="container">
         {renderTable()}
         <UploaderProgress />
       </div>
