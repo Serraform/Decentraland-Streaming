@@ -7,18 +7,16 @@ import { ToastProvider } from "react-toast-notifications";
 import useConnectWallet from "hooks/useConnectWallet";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
-
   const { connectWallet } = useConnectWallet();
   const token = localStorage.getItem("token");
   const theme = localStorage.getItem("theme");
   const dontConnectWallet =
     token === "" || token === undefined || token === null;
 
-
   useEffect(() => {
     const root = window.document.documentElement;
     root.classList.add(theme as string);
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (!dontConnectWallet) {
@@ -26,12 +24,17 @@ function App() {
     }
   }, [dontConnectWallet]);
 
-
-
-
   const router = createBrowserRouter([
     {
       path: "/",
+      element: (
+        <Layout>
+          <Home />
+        </Layout>
+      ),
+    },
+    {
+      path: "/:listType",
       element: (
         <Layout>
           <Home />
@@ -53,13 +56,13 @@ function App() {
       <Suspense
         fallback={
           <>
-          <h1>Please connect your wallet</h1>
-          <div className="preloader-wrapper">
-            <div className="preloader">
-              <span></span>
-              <span></span>
+            <h1>Please connect your wallet</h1>
+            <div className="preloader-wrapper">
+              <div className="preloader">
+                <span></span>
+                <span></span>
+              </div>
             </div>
-          </div>
           </>
         }
       >

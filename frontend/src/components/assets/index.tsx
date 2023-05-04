@@ -91,7 +91,8 @@ const Assets = () => {
       {openAssetUploader && (
         <AssetUploader setOpenAssetUploader={setOpenAssetUploader} />
       )}
-      <div className="container flex flex-row justify-end">
+     <div className="container flex flex-row justify-between items-center pt-10">
+        <h1  className="font-montserratbold tracking-[0rem] text-primary dark:text-white text-xl">Video Files</h1>
         <button
           className="btn-third flex flex-row items-center !pr-0"
           onClick={() => setOpenAssetUploader(true)}
