@@ -157,7 +157,7 @@ const AssetUploader = (props: any) => {
                       autoDismiss: true,
                     });
                     setOpenAssetUploader(false)
-                    navigate("/");
+                    navigate("/assets");
                   }
                 }}
                 className="mt-[30px] btn-secondary flex flex-row"

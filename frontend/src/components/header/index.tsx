@@ -16,14 +16,10 @@ const Header = () => {
   }, [avatar !== undefined]);
   const [openDrawer, setOpenDrawer] = useState(false);
   return (
-    <div className="border-b dark:border-[#323739]">
-      <div className="container  flex flex-row justify-between items-center pt-[10px] pb-[10px]">
+    <div className="border-b dark:border-[#323739] container">
+      <div className="container  flex flex-row justify-end items-center pt-[10px] pb-[10px]">
         <WalletDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} />
-        <img
-          src={"/images/logo/logo.svg"}
-          className="object-contain"
-          alt="logo"
-        />
+       
         {walletID !== "" && avatar ? (
           <div className="flex flex-row items-center">
             <button

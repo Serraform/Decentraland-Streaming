@@ -93,11 +93,7 @@ code {
   padding: 0;
   text-align: left;
   box-sizing: border-box;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-left: -25px;
-  margin-top: -25px;
+  
 }
 
 .preloader span {
@@ -139,6 +135,41 @@ code {
   }
 }
 
+.menu{
+  @apply dark:bg-[#1a1d1e] bg-white border border-[#e5e8eb] dark:border-r-0 dark:border-t-0 dark:border-b-0 dark:border-[#323739]  flex flex-col justify-start px-[20px];
+  left: 0px;
+  bottom: 0px;
+  width: 280px;
+  height: 100vh;
+  
+  visibility: visible;
+  opacity: 1;
+}
+.menu > img{
+  @apply px-3;
+}
+.menu > a{
+  @apply px-3 my-1 py-[6px] flex flex-row justify-start rounded font-montserratbold text-primary dark:text-white  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third hover:bg-slate-100 dark:hover:bg-slate-800 ;
+  line-height: 2rem;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  
+}
+menu > a, .active{
+  @apply bg-slate-100 dark:bg-slate-800 ;
+ 
+  
+}
+menu > a, .gold{
+  @apply !text-orange-500 dark:!text-orange-300;
+ 
+  
+}
+.menu > a > span{
+  @apply ml-2;
+  
+}
 .wallet-drawer{
   position: fixed;
   right: 0px;
