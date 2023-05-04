@@ -46,17 +46,12 @@ const CommonForm: React.FC<Props> = ({
   const { addToast } = useToasts();
   const [needsToEstimateNewCost, setNeedsToEstimateNewCost] = useState(false);
   const [openSuspendModal, setOpenSuspendModal] = useState(false);
-  
-  const streamIsBeingCreated = useMemo(
-    () => formMode==="edit",
-    [formMode]
-  );
+
+  const streamIsBeingCreated = useMemo(() => formMode === "edit", [formMode]);
 
   useEffect(() => {
-    setNeedsToEstimateNewCost(false)
-  }, [cost])
-
-  
+    setNeedsToEstimateNewCost(false);
+  }, [cost]);
 
   const streamIsHappeningOrHasHappened = useMemo(
     () =>
@@ -102,7 +97,7 @@ const CommonForm: React.FC<Props> = ({
 
       <div className="flex flex-row justify-between  items-baseline">
         <div className="mb-2 w-full mr-3">
-          <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center">
+          <h2 className="font-montserratbold text-black text-[14px] dark:text-white  whitespace-nowrap	 flex flex-row items-center">
             Stream name
             <ReactTooltip
               id="stream-name"
@@ -131,7 +126,7 @@ const CommonForm: React.FC<Props> = ({
           />
         </div>
         <div className="mb-2 w-full ml-3">
-          <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center">
+          <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center whitespace-nowrap	">
             Estimated number of attendees
             <ReactTooltip
               id="stream-attendees"
@@ -172,15 +167,15 @@ const CommonForm: React.FC<Props> = ({
       />
 
       <div className="mt-auto flex flex-col justify-end items-end">
-        {cost !== 0 && !loading && (
-          <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem] dark:text-primary">
-            <span className="font-montserratregular">
-              {" "}
-              Your stream will cost:
-            </span>{" "}
-            ${cost} USDC
-          </h2>
-        )}
+        <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem] dark:text-primary">
+          <span className="font-montserratregular h-[20px] d-flex">
+            {cost !== 0 &&
+              !loading &&
+              `Your stream will cost:
+              ${cost} USDC`}
+             
+          </span>{" "}
+        </h2>
 
         <FormButtons
           formMode={formMode}

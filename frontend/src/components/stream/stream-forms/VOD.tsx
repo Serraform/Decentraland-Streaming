@@ -75,7 +75,7 @@ const VOD: React.FC<Props> = ({
             <Form
               className={`flex flex-row ${
                 isEditForm ? "justify-between" : "justify-center"
-              } items-center w-[100%] h-[35vh]`}
+              } items-top w-[100%]`}
             >
               {isEditForm && (
                 <Video
@@ -86,7 +86,7 @@ const VOD: React.FC<Props> = ({
                 />
               )}
               <div
-                className="flex flex-col justify-top w-[50%] h-[100%]"
+                className="flex flex-col justify-top w-[50%]"
                 style={{ position: "relative" }}
               >
                 {!isEditForm ? (<div className="mb-2 w-full mr-3">

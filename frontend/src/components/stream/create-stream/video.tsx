@@ -46,10 +46,12 @@ const Video: React.FC<Props> = ({ values, video }) => {
    
   };
   return (
-    <div className="flex flex-col w-[48%] relative h-full pr-[2rem]">
+    <div className="flex flex-col w-[48%] relative pr-[2rem]" style={{
+      aspectRatio: "9/6"
+    }}>
         <div className="relative w-full h-full">
           <ReactPlayer
-            url={video}
+            url={"https://www.youtube.com/watch?v=5WU7oGiwiao"}
             muted={true}
             playing={true}
             width="auto"

@@ -66,7 +66,7 @@ const LiveStream: React.FC<Props> = ({
             <Form
               className={`flex flex-row ${
                 isEditForm ? "justify-between" : "justify-center"
-              } items-center w-[100%] h-[35vh]`}
+            } items-top w-[100%] `}
             >
               {isEditForm && (
                 <Video

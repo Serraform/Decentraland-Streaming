@@ -8,7 +8,7 @@ type Prop = {
 const WalletInfo: React.FC<Prop> = ({ walletID }) => {
   return (
     <div>
-      <span className="flex flex-row justify-between p-[20px] text-[#bdbdbd]">
+      <span className="flex flex-row justify-between items-center p-[20px] text-[#bdbdbd]">
         <div >
           <MetaMaskIcon />
         </div>
