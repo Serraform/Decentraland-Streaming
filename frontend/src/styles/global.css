@@ -136,7 +136,7 @@ code {
 }
 
 .menu{
-  @apply dark:bg-[#1a1d1e] bg-white border border-[#e5e8eb] dark:border-r-0 dark:border-t-0 dark:border-b-0 dark:border-[#323739]  flex flex-col justify-start px-[20px];
+  @apply dark:bg-[#1a1d1e] bg-white border border-[#e5e8eb] dark:border-r-0 dark:border-t-0 dark:border-b-0 dark:border-[#323739]  flex flex-col justify-start px-[20px] pb-[20px];
   left: 0px;
   bottom: 0px;
   width: 280px;
@@ -147,6 +147,9 @@ code {
 }
 .menu > img{
   @apply px-3;
+}
+.docs{
+  @apply text-primary dark:text-white;
 }
 .menu > a{
   @apply px-3 my-1 py-[6px] flex flex-row justify-start rounded font-montserratbold text-primary dark:text-white  hover:transition hover:ease-linear hover:opacity-75 disabled:bg-third hover:bg-slate-100 dark:hover:bg-slate-800 ;
