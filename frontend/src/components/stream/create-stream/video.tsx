@@ -51,7 +51,7 @@ const Video: React.FC<Props> = ({ values, video }) => {
     }}>
         <div className="relative w-full h-full">
           <ReactPlayer
-            url={"https://www.youtube.com/watch?v=5WU7oGiwiao"}
+            url={video}
             muted={true}
             playing={true}
             width="auto"
