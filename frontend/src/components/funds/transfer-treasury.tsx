@@ -93,13 +93,13 @@ const TransferTreasury = (props: any) => {
                 }}
               >
                 <div className="mr-2">
-                  Balance: {parseFloat(treasuryFunds.toString()) / 10 ** 6} USDC
+                  Balance: {parseFloat(treasuryFunds?.toString()) / 10 ** 6} USDC
                 </div>
                 <button
                   onClick={() =>
                     setTransferInfo({
                       ...transferInfo,
-                      amount: parseFloat(treasuryFunds.toString()) / 10 ** 6,
+                      amount: parseFloat(treasuryFunds?.toString()) / 10 ** 6,
                     })
                   }
                 >

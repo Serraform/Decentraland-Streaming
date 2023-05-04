@@ -3,10 +3,13 @@ import { useEffect, useCallback, useReducer } from "react";
 import {
   IStreamVOD,
   ILiveStream,
+  IRelayService,
   checkDateRangeChange,
 } from "components/stream/definitions";
 import StreamVOD from "components/stream/stream-forms/VOD";
 import LiveStream from "components/stream/stream-forms/live-stream";
+
+import RelayStream from "components/stream/stream-forms/relay-service";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 import {
@@ -31,12 +34,13 @@ import { RootState } from "store/configStore";
 import { useNavigate } from "react-router-dom";
 import { differenceInMinutes } from "date-fns";
 type Props = {
-  selectedStream: IStreamVOD | ILiveStream;
+  selectedStream: IStreamVOD | ILiveStream | IRelayService;
 };
 const EditStream: React.FC<Props> = ({ selectedStream }) => {
   const [streamValues, setStreamValues] = useReducer(
     (prev: any, next: any) => {
       const newEvent = { ...prev, ...next };
+      debugger;
       return newEvent;
     },
     {
@@ -63,7 +67,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
 
   useEffect(() => {
     if (isDeleteSuccess) {
-      dispatch(deleteStreamFromTable(selectedStream.streamInfo?.Id));
+      dispatch(deleteStreamFromTable(selectedStream.streamID));
       addToast("Stream deleted", {
         appearance: "success",
         autoDismiss: true,
@@ -92,12 +96,21 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
       deleteStream({ streamId: selectedStream.streamInfo?.Id });
     }
     if (receipt && receipt.status === 1 && transactionType === "edit") {
-      editStream({
-        streamValues: {
-          ...streamValues,
-          cost: "" + cost,
-        },
-      });
+      debugger;
+      if(cost===0){
+        editStream({
+          streamValues: {
+            ...streamValues,
+          },
+        });
+      }else{
+        editStream({
+          streamValues: {
+            ...streamValues,
+            cost: "" + cost,
+          },
+        });
+      }
     }
   }, [streamValues, receipt, cost, transactionType]);
 
@@ -139,7 +152,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
             })
           );
 
-          setStreamValues({ streamValues: { ...values, cost: cost } });
+          setStreamValues({ ...values, cost: cost });
           // The date range has been shortened
           break;
         case 1:
@@ -153,10 +166,11 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
               durationUntilStart,
             })
           );
-          setStreamValues({ streamValues: { ...values, cost: cost } });
+          setStreamValues({ ...values, cost: cost  });
           // the date range has been extended
           break;
         case -1:
+          debugger;
           // the date range didn't change
           dispatch(
             editVault({
@@ -167,7 +181,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
               durationUntilStart,
             })
           );
-          setStreamValues({ streamValues: { ...values } });
+          setStreamValues({  ...values  });
 
           break;
       }
@@ -221,6 +235,20 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
             formMode={"edit"}
             handleEstimateCost={handleEstimateCost}
             isLoading={isLoading}
+            cost={cost}
+            handleDelete={handleDelete}
+          />
+        );
+      case "relayService":
+        return (
+          <RelayStream
+            isLoading={isLoading}
+            handleSave={handleSave}
+            selectedStream={{
+              ...(selectedStream as IRelayService),
+            }}
+            formMode={"edit"}
+            handleEstimateCost={handleEstimateCost}
             cost={cost}
             handleDelete={handleDelete}
           />

@@ -27,6 +27,7 @@ interface IStream {
   
 }
 
+
 interface IAsset {
   assetId: string; 
   assetName: string; 
@@ -44,6 +45,12 @@ type ILiveStream = IStream & {
   rtmpIngestUrl: string; 
   streamKey: string;
 };
+
+type IRelayService = IStream & {
+  relayUrl: string;
+  playBackUrl: string;
+  relayUrlIsVerified: boolean;
+}
 
  type IStreamCreation = {
   streamType: string;
@@ -123,4 +130,4 @@ const checkDateRangeChange = (oldStartDate: Date, oldEndDate: Date, newStartDate
   }
 }
 export { initialInfoState, validationSchema, deepEqual, validateDateRange, checkDateRangeChange };
-export type { IStream, IStreamVOD, ILiveStream, IStreamCreation, IAsset };
+export type { IStream, IStreamVOD, ILiveStream, IStreamCreation, IAsset, IRelayService };

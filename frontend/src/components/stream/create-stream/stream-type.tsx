@@ -108,13 +108,13 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
                     
                     <>
                       <ReactTooltip
-                        id="twitch"
+                        id="RelayService"
                         place="top"
                         type={"dark"}
                         effect={"float"}
                       />
                       <div
-                        data-for="twitch"
+                        data-for="RelayService"
                         className="radio-item"
                         data-tip={
                           "Extract a stream from various services to make them compatible with Decentraland."
@@ -124,13 +124,12 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
                         <Field
                           type="radio"
                           onChange={handleChange}
-                          id={"twitch"}
+                          id={"relayService"}
                           name="streamType"
-                          value={"twitch"}
-                          disabled={true}
+                          value={"relayService"}
                         />
-                        <label htmlFor={"twitch"}>
-                          Service Relay <br /> (COMING SOON)
+                        <label htmlFor={"relayService"}>
+                          Broadcast 
                         </label>
                       </div>
                     </>

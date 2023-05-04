@@ -1,11 +1,11 @@
 import CreateStream from "components/stream/create-stream";
 import EditStream from "components/stream/edit-stream";
-import { ILiveStream, IStreamVOD } from "components/stream/definitions";
+import { ILiveStream, IStreamVOD, IRelayService } from "components/stream/definitions";
 
 
 type Props = {
   isNewStream: boolean;
-  selectedStream: ILiveStream | IStreamVOD;
+  selectedStream: ILiveStream | IStreamVOD | IRelayService;
 };
 
 const Stream: React.FC<Props> = ({

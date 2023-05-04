@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { IStreamVOD, ILiveStream } from "components/stream/definitions";
+import { IStreamVOD, ILiveStream, IRelayService } from "components/stream/definitions";
 
 type InitialState = {
-  streams: (IStreamVOD | ILiveStream)[];
-  selectedStream: IStreamVOD | ILiveStream;
+  streams: (IStreamVOD | ILiveStream  | IRelayService)[];
+  selectedStream: IStreamVOD | ILiveStream | IRelayService;
   searchText: string;
   message: string;
 };
@@ -21,6 +21,7 @@ const initialState: InitialState = {
     asset: null,
     VId: "",
     cost: "",
+    relayUrl:"",
     vaultContractId: "",
     streamStartDate: undefined,
     streamEndDate: undefined,

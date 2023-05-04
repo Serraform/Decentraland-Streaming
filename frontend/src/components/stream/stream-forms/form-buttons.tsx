@@ -10,18 +10,17 @@ const FormButtons = (props: any) => {
     cost,
     isDisabled,
     loading,
-    streamIsBeingCreated,
     setOpenSuspendModal,
     handleEstimateCost,
     handleSave,
     values,
     needsToEstimateNewCost,
   } = props;
+  const navigate = useNavigate();
   const useAppDispatch = () => useDispatch<AppDispatch>();
+  console.log(cost);
   const dispatch = useAppDispatch();
 
-  console.log(cost);
-  const navigate = useNavigate();
   return (
     <div className="flex">
       <button
@@ -33,7 +32,7 @@ const FormButtons = (props: any) => {
       >
         Cancel
       </button>
-      {!streamIsBeingCreated && (
+      {formMode === "edit" && (
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -64,7 +63,9 @@ const FormButtons = (props: any) => {
           disabled={isDisabled}
         >
           {loading && <div className="basic mr-[1rem]" />}
-          {cost === 0 ? "Calculate Price" : "Schedule Stream"}
+          {cost === 0
+            ? "Calculate Price"
+            : "Schedule Stream"}
         </button>
       ) : (
         <button
@@ -81,7 +82,7 @@ const FormButtons = (props: any) => {
           {loading && <div className="basic mr-[1rem]" />}
           {cost === 0 && needsToEstimateNewCost
             ? "Calculate Price"
-            : "Save Edit"}
+            : "Save Changes"}
         </button>
       )}
     </div>

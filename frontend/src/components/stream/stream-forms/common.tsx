@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Field } from "formik";
 import "react-nice-dates/build/style.css";
 import SuspendModal from "components/stream/stream-forms/suspend-modal";
@@ -8,6 +8,7 @@ import { useToasts } from "react-toast-notifications";
 import FormButtons from "components/stream/stream-forms/form-buttons";
 import FaqIcon from "assets/icons/Question";
 import ReactTooltip from "react-tooltip";
+
 type Props = {
   values: any;
   initialValues: any;
@@ -45,16 +46,30 @@ const CommonForm: React.FC<Props> = ({
   const { addToast } = useToasts();
   const [needsToEstimateNewCost, setNeedsToEstimateNewCost] = useState(false);
   const [openSuspendModal, setOpenSuspendModal] = useState(false);
-  const streamIsBeingCreated = values.streamInfo?.CreatedAt === 0;
 
-  const streamIsHappeningOrHasHappened =
-    !streamIsBeingCreated &&
-    ((isAfter(Date.now(), returnAsDate(values.streamStartDate)) &&
-      isBefore(Date.now(), returnAsDate(values.streamEndDate))) ||
-      isAfter(Date.now(), returnAsDate(values.streamEndDate)) ||
-      values.streamInfo?.streamStatus === "Suspended");
+  const streamIsBeingCreated = useMemo(() => formMode === "edit", [formMode]);
 
   useEffect(() => {
+    setNeedsToEstimateNewCost(false);
+  }, [cost]);
+
+  const streamIsHappeningOrHasHappened = useMemo(
+    () =>
+      !streamIsBeingCreated &&
+      ((isAfter(Date.now(), returnAsDate(values.streamStartDate)) &&
+        isBefore(Date.now(), returnAsDate(values.streamEndDate))) ||
+        isAfter(Date.now(), returnAsDate(values.streamEndDate)) ||
+        values.streamInfo?.streamStatus === "Suspended"),
+    [
+      streamIsBeingCreated,
+      values.streamEndDate,
+      values.streamInfo?.streamStatus,
+      values.streamStartDate,
+    ]
+  );
+
+  useEffect(() => {
+    console.log("streamIsHappeningOrHasHappened has re execute");
     if (streamIsHappeningOrHasHappened) {
       addToast(
         "This stream cannot be modified because it has already passed.",
@@ -82,7 +97,7 @@ const CommonForm: React.FC<Props> = ({
 
       <div className="flex flex-row justify-between  items-baseline">
         <div className="mb-2 w-full mr-3">
-          <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center">
+          <h2 className="font-montserratbold text-black text-[14px] dark:text-white  whitespace-nowrap	 flex flex-row items-center">
             Stream name
             <ReactTooltip
               id="stream-name"
@@ -111,7 +126,7 @@ const CommonForm: React.FC<Props> = ({
           />
         </div>
         <div className="mb-2 w-full ml-3">
-          <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center">
+          <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center whitespace-nowrap	">
             Estimated number of attendees
             <ReactTooltip
               id="stream-attendees"
@@ -142,7 +157,7 @@ const CommonForm: React.FC<Props> = ({
           />
         </div>
       </div>
-      
+
       <Calendar
         values={values}
         handleChange={handleChange}
@@ -152,33 +167,32 @@ const CommonForm: React.FC<Props> = ({
       />
 
       <div className="mt-auto flex flex-col justify-end items-end">
-        {cost !== 0 && !loading && (
-          <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem] dark:text-primary">
-            <span className="font-montserratregular">
-              {" "}
-              Your stream will cost:
-            </span>{" "}
-            ${cost} USDC
-          </h2>
-        )}
+        <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem] dark:text-primary">
+          <span className="font-montserratregular h-[20px] d-flex">
+            {cost !== 0 &&
+              !loading &&
+              `Your stream will cost:
+              ${cost} USDC`}
+             
+          </span>{" "}
+        </h2>
 
-          <FormButtons
-            formMode={formMode}
-            cost={cost}
-            isDisabled={
-              disabledEstimateCost(values, errors) ||
-              loading ||
-              streamIsHappeningOrHasHappened
-            }
-            loading={loading}
-            streamIsBeingCreated={streamIsBeingCreated}
-            setOpenSuspendModal={setOpenSuspendModal}
-            handleEstimateCost={handleEstimateCost}
-            handleSave={handleSave}
-            values={values}
-            needsToEstimateNewCost={needsToEstimateNewCost}
-          />
-        </div>
+        <FormButtons
+          formMode={formMode}
+          cost={cost}
+          isDisabled={
+            disabledEstimateCost(values, errors) ||
+            loading ||
+            streamIsHappeningOrHasHappened
+          }
+          loading={loading}
+          setOpenSuspendModal={setOpenSuspendModal}
+          handleEstimateCost={handleEstimateCost}
+          handleSave={handleSave}
+          values={values}
+          needsToEstimateNewCost={needsToEstimateNewCost}
+        />
+      </div>
     </>
   );
 };
