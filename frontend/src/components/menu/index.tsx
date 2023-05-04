@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import StreamsIcon from "assets/icons/Streams";
 import VideoIcon from "assets/icons/Videos";
+import DocsIcon from "assets/icons/Docs";
+import GithubIcon from "assets/icons/Github";
+import LinkedinIcon from "assets/icons/Linkedin";
 import TransferIcon from "assets/icons/StreamsPull";
 import UserPremium from "assets/icons/Premium";
 import useConnectWallet from "hooks/useConnectWallet";
@@ -39,6 +42,20 @@ const Menu = () => {
           </Link>
         </>
       )}
+      <div className="flex flex-row mt-auto justify-evenly docs">
+        <a href="https://docs.google.com/document/d/1Dz-a3iqXRFiSoAd4owAYohmHywOJKQIx/edit" target="_blank" className="flex flex-row justify-between items-center" rel="noreferrer">
+          <DocsIcon />
+        </a>
+        &#x2022;
+        <a href="https://github.com/Serraform/Decentraland-Streaming" target="_blank" className="flex flex-row justify-between items-center" rel="noreferrer">
+          <GithubIcon />
+          
+        </a>
+       &#x2022;
+        <a href="https://www.linkedin.com/company/serraform/" target="_blank" className="flex flex-row justify-between items-center" rel="noreferrer">
+          <LinkedinIcon />
+        </a>
+      </div>
     </div>
   );
 };
