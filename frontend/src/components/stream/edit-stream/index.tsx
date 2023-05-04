@@ -40,7 +40,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   const [streamValues, setStreamValues] = useReducer(
     (prev: any, next: any) => {
       const newEvent = { ...prev, ...next };
-      debugger;
+      
       return newEvent;
     },
     {
@@ -96,7 +96,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
       deleteStream({ streamId: selectedStream.streamInfo?.Id });
     }
     if (receipt && receipt.status === 1 && transactionType === "edit") {
-      debugger;
+      
       if(cost===0){
         editStream({
           streamValues: {
@@ -170,7 +170,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
           // the date range has been extended
           break;
         case -1:
-          debugger;
+          
           // the date range didn't change
           dispatch(
             editVault({

@@ -22,9 +22,15 @@ const StreamsPull = () => {
   const { loading: loadingTransaction, receipt } = useSelector(
     (state: RootState) => state.transactionData
   );
-  const { walletID } = useSelector((state: RootState) => state.accountData);
-
+  const { walletID, role } = useSelector((state: RootState) => state.accountData);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if(role!=="admin"){
+      navigate("/")
+    }
+  }, [role])
+
 
   const [transferFundsToTreasurySlice, setTransferFundsToTreasuryState] =
     useReducer(
