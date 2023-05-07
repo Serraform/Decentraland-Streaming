@@ -70,7 +70,7 @@ const Assets = () => {
               Please connect your wallet
             </h1>
           )}
-          <div className="preloader">
+          <div className="preloader mt-5">
             {" "}
             <span></span>
             <span></span>

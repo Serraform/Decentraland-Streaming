@@ -20,7 +20,9 @@ const initialState = {
   locked_balance: 0,
   treasuryFunds: 0,
   isTokenContractApprove: false,
-  role: "user"
+  role: "user",
+  isPremium: false,
+  discount: 0
 };
 
 const targetNetworkId = "0x5";
@@ -170,6 +172,7 @@ export const fetchFunds = createAsyncThunk(
         provider,
         walletID
       );
+      // get user details by wallet
       return {
         balance: balance,
         locked_balance: Number(accountInfo.lockedBalance._hex) as any,

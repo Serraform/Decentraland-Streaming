@@ -39,6 +39,7 @@ export const estimateCost = createAsyncThunk(
       streamValues.streamStartDate.toISOString(),
       streamValues.streamEndDate.toISOString()
     );
+    // if user is premium, apply discount to cost
     return {
       cost: parseInt(response.data.cost) as unknown as number,
       vaultContractId: parseInt(response.data.vaultContractId),

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import StreamsIcon from "assets/icons/Streams";
 import VideoIcon from "assets/icons/Videos";
-import DocsIcon from "assets/icons/Docs";
+import TwitterIcon from "assets/icons/LogoTwitter";
 import GithubIcon from "assets/icons/Github";
 import LinkedinIcon from "assets/icons/Linkedin";
 import TransferIcon from "assets/icons/StreamsPull";
@@ -36,15 +36,15 @@ const Menu = () => {
             <TransferIcon />
             <span>Streams to pull</span>
           </Link>
-          <Link to="/premium-user" className={`${listType==="premium-user" && `active`} ${role === "admin" && "gold"} ` }>
+          <Link to="/premium-users" className={`${listType==="premium-users" && `active`} ${role === "admin" && "gold"} ` }>
             <UserPremium />
             <span>Premium Users</span>{" "}
           </Link>
         </>
       )}
       <div className="flex flex-row mt-auto justify-evenly docs">
-        <a href="https://docs.google.com/document/d/1Dz-a3iqXRFiSoAd4owAYohmHywOJKQIx/edit" target="_blank" className="flex flex-row justify-between items-center" rel="noreferrer">
-          <DocsIcon />
+        <a href="https://twitter.com/Serraform4" target="_blank" className="flex flex-row justify-between items-center" rel="noreferrer">
+          <TwitterIcon />
         </a>
         &#x2022;
         <a href="https://github.com/Serraform/Decentraland-Streaming" target="_blank" className="flex flex-row justify-between items-center" rel="noreferrer">

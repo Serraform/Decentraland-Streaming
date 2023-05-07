@@ -173,6 +173,10 @@ menu > a, .gold{
   @apply ml-2;
   
 }
+
+.menu > a > svg{
+  margin-right: 24px;
+}
 .wallet-drawer{
   position: fixed;
   right: 0px;
