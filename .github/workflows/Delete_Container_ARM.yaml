@@ -1,0 +1,32 @@
+on: 
+    repository_dispatch:
+        types: delete_ffmpeg
+    workflow_dispatch:
+        inputs:
+          container_name:
+            description: ''
+            required: true
+            type: string
+
+name: Azure Container Delete
+  
+jobs:
+    build-and-deploy:
+      runs-on: ubuntu-latest
+      steps:
+
+        # Checkout code
+      - uses: actions/checkout@main
+
+        # Log into Azure
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+        # Deploy ARM template
+      - name: Azure CLI script
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.30.0
+          inlineScript: |
+            az container delete --name deletesamplecontaoner --resource-group ${{ secrets.AZURE_RG }}
