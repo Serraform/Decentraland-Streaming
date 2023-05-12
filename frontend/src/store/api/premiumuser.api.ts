@@ -8,7 +8,7 @@ export const premiumUsersApi = createApi({
   endpoints: (builder) => ({
     fetchListUsersPremium: builder.query<any[], string>({
       query: (walletID) => ({
-        url: `api/User/ListUsersPremium/${walletID}`,
+        url: `api/User/ListPremiumUsers/${walletID}`,
         method: "get",
       }),
     }),

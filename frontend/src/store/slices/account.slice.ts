@@ -3,6 +3,8 @@ import {
   createAccount,
   getSignatureChallenge,
   verifySignature,
+  getAccountDetailsByWalletId,
+  updateAccount,
 } from "store/services/account.service";
 import jazzicon from "jazzicon-ts";
 import { ethers } from "ethers";
@@ -22,7 +24,7 @@ const initialState = {
   isTokenContractApprove: false,
   role: "user",
   isPremium: false,
-  discount: 0
+  discount: 0,
 };
 
 const targetNetworkId = "0x5";
@@ -60,7 +62,7 @@ export const approvePulling = createAsyncThunk(
         usdcABI,
         provider
       );
-      
+
       const deposit = ethers.utils.parseUnits("" + Math.pow(10, 10), "6");
       const pullFundsApproval = await USDCContract.connect(signer).approve(
         CONTRACT_ADDRESS,
@@ -95,7 +97,7 @@ const checkAllowance = async (signer: any, provider: any, account: any) => {
     account,
     CONTRACT_ADDRESS
   );
-  
+
   return Number(allowanceResponse._hex) > 0;
 };
 
@@ -132,7 +134,7 @@ export const requestConnectWallet = createAsyncThunk(
         JSON.stringify(verifyData)
       );
       localStorage.setItem("token", signatureVerified.data as string);
-     dispatchEvent(new Event("storage"));
+      dispatchEvent(new Event("storage"));
       await createAccount(accounts[0], signatureVerified.data);
       const addr = accounts[0].slice(2, 10);
       const identicon = jazzicon(40, parseInt(addr, 20));
@@ -163,8 +165,8 @@ export const fetchFunds = createAsyncThunk(
       const accountInfo = await contract.view_sub_info(walletID);
       const isAdmin = await contract.admin(walletID);
       let treasuryFunds = 0;
-      if(isAdmin){
-         treasuryFunds = await contract.treasury();
+      if (isAdmin) {
+        treasuryFunds = await contract.treasury();
       }
       const balance = Number(accountInfo.balance._hex) as any;
       const isTokenContractApprove = await checkAllowance(
@@ -173,12 +175,19 @@ export const fetchFunds = createAsyncThunk(
         walletID
       );
       // get user details by wallet
+      const accountDetails = await getAccountDetailsByWalletId(walletID);
+      if ((accountDetails as any).data.role !== "admin" && isAdmin) {
+        updateAccount({ walletID, role: "admin" });
+      }
+      const { isPremium, discount } = accountDetails.data as any;
       return {
         balance: balance,
         locked_balance: Number(accountInfo.lockedBalance._hex) as any,
         isTokenContractApprove: isTokenContractApprove,
+        isPremium: isPremium,
+        discount: discount,
         role: isAdmin ? "admin" : "user",
-        treasuryFunds: treasuryFunds
+        treasuryFunds: treasuryFunds,
       };
     } catch (e) {
       return {
@@ -188,7 +197,6 @@ export const fetchFunds = createAsyncThunk(
     }
   }
 );
-
 
 export const fundWallet = createAsyncThunk(
   "fund-wallet",
@@ -264,7 +272,9 @@ const accountSlice = createSlice({
       state.locked_balance = action.payload?.locked_balance;
       state.isTokenContractApprove = action.payload
         ?.isTokenContractApprove as boolean;
-       state.role = action.payload?.role as string; 
+      state.isPremium = action.payload?.isPremium;
+      state.discount = action.payload?.discount;
+      state.role = action.payload?.role as string;
     });
     builder.addCase(fetchFunds.rejected, (state, action) => {
       state.loading = false;

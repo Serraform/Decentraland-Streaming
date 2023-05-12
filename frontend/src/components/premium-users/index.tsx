@@ -10,7 +10,7 @@ import type { AppDispatch } from "store/configStore";
 import { RootState } from "store/configStore";
 import PremiumUsersTable from "components/premium-users/table";
 import PremiumUserModal from "components/premium-users/premium-user";
-// import { useFetchAllEndedStreamsQuery } from "store/api/streams.api";
+import { useFetchListUsersPremiumQuery } from "store/api/premiumuser.api";
 import { useNavigate } from "react-router-dom";
 // import { useToasts } from "react-toast-notifications";
 const PremiumUsers = () => {
@@ -36,15 +36,15 @@ const PremiumUsers = () => {
 
   const navigate = useNavigate();
 
-  //   const {
-  //     data,
-  //     error,
-  //     isSuccess,
-  //     isLoading: loading,
-  //     isFetching,
-  //   } = useFetchAllEndedStreamsQuery({
-  //     skip: walletID === "",
-  //   });
+  const {
+    data,
+    error,
+    isSuccess,
+    isLoading: loading,
+    isFetching,
+  } = useFetchListUsersPremiumQuery(walletID, {
+    skip: walletID === "",
+  });
   const handleClose = () => {
     setPremiumUser({ open: false });
   };
