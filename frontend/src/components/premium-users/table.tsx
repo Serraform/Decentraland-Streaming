@@ -37,7 +37,6 @@ const PremiumUsersTable: React.FC<Props> = ({
   const pagination = table.getState().pagination;
   const rowModel = useMemo(() => table.getRowModel(), [table, pagination]);
   const canNextPage = table.getCanNextPage();
-  const rowSelection = table.getSelectedRowModel();
   return (
     <>
       <div className="container flex flex-row justify-between items-center pt-10">
@@ -48,7 +47,7 @@ const PremiumUsersTable: React.FC<Props> = ({
           className="btn-third flex flex-row items-center !pr-0"
           onClick={() => {
             handleSelectUser({
-              walletID: "",
+              walletId: "",
               discount: 0,
               action: "new",
               open: true,

@@ -29,6 +29,8 @@ const Funds = () => {
     loading,
     balance,
     locked_balance,
+    isPremium,
+    discount,
     isTokenContractApprove,
     treasuryFunds,
   } = useSelector((state: RootState) => state.accountData);
@@ -54,6 +56,12 @@ const Funds = () => {
         closeModal={setOpenModal}
         handleTransferTreasury={handleTransferTreasury}
       />
+      {isPremium && (
+        <span className="flex flex-row justify-between items-center pb-[20px] text-[#fdba74]">
+          Your account is a premium account that has a {discount}% <br /> for creating
+          and editing streams
+        </span>
+      )}
       <div className={`${balanceStyle} rounded  `}>
         <div className="text-center locked-funds">
           <p className="font-montserratmedium dark:text-white">

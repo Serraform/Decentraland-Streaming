@@ -10,9 +10,9 @@ export const columnsDefinition = (
       </span>
     ),
   }),
-  columnHelper.accessor("premiumDiscount", {
-    id: "premiumDiscount",
-    header: () => <span className="font-montserratbold">Discount</span>,
+  columnHelper.accessor("discount", {
+    id: "discount",
+    header: () => <span className="font-montserratbold">Discount %</span>,
     cell: (info: any) => (
       <span className="font-montserratregular text-[14px]">
         {info.getValue()}%

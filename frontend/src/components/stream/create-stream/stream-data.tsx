@@ -51,8 +51,12 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     receipt,
     vaultContractId,
     transactionType,
+    discountCost,
+    hasDiscountCost
   } = useSelector((state: RootState) => state.transactionData);
-  const { walletID } = useSelector((state: RootState) => state.accountData);
+  const { walletID, discount, isPremium } = useSelector(
+    (state: RootState) => state.accountData
+  );
   const [createLiveStream, { isLoading, isSuccess }] =
     useCreateLiveStreamMutation();
   const { addToast } = useToasts();
@@ -63,9 +67,10 @@ const StreamInfo: React.FC<IStreamCreation> = ({
 
   useEffect(() => {
     if (isSuccess) {
+     
       const newStream = {
         ...streamValues,
-        cost: "" + cost,
+        cost: "" + hasDiscountCost ? discountCost: cost,
         vaultContractId: "" + vaultContractId,
         streamInfo: JSON.stringify({
           Name: streamValues?.name,
@@ -96,7 +101,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
     if (receipt && receipt.status === 1 && transactionType === "lock") {
       createLiveStream({
         walletID: walletID,
-        streamValues: { ...streamValues, cost, vaultContractId },
+        streamValues: { ...streamValues, cost: hasDiscountCost ? discountCost: cost, vaultContractId },
       });
     }
   }, [receipt, cost, transactionType]);
@@ -115,12 +120,13 @@ const StreamInfo: React.FC<IStreamCreation> = ({
           values.streamStartDate,
           Date.now()
         );
+        
         dispatch(
           lockFunds({
             addToast,
             duration: duration,
             durationUntilStart: durationUntilStart,
-            amountToBeLock: cost,
+            amountToBeLock: hasDiscountCost ? discountCost : cost,
             vaultContractId: vaultContractId,
           })
         );
@@ -132,7 +138,13 @@ const StreamInfo: React.FC<IStreamCreation> = ({
 
   const handleEstimateCost = (values: any) => {
     setStreamValues(values);
-    dispatch(estimateCost(values));
+    dispatch(
+      estimateCost({
+        streamValues: values,
+        discount: discount,
+        isPremium: isPremium,
+      })
+    );
   };
   const renderStreamForm = () => {
     switch (streamType) {

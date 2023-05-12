@@ -40,7 +40,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   const [streamValues, setStreamValues] = useReducer(
     (prev: any, next: any) => {
       const newEvent = { ...prev, ...next };
-      debugger;
+
       return newEvent;
     },
     {
@@ -54,7 +54,9 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
     loading: isTransactionLoading,
     transactionType,
   } = useSelector((state: RootState) => state.transactionData);
-  const { walletID } = useSelector((state: RootState) => state.accountData);
+  const { walletID, discount, isPremium } = useSelector(
+    (state: RootState) => state.accountData
+  );
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
 
@@ -96,14 +98,13 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
       deleteStream({ streamId: selectedStream.streamInfo?.Id });
     }
     if (receipt && receipt.status === 1 && transactionType === "edit") {
-      debugger;
-      if(cost===0){
+      if (cost === 0) {
         editStream({
           streamValues: {
             ...streamValues,
           },
         });
-      }else{
+      } else {
         editStream({
           streamValues: {
             ...streamValues,
@@ -166,11 +167,10 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
               durationUntilStart,
             })
           );
-          setStreamValues({ ...values, cost: cost  });
+          setStreamValues({ ...values, cost: cost });
           // the date range has been extended
           break;
         case -1:
-          debugger;
           // the date range didn't change
           dispatch(
             editVault({
@@ -181,7 +181,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
               durationUntilStart,
             })
           );
-          setStreamValues({  ...values  });
+          setStreamValues({ ...values });
 
           break;
       }
@@ -196,7 +196,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   }, [selectedStream]);
 
   const handleEstimateCost = (values: any) => {
-    dispatch(estimateCost(values));
+    dispatch(estimateCost({ values, discount, isPremium }));
     setStreamValues(values);
   };
 

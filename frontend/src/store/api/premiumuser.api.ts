@@ -12,37 +12,25 @@ export const premiumUsersApi = createApi({
         method: "get",
       }),
     }),
-    addUserPremium: builder.mutation<any, any>({
+    updateUserPremium: builder.mutation<any, any>({
       query: ({ walletID, userWalletId, discount }) => {
        
         return {
-          url: `api/Stream/AddPremiumUser/${walletID}`,
-          method: "POST",
+          url: `api/User/HandlePremiumUserData/${walletID}`,
+          method: "PUT",
           data: {
-            walletIDPremiumUser: userWalletId,
+            walletId: userWalletId,
             discount: discount,
+            isPremium: true,
           },
         };
       },
     }),
-    editUserPremium: builder.mutation<any, any>({
-        query: ({ walletID, userWalletId, discount }) => {
-         
-          return {
-            url: `api/Stream/EditPremiumUser/${walletID}`,
-            method: "PATCH",
-            data: {
-              walletIDPremiumUser: userWalletId,
-              discount: discount,
-            },
-          };
-        },
-      }),
+   
   }),
 });
 
 export const {
   useFetchListUsersPremiumQuery,
-  useAddUserPremiumMutation,
-  useEditUserPremiumMutation,
+  useUpdateUserPremiumMutation,
 } = premiumUsersApi;

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useMemo, useCallback, useReducer } from "react";
+import { useMemo, useCallback, useReducer, useEffect } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
-import { columnsDefinition } from "components/streams-pull/definitions/columns";
+import { columnsDefinition } from "components/premium-users/definitions/columns";
 import { PremiumUser } from "components/premium-users/definitions/types";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -10,9 +10,12 @@ import type { AppDispatch } from "store/configStore";
 import { RootState } from "store/configStore";
 import PremiumUsersTable from "components/premium-users/table";
 import PremiumUserModal from "components/premium-users/premium-user";
-import { useFetchListUsersPremiumQuery } from "store/api/premiumuser.api";
+import {
+  useFetchListUsersPremiumQuery,
+  useUpdateUserPremiumMutation,
+} from "store/api/premiumuser.api";
 import { useNavigate } from "react-router-dom";
-// import { useToasts } from "react-toast-notifications";
+import { useToasts } from "react-toast-notifications";
 const PremiumUsers = () => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
@@ -24,13 +27,13 @@ const PremiumUsers = () => {
       return { ...prev, ...next };
     },
     {
-      walletID: "",
+      walletId: "",
       discount: 0,
       action: "new",
       open: false,
     }
   );
-  //   const { addToast } = useToasts();
+  const { addToast } = useToasts();
 
   const { walletID } = useSelector((state: RootState) => state.accountData);
 
@@ -39,21 +42,39 @@ const PremiumUsers = () => {
   const {
     data,
     error,
-    isSuccess,
     isLoading: loading,
-    isFetching,
+    refetch,
   } = useFetchListUsersPremiumQuery(walletID, {
     skip: walletID === "",
   });
+
+  const [
+    saveUserPremium,
+    {
+      isLoading: isLoadingUpdateUserPremium,
+      isSuccess: isSuccessUpdateUserPremium,
+    },
+  ] = useUpdateUserPremiumMutation();
+
+  useEffect(() => {
+    if (!isLoadingUpdateUserPremium && isSuccessUpdateUserPremium) {
+      setPremiumUser({ walletId: "", discount: 0, action: "new", open: false });
+      addToast("User updated successfully", {
+        appearance: "success",
+        autoDismiss: true,
+      });
+      refetch();
+    }
+  }, [isSuccessUpdateUserPremium, isLoadingUpdateUserPremium]);
   const handleClose = () => {
     setPremiumUser({ open: false });
   };
   const handleSave = () => {
-    if (premiumUser.action === "new") {
-      // execute addpremiumuser
-    } else if (premiumUser.action === "edit") {
-      // editpremiumuser
-    }
+    saveUserPremium({
+      walletID,
+      userWalletId: premiumUser.walletId,
+      discount: premiumUser.discount,
+    });
   };
   const columnHelper = createColumnHelper<PremiumUser>();
 
@@ -68,8 +89,7 @@ const PremiumUsers = () => {
     () => columnsDefinition(columnHelper),
     [columnHelper]
   );
-  //   if ((loading || !data) && !error)
-  if (false) {
+  if ((loading || !data) && !error) {
     return (
       <>
         <div className="container flex flex-col justify-center items-center pt-10">
@@ -87,8 +107,7 @@ const PremiumUsers = () => {
       </>
     );
   }
-  // if(error)
-  if (false) {
+  if (error) {
     return (
       <div className="container pt-10">
         <h1 className="font-montserratbold text-primary text-center pt-20 pb-20 border-third border-r-0 border-t-0">
@@ -105,10 +124,11 @@ const PremiumUsers = () => {
         handleSave={handleSave}
         handleChange={setPremiumUser}
         premiumUserData={premiumUser}
+        loading={isLoadingUpdateUserPremium}
       />
       <PremiumUsersTable
         columns={columns}
-        premiumUsers={[] as PremiumUser[]}
+        premiumUsers={data as PremiumUser[]}
         handleSelectUser={handleSelectUser}
       />
     </>

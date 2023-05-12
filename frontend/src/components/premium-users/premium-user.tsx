@@ -14,7 +14,7 @@ const customStyles = {
 };
 
 const PremiumUser = (props: any) => {
-  const { open, handleClose, handleSave, handleChange, premiumUserData } =
+  const { open, handleClose, handleSave, handleChange, premiumUserData, loading } =
     props;
 
   return (
@@ -35,8 +35,8 @@ const PremiumUser = (props: any) => {
               <input
                 className="mb-[5px] mt-[10px] w-[100%] border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
                 placeholder="Wallet Address you want to make premium"
-                name="walletID"
-                value={premiumUserData.walletID}
+                name="walletId"
+                value={premiumUserData.walletId}
                 onChange={(e) =>
                   handleChange({
                     ...premiumUserData,
@@ -69,7 +69,7 @@ const PremiumUser = (props: any) => {
                   className="mt-[30px] btn-secondary flex flex-row"
                   onClick={() => handleSave()}
                 >
-                  {/* {loading && <div className="basic mr-[1rem]" />} */}
+                  {loading && <div className="basic mr-[1rem]" />}
                   Save
                 </button>
               </div>
