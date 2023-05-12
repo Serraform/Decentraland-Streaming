@@ -53,6 +53,85 @@ namespace SRFM.MediaServices.API.Controllers
         }
 
         [HttpGet]
+        [Route("ListPremiumUsers/{adminWalletId}")]
+        public async Task<List<UserDB>> ListPremiumUsers(string adminWalletId)
+        {
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
+            {
+                UserDB isAdmin = await _process.GetUserByWalletId(adminWalletId);
+
+                if (isAdmin.Role == UserRole.admin.ToString())
+                {
+                    if (adminWalletId != null)
+                    {
+                        List<UserDB> user = await _process.ListByFlagItemsAsync("IsPremium", true);
+                        return user;
+                    }
+                    throw new CustomException("WalletId inputs Required");
+                }
+                else
+                {
+                    throw new CustomException("User is not Admin. Please try with admin account.");
+                }
+            }
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
+        }
+
+
+        [HttpPut]
+        [Route("HandlePremiumUserData/{adminWalletId}")]
+        public async Task<IActionResult> HandlePremiumUserData(string adminWalletId, [FromBody] UserDB entity)
+        {
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
+            {
+
+                UserDB isAdmin = await _process.GetUserByWalletId(adminWalletId);
+
+                if (isAdmin.Role == UserRole.admin.ToString())
+                {
+                    UserDB user = await _process.GetUserByWalletId(entity.WalletId);
+
+                    if (user != null)
+                    {
+                        if (entity != null)
+                        {
+                            entity.PartitionKey = StorageAccount.PartitionKey;
+                            entity.RowKey = user.WalletId;
+                            entity.ETag = user.ETag;
+                            entity.IsPremium = true;
+                            
+
+                            var statusCode = await _process.UpdateUser(entity);
+                            var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
+                            return ret;
+                        }
+                        throw new CustomException("WalletId inputs Required");
+                    }
+                    return NotFound();
+                }
+                else
+                {
+                    throw new CustomException("User is not Admin. Please try with admin account.");
+                }
+            }
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
+        }
+
+        [HttpGet]
         [Route("GetUserDetailsByWalletId/{walletId}")]
         public async Task<UserDB> GetUserDetailsByWalletId(string walletId)
         {

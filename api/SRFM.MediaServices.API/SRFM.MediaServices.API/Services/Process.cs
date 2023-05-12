@@ -189,6 +189,11 @@ namespace SRFM.MediaServices.API
             return await _tableReader.ListItemsAsync<UserDB>("User", StorageAccount.PartitionKey);
         }
 
+        public async Task<List<UserDB>> ListByFlagItemsAsync(string columnName,bool flag)
+        {
+            return await _tableReader.ListByFlagItemsAsync<UserDB>("User", columnName, StorageAccount.PartitionKey, flag);
+        }
+
         public async Task<UserDB> GetUserByWalletId(string walletId)
         {
             return await _tableReader.GetItemsByRowKeyAsync<UserDB>("User", walletId);
