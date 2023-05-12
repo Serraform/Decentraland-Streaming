@@ -147,7 +147,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
         returnAsDate(values.streamStartDate),
         returnAsDate(values.streamEndDate)
       );
-      debugger;
+      
 
       switch (
         checkDateRangeChange(
