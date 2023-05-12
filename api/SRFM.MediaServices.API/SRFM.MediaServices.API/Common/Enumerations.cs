@@ -14,4 +14,10 @@
         vod,
         relayService
     }
+
+    public enum UserRole
+    {
+        admin,
+        normal
+    }
 }

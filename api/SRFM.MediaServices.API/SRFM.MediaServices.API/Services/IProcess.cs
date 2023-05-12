@@ -12,6 +12,8 @@ namespace SRFM.MediaServices.API
 
         public Task<List<UserDB>> ListUsers();
 
+        public Task<List<UserDB>> ListByFlagItemsAsync(string columnName, bool flag);
+
         public Task<object> CreateNewUser(UserDB userProps);
 
         public Task<object> UpdateUser(UserDB userProps);

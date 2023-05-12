@@ -11,9 +11,15 @@ namespace SRFM.MediaServices.API
 
         public string WalletId { get; set; }
 
-        public string Email { get; set; }
+        //public string Email { get; set; }
 
-        public string PhoneNumber { get; set; }
+        //public string PhoneNumber { get; set; }
+
+        public string Role { get; set; }
+
+        public bool IsPremium { get; set; }
+
+        public int Discount { get; set; }
 
         public bool Active { get; set; }
 
