@@ -45,7 +45,7 @@ namespace SRFM.MediaServices.API.Controllers
             {
                 List<StreamDB> filteredResultsTwo = null; ;
 
-                List<StreamDB> streams = await _process.ListIsActiveItemsAsync(true);
+                List<StreamDB> streams = await _process.ListStreamIsActiveItemsAsync(true);
 
                 if (startDate == null && endDate == null)
                 {
