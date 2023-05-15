@@ -35,9 +35,14 @@ const PremiumUsers = () => {
   );
   const { addToast } = useToasts();
 
-  const { walletID } = useSelector((state: RootState) => state.accountData);
+  const { walletID, role } = useSelector((state: RootState) => state.accountData);
 
   const navigate = useNavigate();
+  useEffect(() => {
+    if(role!=="admin"){
+      navigate("/")
+    }
+  }, [role])
 
   const {
     data,

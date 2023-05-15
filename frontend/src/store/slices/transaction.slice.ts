@@ -35,9 +35,19 @@ export const estimateCost = createAsyncThunk(
         new Date(streamValues.streamStartDate).toISOString(),
         new Date(streamValues.streamEndDate).toISOString()
       );
+      if(isPremium){
+        const discountToMultiply = (100 - parseFloat(discount)) / 100;
+        return {
+          discountCost:(parseInt(response.data.cost) as unknown as number) * discountToMultiply,
+          cost: (parseInt(response.data.cost) as unknown as number),
+          hasDiscountCost: true,
+          vaultContractId: streamValues.vaultContractId,
+        };
+      }
       return {
         cost: parseInt(response.data.cost) as unknown as number,
         vaultContractId: streamValues.vaultContractId,
+        hasDiscountCost: false,
       };
     }
     const response = await fetchCostService(
@@ -57,6 +67,7 @@ export const estimateCost = createAsyncThunk(
     return {
       cost: parseInt(response.data.cost) as unknown as number,
       vaultContractId: parseInt(response.data.vaultContractId),
+      hasDiscountCost: false,
     };
   }
 );
@@ -441,7 +452,7 @@ const transactionSlice = createSlice({
       state.cost = action.payload.cost;
       state.vaultContractId = action.payload.vaultContractId;
       state.discountCost = action.payload.discountCost as number;
-      state.hasDiscountCost = true;
+      state.hasDiscountCost = action.payload.hasDiscountCost as boolean;
     });
     builder.addCase(estimateCost.rejected, (state, action) => {
       state.loading = false;
