@@ -108,8 +108,8 @@ namespace SRFM.MediaServices.API.Controllers
                         {
                             entity.PartitionKey = StorageAccount.PartitionKey;
                             entity.RowKey = user.WalletId;
-                            entity.ETag = user.ETag;                         
-                            
+                            entity.ETag = user.ETag;
+                            entity.Active = user.Active;
 
                             var statusCode = await _process.UpdateUser(entity);
                             var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
