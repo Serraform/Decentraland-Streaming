@@ -1,7 +1,7 @@
 import Streams from "components/streams";
 import Assets from "components/assets";
 import StreamsPull from "components/streams-pull";
-
+import PremiumUsers from "components/premium-users"
 import UploaderProgress from "components/asset-uploader/uploader-progress";
 import { useParams } from 'react-router-dom';
 
@@ -17,6 +17,8 @@ const Home = () => {
         return <Assets />;
       case "streams-to-pull":
         return <StreamsPull />;
+      case "premium-users":
+          return <PremiumUsers />;
       default:
         return <Streams />;
     }

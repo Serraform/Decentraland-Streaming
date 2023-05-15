@@ -8,7 +8,9 @@ import { useToasts } from "react-toast-notifications";
 import FormButtons from "components/stream/stream-forms/form-buttons";
 import FaqIcon from "assets/icons/Question";
 import ReactTooltip from "react-tooltip";
+import {  useSelector } from "react-redux";
 
+import { RootState } from "store/configStore";
 type Props = {
   values: any;
   initialValues: any;
@@ -44,6 +46,11 @@ const CommonForm: React.FC<Props> = ({
   formMode,
 }) => {
   const { addToast } = useToasts();
+
+    const {
+    discountCost,
+    hasDiscountCost
+  } = useSelector((state: RootState) => state.transactionData);
   const [needsToEstimateNewCost, setNeedsToEstimateNewCost] = useState(false);
   const [openSuspendModal, setOpenSuspendModal] = useState(false);
 
@@ -167,13 +174,13 @@ const CommonForm: React.FC<Props> = ({
       />
 
       <div className="mt-auto flex flex-col justify-end items-end">
-        <h2 className="font-montserratbold text-black text-[15px] mt-auto mb-[1rem] dark:text-primary">
-          <span className="font-montserratregular h-[20px] d-flex">
+        <h2 className="font-montserratbold text-black text-[15px] text-end mt-auto mb-[1rem] dark:text-primary">
+          <span className="font-montserratregular h-[20px] d-flex ">
             {cost !== 0 &&
               !loading &&
               `Your stream will cost:
-              ${cost} USDC`}
-             
+              ${cost} USDC`}<br />
+             {hasDiscountCost && `With your discount, it will cost you ${discountCost} USDC`}
           </span>{" "}
         </h2>
 

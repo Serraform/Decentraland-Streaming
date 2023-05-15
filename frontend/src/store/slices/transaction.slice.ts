@@ -11,6 +11,8 @@ type InitialState = {
   receipt: any;
   vaultContractId: number;
   transactionType: "lock" | "cancel" | "edit" | "";
+  discountCost: number;
+  hasDiscountCost: boolean;
 };
 
 const initialState: InitialState = {
@@ -20,28 +22,52 @@ const initialState: InitialState = {
   receipt: null,
   transactionType: "",
   vaultContractId: 0,
+  discountCost: 0,
+  hasDiscountCost: false
 };
 
 export const estimateCost = createAsyncThunk(
   "transaction/estimateCost",
-  async (streamValues: any) => {
+  async (props: any) => {
+    const {streamValues, discount, isPremium} = props;
     if (streamValues.streamID) {
       const response = await fetchCostService(
         new Date(streamValues.streamStartDate).toISOString(),
         new Date(streamValues.streamEndDate).toISOString()
       );
+      if(isPremium){
+        const discountToMultiply = (100 - parseFloat(discount)) / 100;
+        return {
+          discountCost:(parseInt(response.data.cost) as unknown as number) * discountToMultiply,
+          cost: (parseInt(response.data.cost) as unknown as number),
+          hasDiscountCost: true,
+          vaultContractId: streamValues.vaultContractId,
+        };
+      }
       return {
         cost: parseInt(response.data.cost) as unknown as number,
         vaultContractId: streamValues.vaultContractId,
+        hasDiscountCost: false,
       };
     }
     const response = await fetchCostService(
       streamValues.streamStartDate.toISOString(),
       streamValues.streamEndDate.toISOString()
     );
+   
+    if(isPremium){
+      const discountToMultiply = (100 - parseFloat(discount)) / 100;
+      return {
+        discountCost:(parseInt(response.data.cost) as unknown as number) * discountToMultiply,
+        cost: (parseInt(response.data.cost) as unknown as number),
+        hasDiscountCost: true,
+        vaultContractId: parseInt(response.data.vaultContractId),
+      };
+    }
     return {
       cost: parseInt(response.data.cost) as unknown as number,
       vaultContractId: parseInt(response.data.vaultContractId),
+      hasDiscountCost: false,
     };
   }
 );
@@ -338,6 +364,8 @@ const transactionSlice = createSlice({
         receipt: null,
         transactionType: "",
         vaultContractId: 0,
+        discountCost: 0,
+        hasDiscountCost: false,
       };
     },
   },
@@ -354,6 +382,8 @@ const transactionSlice = createSlice({
       state.loading = false;
       state.error = (action.error as any).message;
       state.cost = 0;
+      state.discountCost=0;
+      state.hasDiscountCost=false;
     });
     builder.addCase(unLockAllFunds.pending, (state) => {
       state.loading = true;
@@ -367,6 +397,9 @@ const transactionSlice = createSlice({
       state.loading = false;
       state.error = (action.error as any).message;
       state.cost = 0;
+
+      state.hasDiscountCost=false;
+      state.discountCost=0;
     });
     builder.addCase(editVault.pending, (state) => {
       state.loading = true;
@@ -380,6 +413,8 @@ const transactionSlice = createSlice({
       state.loading = false;
       state.error = (action.error as any).message;
       state.cost = 0;
+      state.hasDiscountCost=false;
+      state.discountCost=0;
     });
     builder.addCase(withdrawToTreasury.pending, (state) => {
       state.loading = true;
@@ -392,6 +427,8 @@ const transactionSlice = createSlice({
       state.loading = false;
       state.error = (action.error as any).message;
       state.cost = 0;
+      state.hasDiscountCost=false;
+      state.discountCost=0;
     });
     builder.addCase(transferTreasuryToWallet.pending, (state) => {
       state.loading = true;
@@ -404,6 +441,8 @@ const transactionSlice = createSlice({
       state.loading = false;
       state.error = (action.error as any).message;
       state.cost = 0;
+      state.hasDiscountCost=false;
+      state.discountCost=0;
     });
     builder.addCase(estimateCost.pending, (state) => {
       state.loading = true;
@@ -412,6 +451,8 @@ const transactionSlice = createSlice({
       state.loading = false;
       state.cost = action.payload.cost;
       state.vaultContractId = action.payload.vaultContractId;
+      state.discountCost = action.payload.discountCost as number;
+      state.hasDiscountCost = action.payload.hasDiscountCost as boolean;
     });
     builder.addCase(estimateCost.rejected, (state, action) => {
       state.loading = false;

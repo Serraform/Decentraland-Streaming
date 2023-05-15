@@ -53,10 +53,14 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   const {
     cost,
     receipt,
+    discountCost,
+    hasDiscountCost,
     loading: isTransactionLoading,
     transactionType,
   } = useSelector((state: RootState) => state.transactionData);
-  const { walletID } = useSelector((state: RootState) => state.accountData);
+  const { walletID, discount, isPremium } = useSelector(
+    (state: RootState) => state.accountData
+  );
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
 
@@ -147,7 +151,6 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
         returnAsDate(values.streamStartDate),
         returnAsDate(values.streamEndDate)
       );
-      
 
       switch (
         checkDateRangeChange(
@@ -158,7 +161,9 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
         )
       ) {
         case 0:
-          costDifference = streamValues.cost - cost;
+          costDifference = hasDiscountCost
+            ? streamValues.cost - discountCost
+            : streamValues.cost - cost;
           dispatch(
             editVault({
               vaultContractId: streamValues.vaultContractId,
@@ -169,11 +174,15 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
             })
           );
 
-          setStreamValues({ ...values, cost: cost });
+          setStreamValues({
+            ...values,
+            cost: hasDiscountCost ? discountCost : cost,
+          });
           // The date range has been shortened
           break;
         case 1:
-          costDifference = cost - streamValues.cost;
+          
+          costDifference = hasDiscountCost ? discountCost - streamValues.cost : cost - streamValues.cost;
           dispatch(
             editVault({
               vaultContractId: streamValues.vaultContractId,
@@ -183,7 +192,10 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
               durationUntilStart: durationUntilStart,
             })
           );
-          setStreamValues({ ...values, cost: cost });
+          setStreamValues({
+            ...values,
+            cost: hasDiscountCost ? discountCost : cost,
+          });
           // the date range has been extended
           break;
         case -1:
@@ -212,7 +224,13 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   }, [selectedStream]);
 
   const handleEstimateCost = (values: any) => {
-    dispatch(estimateCost(values));
+    dispatch(
+      estimateCost({
+        streamValues: values,
+        discount: discount,
+        isPremium: isPremium,
+      })
+    );
     setStreamValues(values);
   };
 

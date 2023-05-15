@@ -171,7 +171,11 @@ menu > a, .gold{
 }
 .menu > a > span{
   @apply ml-2;
-  
+
+}
+
+.menu > a > svg{
+  margin-right: 24px;
 }
 .wallet-drawer{
   position: fixed;
