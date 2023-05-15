@@ -115,7 +115,7 @@ const StreamInfo: React.FC<IStreamCreation> = ({
           autoDismiss: true,
         });
       } else {
-        const duration = differenceInMinutes(values.streamEndDate, Date.now());
+        const duration = differenceInMinutes(values.streamEndDate, values.streamStartDate);
         const durationUntilStart = differenceInSeconds(
           values.streamStartDate,
           Date.now()

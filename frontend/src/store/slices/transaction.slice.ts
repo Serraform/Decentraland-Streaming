@@ -244,13 +244,14 @@ export const withdrawToTreasury = createAsyncThunk(
         smartcontractABI,
         signer
       );
+      
       const tx = await contract.multiWithdraw(vaultsId, vaultsFunds);
       addToast("Waiting for transaction approval", {
         autoDismiss: true,
       });
       const receipt = await tx.wait();
       if (receipt.status === 1) {
-        addToast("Vaults withdrawn succesfully", {
+        addToast("Vaults withdrawn succesfully, please reload the page", {
           appearance: "success",
           autoDismiss: true,
         });
