@@ -189,6 +189,11 @@ namespace SRFM.MediaServices.API
             return await _tableReader.ListItemsAsync<UserDB>("User", StorageAccount.PartitionKey);
         }
 
+        public async Task<List<UserDB>> ListUserIsActiveItemsAsync(bool isActive)
+        {
+            return await _tableReader.ListIsActiveItemsAsync<UserDB>("User", StorageAccount.PartitionKey, isActive);
+        }
+
         public async Task<List<UserDB>> ListByFlagItemsAsync(string columnName,bool flag)
         {
             return await _tableReader.ListByFlagItemsAsync<UserDB>("User", columnName, StorageAccount.PartitionKey, flag);
@@ -210,7 +215,7 @@ namespace SRFM.MediaServices.API
             return await _tableReader.ListItemsAsync<StreamDB>("Stream", StorageAccount.PartitionKey);
         }
 
-        public async Task<List<StreamDB>> ListIsActiveItemsAsync(bool isActive)
+        public async Task<List<StreamDB>> ListStreamIsActiveItemsAsync(bool isActive)
         {
             return await _tableReader.ListIsActiveItemsAsync<StreamDB>("Stream", StorageAccount.PartitionKey, isActive);
         }

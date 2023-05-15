@@ -43,7 +43,7 @@ namespace SRFM.MediaServices.API.Controllers
             bool isValidToken = TokenManager.ValidateToken(token);
             if (isValidToken)
             {
-                List<UserDB> user = await _process.ListUsers();
+                List<UserDB> user = await _process.ListUserIsActiveItemsAsync(true);
                 return user;
             }
             else
@@ -108,8 +108,8 @@ namespace SRFM.MediaServices.API.Controllers
                         {
                             entity.PartitionKey = StorageAccount.PartitionKey;
                             entity.RowKey = user.WalletId;
-                            entity.ETag = user.ETag;                         
-                            
+                            entity.ETag = user.ETag;
+                            entity.Active = user.Active;
 
                             var statusCode = await _process.UpdateUser(entity);
                             var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
@@ -253,35 +253,5 @@ namespace SRFM.MediaServices.API.Controllers
                 throw new CustomException("Token not valid.");
             }
         }
-
-
-        //// GET: api/<UserController>
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
-
-        //// GET api/<UserController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
-
-
-
-
-        //// PUT api/<UserController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
-
-        //// DELETE api/<UserController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
     }
 }

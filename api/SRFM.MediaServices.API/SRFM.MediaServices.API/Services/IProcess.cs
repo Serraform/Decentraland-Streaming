@@ -12,6 +12,8 @@ namespace SRFM.MediaServices.API
 
         public Task<List<UserDB>> ListUsers();
 
+        public Task<List<UserDB>> ListUserIsActiveItemsAsync(bool isActive);
+
         public Task<List<UserDB>> ListByFlagItemsAsync(string columnName, bool flag);
 
         public Task<object> CreateNewUser(UserDB userProps);
@@ -38,7 +40,7 @@ namespace SRFM.MediaServices.API
 
         public Task<List<StreamDB>> ListStream();
 
-        public Task<List<StreamDB>> ListIsActiveItemsAsync(bool isActive);
+        public Task<List<StreamDB>> ListStreamIsActiveItemsAsync(bool isActive);
 
         public Task<HttpResponseMessage> SuspendStream(string streamId, string walletId);
 
