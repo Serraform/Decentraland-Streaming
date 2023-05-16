@@ -112,6 +112,7 @@ namespace SRFM.MediaServices.API
                 {
                     walletId = streamProps.WalletId,
                     streamId = streamProps.StreamID,
+                    RowKey = streamProps.RowKey,
                     StartDateTime = streamProps.StreamStartDate,
                     EndDateTime = streamProps.StreamEndDate
                 };
@@ -306,6 +307,7 @@ namespace SRFM.MediaServices.API
                 {
                     walletId = streamProps.WalletId,
                     streamId = streamStatus.Id,
+                    RowKey = streamProps.RowKey,
                     StartDateTime = streamProps.StreamStartDate,
                     EndDateTime = streamProps.StreamEndDate
                 };
