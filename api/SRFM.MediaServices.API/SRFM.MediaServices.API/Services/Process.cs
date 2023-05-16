@@ -1,4 +1,4 @@
-﻿using Azure;
+using Azure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -112,7 +112,7 @@ namespace SRFM.MediaServices.API
                 {
                     walletId = streamProps.WalletId,
                     streamId = streamProps.StreamID,
-                    RowKey = streamProps.RowKey,
+                    RowKey = Guid.NewGuid().ToString(),
                     StartDateTime = streamProps.StreamStartDate,
                     EndDateTime = streamProps.StreamEndDate
                 };
@@ -307,7 +307,7 @@ namespace SRFM.MediaServices.API
                 {
                     walletId = streamProps.WalletId,
                     streamId = streamStatus.Id,
-                    RowKey = streamProps.RowKey,
+                    RowKey = Guid.NewGuid().ToString(),
                     StartDateTime = streamProps.StreamStartDate,
                     EndDateTime = streamProps.StreamEndDate
                 };
