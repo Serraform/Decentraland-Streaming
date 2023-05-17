@@ -29,4 +29,4 @@ jobs:
         with:
           azcliversion: 2.30.0
           inlineScript: |
-            az container delete --name deletesamplecontaoner --resource-group ${{ secrets.AZURE_RG }} --yes
+            az container delete --name ${{ inputs.delete_ffmpeg }} --resource-group ${{ secrets.AZURE_RG }} --yes
