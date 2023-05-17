@@ -380,6 +380,7 @@ namespace SRFM.MediaServices.API
             {
                 walletId = streamProp.WalletId,
                 streamId = streamProp.StreamID,
+                RowKey = streamProp.RowKey,
                 StartDateTime = streamProp.StreamStartDate,
                 EndDateTime = streamProp.StreamEndDate
             };
