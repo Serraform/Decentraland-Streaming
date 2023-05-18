@@ -307,7 +307,7 @@ namespace SRFM.MediaServices.API
                 {
                     walletId = streamProps.WalletId,
                     streamId = streamStatus.Id,
-                    RowKey = streamProps.StreamType == streamStatus.Id, //StreamType.liveStream.ToString()? streamStatus.Id : streamProps.RowKey,
+                    RowKey =  streamStatus.Id, //StreamType.liveStream.ToString()? streamStatus.Id : streamProps.RowKey,
                     StartDateTime = streamProps.StreamStartDate,
                     EndDateTime = streamProps.StreamEndDate
                 };
