@@ -399,7 +399,7 @@ namespace SRFM.MediaServices.API
 
             foreach (string stream in streamIds)
             {
-                streamLog = await _tableReader.GetItemsByStreamIDKeyAsync<StreamDB>("Stream", StorageAccount.PartitionKey, true, streamId);
+                streamLog = await _tableReader.GetItemsByStreamIDKeyAsync<StreamDB>("Stream", StorageAccount.PartitionKey, true, stream);
 
                 if (streamLog != null)
                 {
