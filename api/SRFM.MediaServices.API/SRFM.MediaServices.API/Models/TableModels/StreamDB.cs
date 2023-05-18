@@ -68,7 +68,7 @@ namespace SRFM.MediaServices.API
                     {
                         return $"https://playback.livepeer.studio/asset/hls/{PlayBackId}/index.m3u8?accessKey={RowKey}";
                     }
-                    else
+                    else if(this.StreamType == "relayService")
                     {
                         if (string.IsNullOrEmpty(relayUrl))
                         {
@@ -78,6 +78,10 @@ namespace SRFM.MediaServices.API
                         {
                             return $"https://livepeercdn.studio/hls/{PlayBackId}/index.m3u8";
                         }
+                    }
+                    else
+                    {
+                        return $"https://livepeercdn.studio/hls/{PlayBackId}/index.m3u8";
                     }
                 }
                 else
