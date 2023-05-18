@@ -307,17 +307,17 @@ namespace SRFM.MediaServices.API
                 {
                     walletId = streamProps.WalletId,
                     streamId = streamStatus.Id,
-                    RowKey = streamProps.StreamType == StreamType.liveStream.ToString()? streamStatus.Id : streamProps.RowKey,
+                    RowKey = streamProps.StreamType == streamStatus.Id, //StreamType.liveStream.ToString()? streamStatus.Id : streamProps.RowKey,
                     StartDateTime = streamProps.StreamStartDate,
                     EndDateTime = streamProps.StreamEndDate
                 };
 
                 string jsonStreamQueuesString = JsonConvert.SerializeObject(payLoadStreamQueues);
 
-                if (streamProps.StreamType == StreamType.relayService.ToString())
-                {
-                    var twitch = await _twitch.TriggerWrokflow(System.Web.HttpUtility.UrlEncode(streamProps.relayUrl), streamStatus.StreamKey);
-                }
+                //if (streamProps.StreamType == StreamType.relayService.ToString())
+                //{
+                //    var twitch = await _twitch.TriggerWrokflow(System.Web.HttpUtility.UrlEncode(streamProps.relayUrl), streamStatus.StreamKey);
+                //}
 
 
                 //TODO update table storage with stream
