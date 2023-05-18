@@ -231,7 +231,7 @@ namespace SRFM.MediaServices.API
             //Need to discuss from where to show Stream detail to user , from LP or from DB or update StreamLP every time
             var httpStatus = await _assetManager.GetStreamSession(streamId);
 
-            var getStream = await _tableReader.GetItemsByRowKeyAsync<StreamDB>("Stream", streamId);
+            var getStream = await _tableReader.GetItemsByStreamIDKeyAsync<StreamDB>("Stream", StorageAccount.PartitionKey, true, streamId);
 
             getStream.StreamInfo = JsonConvert.SerializeObject(httpStatus);
 
@@ -242,7 +242,7 @@ namespace SRFM.MediaServices.API
         {
             //Need to discuss from where to show Stream detail to user , from LP or from DB or update StreamLP every time
             var httpStatus = await _assetManager.GetStream(streamId);
-            var getStream = await _tableReader.GetItemsByRowKeyAsync<StreamDB>("Stream", streamId);
+            var getStream = await _tableReader.GetItemsByStreamIDKeyAsync<StreamDB>("Stream", StorageAccount.PartitionKey,true, streamId);
 
             if (httpStatus.Id != null)
             {
@@ -260,7 +260,7 @@ namespace SRFM.MediaServices.API
             if (httpStatus.IsSuccessStatusCode)
             {
                 //TODO update TableStorage stream status to AssetDB object 
-                var stream = await _tableReader.GetItemsByRowKeyAsync<StreamDB>("Stream", streamId);
+                var stream = await _tableReader.GetItemsByStreamIDKeyAsync<StreamDB>("Stream", StorageAccount.PartitionKey, true, streamId);
 
                 if (stream != null)
                 {
@@ -278,7 +278,7 @@ namespace SRFM.MediaServices.API
             //TODO update TableStorage stream status to AssetDB object
             if (httpStatus.IsSuccessStatusCode)
             {
-                var stream = await _tableReader.GetItemsByRowKeyAsync<StreamDB>("Stream", streamId);
+                var stream = await _tableReader.GetItemsByStreamIDKeyAsync<StreamDB>("Stream", StorageAccount.PartitionKey, true, streamId);
 
                 if (stream != null)
                 {
@@ -399,7 +399,7 @@ namespace SRFM.MediaServices.API
 
             foreach (string stream in streamIds)
             {
-                streamLog = await _tableReader.GetItemsByRowKeyAsync<StreamDB>("Stream", stream);
+                streamLog = await _tableReader.GetItemsByStreamIDKeyAsync<StreamDB>("Stream", StorageAccount.PartitionKey, true, streamId);
 
                 if (streamLog != null)
                 {
