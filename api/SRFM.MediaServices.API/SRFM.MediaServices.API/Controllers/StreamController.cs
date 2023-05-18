@@ -187,34 +187,34 @@ namespace SRFM.MediaServices.API.Controllers
                         }
                         else if (streamProps.StreamType == StreamType.relayService.ToString())
                         {
-                            var m3u8Status = await _twitch.VerifyRelayM3U8Status(System.Web.HttpUtility.UrlEncode(streamProps.relayUrl));
+                            ////var m3u8Status = await _twitch.VerifyRelayM3U8Status(System.Web.HttpUtility.UrlEncode(streamProps.relayUrl));
 
-                            if (m3u8Status)
-                            {
-                                var guid = Guid.NewGuid().ToString();
+                            //if (m3u8Status)
+                            //{
+                            //    var guid = Guid.NewGuid().ToString();
 
-                                streamProps.StreamID = guid;
-                                streamProps.RowKey = guid;
+                            //    streamProps.StreamID = guid;
+                            //    streamProps.RowKey = guid;
 
-                                streamProps.relayUrlIsVerified = true;
-                                var response = await _process.SaveNewStream(streamProps);
+                            //    streamProps.relayUrlIsVerified = true;
+                            //    var response = await _process.SaveNewStream(streamProps);
+
+                            //    string jsonString = JsonSerializer.Serialize(response);
+                            //    return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                            //}
+                            //else
+                            //{
+                                //var guid = Guid.NewGuid().ToString();
+
+                                //streamProps.StreamID = guid;
+                                //streamProps.RowKey = guid;
+                                //streamProps.relayUrlIsVerified = false;
+
+                                var response = await _process.CreateNewStream(streamProps);
 
                                 string jsonString = JsonSerializer.Serialize(response);
                                 return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
-                            }
-                            else
-                            {
-                                var guid = Guid.NewGuid().ToString();
-
-                                streamProps.StreamID = guid;
-                                streamProps.RowKey = guid;
-                                streamProps.relayUrlIsVerified = false;
-
-                                var response = await _process.SaveNewStream(streamProps);
-
-                                string jsonString = JsonSerializer.Serialize(response);
-                                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
-                            }
+                           // }
                         }
                         else
                         {
