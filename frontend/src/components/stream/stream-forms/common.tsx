@@ -54,7 +54,7 @@ const CommonForm: React.FC<Props> = ({
   const [needsToEstimateNewCost, setNeedsToEstimateNewCost] = useState(false);
   const [openSuspendModal, setOpenSuspendModal] = useState(false);
 
-  const streamIsBeingCreated = useMemo(() => formMode === "edit", [formMode]);
+  const streamIsBeingCreated = useMemo(() => formMode !== "edit", [formMode]);
 
   useEffect(() => {
     setNeedsToEstimateNewCost(false);

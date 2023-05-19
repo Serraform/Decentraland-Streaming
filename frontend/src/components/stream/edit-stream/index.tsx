@@ -181,8 +181,9 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
           // The date range has been shortened
           break;
         case 1:
-          
-          costDifference = hasDiscountCost ? discountCost - streamValues.cost : cost - streamValues.cost;
+          costDifference = hasDiscountCost
+            ? discountCost - streamValues.cost
+            : cost - streamValues.cost;
           dispatch(
             editVault({
               vaultContractId: streamValues.vaultContractId,
@@ -328,7 +329,11 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
           <h3 className="font-montserratbold dark:text-white">Details</h3>
           <div className="flex flex-col justify-between border-t-third border mt-1 border-l-0 border-r-0 border-b-0 dark:border-t-[#323739]">
             {renderDetail("Playback URL", true, selectedStream.playBackUrl)}
-            {selectedStream.streamType === "liveStream" && (
+            {selectedStream.streamType === "vod" && (
+              <>{renderDetail("Asset ID", true, (selectedStream as any)?.vId)}</>
+            )}
+            {(selectedStream.streamType === "liveStream" ||
+              selectedStream.streamType === "relayService") && (
               <>
                 {renderDetail(
                   "Stream Key",
