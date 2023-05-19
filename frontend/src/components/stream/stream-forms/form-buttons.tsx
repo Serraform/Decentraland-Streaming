@@ -70,7 +70,7 @@ const FormButtons = (props: any) => {
       ) : (
         <button
           onClick={() => {
-            if (cost === 0 && needsToEstimateNewCost) {
+            if (cost === 0 || needsToEstimateNewCost) {
               handleEstimateCost(values);
             } else {
               handleSave(values);
@@ -80,7 +80,7 @@ const FormButtons = (props: any) => {
           disabled={isDisabled}
         >
           {loading && <div className="basic mr-[1rem]" />}
-          {cost === 0 && needsToEstimateNewCost
+          {cost === 0 || needsToEstimateNewCost
             ? "Calculate Price"
             : "Save Changes"}
         </button>
