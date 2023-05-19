@@ -1,5 +1,6 @@
 import { client } from "store/clientConfig";
 export const createAccount = async (walletID: string, authToken: string) => {
+  
   return await client.post(
     "/api/User/CreateUser",
     {
@@ -12,6 +13,8 @@ export const createAccount = async (walletID: string, authToken: string) => {
 };
 
 export const updateAccount = async ({ walletID, role }: any) => {
+  const jwtToken = localStorage.getItem("token");
+  client.defaults.headers.common['Authorization'] =  "Bearer " +  jwtToken;
   return await client.put("/api/User/UpdateUser", {
     WalletId: walletID,
     Role: role,

@@ -14,7 +14,6 @@ export const premiumUsersApi = createApi({
     }),
     updateUserPremium: builder.mutation<any, any>({
       query: ({ walletID, userWalletId, discount }) => {
-       
         return {
           url: `api/User/HandlePremiumUserData/${walletID}`,
           method: "PUT",
@@ -23,14 +22,16 @@ export const premiumUsersApi = createApi({
             discount: discount,
             isPremium: true,
           },
+          prepareHeaders: (headers: any) => {
+            const jwtToken = localStorage.getItem("token");
+            headers.set("Authorization", `Bearer ${jwtToken}`);
+            return headers;
+          },
         };
       },
     }),
-   
   }),
 });
 
-export const {
-  useFetchListUsersPremiumQuery,
-  useUpdateUserPremiumMutation,
-} = premiumUsersApi;
+export const { useFetchListUsersPremiumQuery, useUpdateUserPremiumMutation } =
+  premiumUsersApi;
