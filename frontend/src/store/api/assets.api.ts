@@ -11,24 +11,44 @@ export const assetsApi = createApi({
       query: (walletID) => ({
         url: `api/Asset/GetAssetsByWalletId/${walletID}`,
         method: "get",
+        prepareHeaders: (headers: any) => {
+          const jwtToken = localStorage.getItem("token");
+          headers.set("Authorization", `Bearer ${jwtToken}`);
+          return headers;
+        },
       }),
     }),
     fetchAssetDetails: builder.query<any[], string>({
       query: (assetID) => ({
         url: `api/Asset/GetAssetByAssetId/${assetID}`,
         method: "get",
+        prepareHeaders: (headers: any) => {
+          const jwtToken = localStorage.getItem("token");
+          headers.set("Authorization", `Bearer ${jwtToken}`);
+          return headers;
+        },
       }),
     }),
     fetchAssetStatus: builder.query<any[], string>({
       query: (assetID) => ({
         url: `api/Asset/GetAssetStatus/${assetID}`,
         method: "get",
+        prepareHeaders: (headers: any) => {
+          const jwtToken = localStorage.getItem("token");
+          headers.set("Authorization", `Bearer ${jwtToken}`);
+          return headers;
+        },
       }),
     }),
     requestAssetUploader: builder.query<any, any>({
       query: ({ walletID, assetName }) => ({
         url: `api/Asset/RequestUploadURL/${assetName}/${walletID}`,
         method: "get",
+        prepareHeaders: (headers: any) => {
+          const jwtToken = localStorage.getItem("token");
+          headers.set("Authorization", `Bearer ${jwtToken}`);
+          return headers;
+        },
       }),
     }),
   }),

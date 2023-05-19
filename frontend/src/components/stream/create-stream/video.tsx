@@ -13,6 +13,14 @@ const Video: React.FC<Props> = ({ values, video }) => {
   });
 
   const renderStatus = () => {
+    if((data as any)?.streamStatus === "Idle" && (data as any)?.streamType ==="vod"){
+      return (
+        <div className="flex justify-center flex-row items-center absolute bullet-status top-0">
+          <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-green-600" />
+          <span className="text-[14px]">Ready</span>
+        </div>
+      );
+    }
     switch ((data as any)?.streamStatus) {
       case "Upcoming":
         return (
@@ -53,6 +61,7 @@ const Video: React.FC<Props> = ({ values, video }) => {
           <ReactPlayer
             url={video}
             muted={true}
+            controls={true}
             playing={true}
             width="auto"
             height="100%"

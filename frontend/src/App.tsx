@@ -24,9 +24,27 @@ function App() {
     }
   }, [dontConnectWallet]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      connectWallet(); // Call your function here
+    }, 5 * 60000); // Convert minutes to milliseconds
+
+    return () => {
+      clearInterval(interval); // Clean up the interval on component unmount
+    };
+  }, []);
+
   const router = createBrowserRouter([
     {
       path: "/",
+      element: (
+        <Layout>
+          <Home />
+        </Layout>
+      ),
+    },
+    {
+      path: "*",
       element: (
         <Layout>
           <Home />

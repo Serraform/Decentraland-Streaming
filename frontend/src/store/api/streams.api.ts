@@ -27,11 +27,25 @@ export const streamsApi = createApi({
     }),
     createLiveStream: builder.mutation<any, any>({
       query: ({ walletID, streamValues }) => {
-        const { name, attendees, streamStartDate, streamEndDate, streamType, cost, vaultContractId, VId, relayUrl } =
-          streamValues;
+        const {
+          name,
+          attendees,
+          streamStartDate,
+          streamEndDate,
+          streamType,
+          cost,
+          vaultContractId,
+          VId,
+          relayUrl,
+        } = streamValues;
         return {
           url: `api/Stream/CreateStream`,
           method: "POST",
+          prepareHeaders: (headers: any) => {
+            const jwtToken = localStorage.getItem("token");
+            headers.set("Authorization", `Bearer ${jwtToken}`);
+            return headers;
+          },
           data: {
             name: name,
             relayUrl: relayUrl,
@@ -62,6 +76,11 @@ export const streamsApi = createApi({
         return {
           url: `api/Stream/UpdateStream`,
           method: "PATCH",
+          prepareHeaders: (headers: any) => {
+            const jwtToken = localStorage.getItem("token");
+            headers.set("Authorization", `Bearer ${jwtToken}`);
+            return headers;
+          },
           data: {
             StreamID: streamID,
             Name: name,
@@ -78,18 +97,33 @@ export const streamsApi = createApi({
       query: ({ streamId, walletID }) => ({
         url: `api/Stream/Suspend/${streamId}/${walletID}`,
         method: "put",
+        prepareHeaders: (headers: any) => {
+          const jwtToken = localStorage.getItem("token");
+          headers.set("Authorization", `Bearer ${jwtToken}`);
+          return headers;
+        },
       }),
     }),
     unSuspendLiveStream: builder.mutation<any, any>({
       query: ({ streamId, walletID }) => ({
         url: `api/Stream/UnSuspend/${streamId}/${walletID}`,
         method: "put",
+        prepareHeaders: (headers: any) => {
+          const jwtToken = localStorage.getItem("token");
+          headers.set("Authorization", `Bearer ${jwtToken}`);
+          return headers;
+        },
       }),
     }),
     deleteStream: builder.mutation<any, any>({
       query: ({ streamId }) => ({
         url: `api/Stream/DeleteStreamByStreamId/${streamId}`,
         method: "delete",
+        prepareHeaders: (headers: any) => {
+          const jwtToken = localStorage.getItem("token");
+          headers.set("Authorization", `Bearer ${jwtToken}`);
+          return headers;
+        },
       }),
     }),
     markPulledStreams: builder.mutation<any, any>({
@@ -97,15 +131,23 @@ export const streamsApi = createApi({
         url: `api/Stream/UpdateStreamsIsPulled?isPulled=true`,
         method: "PATCH",
         data: body.streamsIds,
+        prepareHeaders: (headers: any) => {
+          const jwtToken = localStorage.getItem("token");
+          headers.set("Authorization", `Bearer ${jwtToken}`);
+          return headers;
+        },
       }),
     }),
     verifyRelayLink: builder.query<any, any>({
       query: (body) => ({
         url: `api/Stream/VerifyM3U8Url`,
         method: "POST",
-        data:
-          body
-        
+        prepareHeaders: (headers: any) => {
+          const jwtToken = localStorage.getItem("token");
+          headers.set("Authorization", `Bearer ${jwtToken}`);
+          return headers;
+        },
+        data: body,
       }),
     }),
   }),
@@ -121,5 +163,5 @@ export const {
   useFetchStreamDetailsQuery,
   useEditStreamMutation,
   useMarkPulledStreamsMutation,
-  useLazyVerifyRelayLinkQuery
+  useLazyVerifyRelayLinkQuery,
 } = streamsApi;

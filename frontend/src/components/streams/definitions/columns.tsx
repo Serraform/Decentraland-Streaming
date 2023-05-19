@@ -9,6 +9,14 @@ export const columnsDefinition = (
     id: "streamStatus",
     header: () => <span className="font-montserratbold">Status</span>,
     cell: (info: any) => {
+      if(info.getValue() === "Idle" && info.row.original.streamType === "vod"){
+        return (
+          <div className="flex justify-center flex-row items-center">
+            <div className=" w-3 h-3 mr-[0.5rem] rounded-full bg-green-600" />
+            <span className="text-[14px]">Ready</span>
+          </div>
+        );
+      }
       switch (info.getValue()) {
         case "Upcoming":
           return (
