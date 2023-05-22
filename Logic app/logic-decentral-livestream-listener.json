@@ -1,0 +1,522 @@
+{
+    "$schema":  "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion":  "1.0.0.0",
+    "metadata":  {
+        "title":  "",
+        "description":  "",
+        "prerequisites":  "",
+        "postDeployment":  [
+        ],
+        "prerequisitesDeployTemplateFile":  "",
+        "lastUpdateTime":  "",
+        "entities":  [
+        ],
+        "tags":  [
+        ],
+        "support":  {
+            "tier":  "community",
+            "armtemplate":  "Generated from https://github.com/Azure/Azure-Sentinel/tree/master/Tools/Playbook-ARM-Template-Generator"
+        },
+        "author":  {
+            "name":  ""
+        }
+    },
+    "parameters":  {
+        "PlaybookName":  {
+            "defaultValue":  "logic-decentral-livestream-listener",
+            "type":  "string"
+        },
+        "AZURE_STORAGE_ACCESS_KEY":  {
+            "type":  "string",
+            "metadata":  {
+                "description":  "Enter value for AZURE_STORAGE_ACCESS_KEY"
+            }
+        },
+        "AZURE_STORAGE_ACCOUNT":  {
+            "type":  "string",
+            "metadata":  {
+                "description":  "Enter value for AZURE_STORAGE_ACCOUNT"
+            }
+        },
+        "Storage_resource":  {
+            "type":  "string",
+            "metadata":  {
+                "description":  "Enter value for Storage_resource"
+            }
+        },
+        "TABLE_NAME":  {
+            "type":  "string",
+            "metadata":  {
+                "description":  "Enter value for TABLE_NAME"
+            }
+        },
+        "TENANT_ID":  {
+            "type":  "string",
+            "metadata":  {
+                "description":  "Enter value for TENANT_ID"
+            }
+        }
+    },
+    "variables":  {
+        "AzuretablesConnectionName":  "[concat('Azuretables-', parameters('PlaybookName'))]"
+    },
+    "resources":  [
+        {
+            "properties":  {
+                "provisioningState":  "Succeeded",
+                "state":  "Enabled",
+                "definition":  {
+                    "$schema":  "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion":  "1.0.0.0",
+                    "parameters":  {
+                        "$connections":  {
+                            "defaultValue":  {
+                            },
+                            "type":  "Object"
+                        },
+                        "AZURE_STORAGE_ACCESS_KEY":  {
+                            "defaultValue":  "[parameters('AZURE_STORAGE_ACCESS_KEY')]",
+                            "type":  "string"
+                        },
+                        "AZURE_STORAGE_ACCOUNT":  {
+                            "defaultValue":  "[parameters('AZURE_STORAGE_ACCOUNT')]",
+                            "type":  "string"
+                        },
+                        "Storage_resource":  {
+                            "defaultValue":  "[parameters('Storage_resource')]",
+                            "type":  "string"
+                        },
+                        "TABLE_NAME":  {
+                            "defaultValue":  "[parameters('TABLE_NAME')]",
+                            "type":  "string"
+                        },
+                        "TENANT_ID":  {
+                            "defaultValue":  "[parameters('TENANT_ID')]",
+                            "type":  "string"
+                        }
+                    },
+                    "triggers":  {
+                        "manual":  {
+                            "type":  "Request",
+                            "kind":  "Http",
+                            "inputs":  {
+                                "schema":  {
+                                    "properties":  {
+                                        "createdAt":  {
+                                            "type":  "integer"
+                                        },
+                                        "event":  {
+                                            "type":  "string"
+                                        },
+                                        "id":  {
+                                            "type":  "string"
+                                        },
+                                        "stream":  {
+                                            "properties":  {
+                                                "createdAt":  {
+                                                    "type":  "integer"
+                                                },
+                                                "id":  {
+                                                    "type":  "string"
+                                                },
+                                                "ingestRate":  {
+                                                    "type":  "number"
+                                                },
+                                                "isActive":  {
+                                                    "type":  "boolean"
+                                                },
+                                                "kind":  {
+                                                    "type":  "string"
+                                                },
+                                                "lastSeen":  {
+                                                    "type":  "integer"
+                                                },
+                                                "multistream":  {
+                                                    "properties":  {
+                                                        "targets":  {
+                                                            "type":  "array"
+                                                        }
+                                                    },
+                                                    "type":  "object"
+                                                },
+                                                "name":  {
+                                                    "type":  "string"
+                                                },
+                                                "outgoingRate":  {
+                                                    "type":  "number"
+                                                },
+                                                "playbackId":  {
+                                                    "type":  "string"
+                                                },
+                                                "profiles":  {
+                                                    "items":  {
+                                                        "properties":  {
+                                                            "bitrate":  {
+                                                                "type":  "integer"
+                                                            },
+                                                            "fps":  {
+                                                                "type":  "integer"
+                                                            },
+                                                            "height":  {
+                                                                "type":  "integer"
+                                                            },
+                                                            "name":  {
+                                                                "type":  "string"
+                                                            },
+                                                            "width":  {
+                                                                "type":  "integer"
+                                                            }
+                                                        },
+                                                        "required":  [
+                                                            "fps",
+                                                            "name",
+                                                            "width",
+                                                            "height",
+                                                            "bitrate"
+                                                        ],
+                                                        "type":  "object"
+                                                    },
+                                                    "type":  "array"
+                                                },
+                                                "record":  {
+                                                    "type":  "boolean"
+                                                },
+                                                "region":  {
+                                                    "type":  "string"
+                                                },
+                                                "renditions":  {
+                                                    "properties":  {
+                                                    },
+                                                    "type":  "object"
+                                                },
+                                                "sourceBytes":  {
+                                                    "type":  "integer"
+                                                },
+                                                "sourceSegments":  {
+                                                    "type":  "integer"
+                                                },
+                                                "sourceSegmentsDuration":  {
+                                                    "type":  "number"
+                                                },
+                                                "suspended":  {
+                                                    "type":  "boolean"
+                                                },
+                                                "transcodedBytes":  {
+                                                    "type":  "integer"
+                                                },
+                                                "transcodedSegments":  {
+                                                    "type":  "integer"
+                                                },
+                                                "transcodedSegmentsDuration":  {
+                                                    "type":  "number"
+                                                },
+                                                "userId":  {
+                                                    "type":  "string"
+                                                }
+                                            },
+                                            "type":  "object"
+                                        },
+                                        "timestamp":  {
+                                            "type":  "integer"
+                                        },
+                                        "webhookId":  {
+                                            "type":  "string"
+                                        }
+                                    },
+                                    "type":  "object"
+                                }
+                            }
+                        }
+                    },
+                    "actions":  {
+                        "Condition":  {
+                            "actions":  {
+                                "For_each_entity":  {
+                                    "foreach":  "@body('Get_entities_(V2)')?['value']",
+                                    "actions":  {
+                                        "Parse_JSON":  {
+                                            "runAfter":  {
+                                            },
+                                            "type":  "ParseJson",
+                                            "inputs":  {
+                                                "content":  "@items('For_each_entity')",
+                                                "schema":  {
+                                                    "properties":  {
+                                                        "Active":  {
+                                                            "type":  "boolean"
+                                                        },
+                                                        "Attendees":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "Cost":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "Name":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "PartitionKey":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "PlayBackId":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "Pulled":  {
+                                                            "type":  "boolean"
+                                                        },
+                                                        "RowKey":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "StreamDuration":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "StreamEndDate":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "StreamEndDate@odata.type":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "StreamID":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "StreamInfo":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "StreamStartDate":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "StreamStartDate@odata.type":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "StreamStatus":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "StreamType":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "SuspendStatus":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "Timestamp":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "VId":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "VaultContractId":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "WalletId":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "odata.etag":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "relayUrl":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "relayUrlIsVerified":  {
+                                                            "type":  "boolean"
+                                                        }
+                                                    },
+                                                    "type":  "object"
+                                                }
+                                            }
+                                        },
+                                        "Update_stream_status":  {
+                                            "runAfter":  {
+                                                "Parse_JSON":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type":  "ApiConnection",
+                                            "inputs":  {
+                                                "body":  {
+                                                    "StreamStatus":  "@{variables('Status')}"
+                                                },
+                                                "host":  {
+                                                    "connection":  {
+                                                        "name":  "@parameters('$connections')['azuretables']['connectionId']"
+                                                    }
+                                                },
+                                                "method":  "patch",
+                                                "path":  "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/tables/@{encodeURIComponent('Stream')}/entities(PartitionKey='@{encodeURIComponent('USA')}',RowKey='@{encodeURIComponent(body('Parse_JSON')?['RowKey'])}')"
+                                            }
+                                        }
+                                    },
+                                    "runAfter":  {
+                                        "Get_entities_(V2)":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type":  "Foreach"
+                                },
+                                "Get_entities_(V2)":  {
+                                    "runAfter":  {
+                                    },
+                                    "type":  "ApiConnection",
+                                    "inputs":  {
+                                        "host":  {
+                                            "connection":  {
+                                                "name":  "@parameters('$connections')['azuretables']['connectionId']"
+                                            }
+                                        },
+                                        "method":  "get",
+                                        "path":  "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/tables/@{encodeURIComponent('Stream')}/entities",
+                                        "queries":  {
+                                            "$filter":  "StreamID eq '@{triggerBody()?['stream']?['id']}'"
+                                        }
+                                    }
+                                },
+                                "on_error_-_send_notification":  {
+                                    "actions":  {
+                                    },
+                                    "runAfter":  {
+                                        "For_each_entity":  [
+                                            "TimedOut",
+                                            "Skipped",
+                                            "Failed"
+                                        ]
+                                    },
+                                    "type":  "Scope"
+                                }
+                            },
+                            "runAfter":  {
+                                "Switch":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "expression":  {
+                                "and":  [
+                                    {
+                                        "not":  {
+                                            "equals":  [
+                                                "@empty(variables('Status'))",
+                                                "@true"
+                                            ]
+                                        }
+                                    }
+                                ]
+                            },
+                            "type":  "If"
+                        },
+                        "Initialize_variable":  {
+                            "runAfter":  {
+                            },
+                            "type":  "InitializeVariable",
+                            "inputs":  {
+                                "variables":  [
+                                    {
+                                        "name":  "Status",
+                                        "type":  "string"
+                                    }
+                                ]
+                            }
+                        },
+                        "Initialize_variable_search_column_name":  {
+                            "runAfter":  {
+                                "Initialize_variable":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "InitializeVariable",
+                            "inputs":  {
+                                "variables":  [
+                                    {
+                                        "name":  "SEARCH_COLUMN_NAME",
+                                        "type":  "string",
+                                        "value":  "StreamId"
+                                    }
+                                ]
+                            }
+                        },
+                        "Switch":  {
+                            "runAfter":  {
+                                "Initialize_variable_search_column_name":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "cases":  {
+                                "Idle":  {
+                                    "case":  "stream.idle",
+                                    "actions":  {
+                                        "Set_variable_2":  {
+                                            "runAfter":  {
+                                            },
+                                            "type":  "SetVariable",
+                                            "inputs":  {
+                                                "name":  "Status",
+                                                "value":  "Idle"
+                                            }
+                                        }
+                                    }
+                                },
+                                "Live":  {
+                                    "case":  "stream.started",
+                                    "actions":  {
+                                        "Set_variable":  {
+                                            "runAfter":  {
+                                            },
+                                            "type":  "SetVariable",
+                                            "inputs":  {
+                                                "name":  "Status",
+                                                "value":  "Live"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "default":  {
+                                "actions":  {
+                                }
+                            },
+                            "expression":  "@triggerBody()?['event']",
+                            "type":  "Switch"
+                        }
+                    },
+                    "outputs":  {
+                    }
+                },
+                "parameters":  {
+                    "$connections":  {
+                        "value":  {
+                            "azuretables":  {
+                                "connectionId":  "[resourceId('Microsoft.Web/connections', variables('AzuretablesConnectionName'))]",
+                                "connectionName":  "[variables('AzuretablesConnectionName')]",
+                                "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Azuretables')]"
+                            }
+                        }
+                    }
+                }
+            },
+            "name":  "[parameters('PlaybookName')]",
+            "type":  "Microsoft.Logic/workflows",
+            "location":  "[resourceGroup().location]",
+            "tags":  {
+                "hidden-SentinelTemplateName":  "logic-decentral-livestream-listener",
+                "hidden-SentinelTemplateVersion":  "1.0"
+            },
+            "identity":  {
+                "type":  "SystemAssigned"
+            },
+            "apiVersion":  "2017-07-01",
+            "dependsOn":  [
+                "[resourceId('Microsoft.Web/connections', variables('AzuretablesConnectionName'))]"
+            ]
+        },
+        {
+            "type":  "Microsoft.Web/connections",
+            "apiVersion":  "2016-06-01",
+            "name":  "[variables('AzuretablesConnectionName')]",
+            "location":  "[resourceGroup().location]",
+            "kind":  "V1",
+            "properties":  {
+                "displayName":  "[variables('AzuretablesConnectionName')]",
+                "customParameterValues":  {
+                },
+                "api":  {
+                    "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Azuretables')]"
+                }
+            }
+        }
+    ]
+}

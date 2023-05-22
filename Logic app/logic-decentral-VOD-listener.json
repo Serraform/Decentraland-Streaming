@@ -1,0 +1,453 @@
+{
+    "$schema":  "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion":  "1.0.0.0",
+    "metadata":  {
+        "title":  "",
+        "description":  "",
+        "prerequisites":  "",
+        "postDeployment":  [
+        ],
+        "prerequisitesDeployTemplateFile":  "",
+        "lastUpdateTime":  "",
+        "entities":  [
+        ],
+        "tags":  [
+        ],
+        "support":  {
+            "tier":  "community",
+            "armtemplate":  "Generated from https://github.com/Azure/Azure-Sentinel/tree/master/Tools/Playbook-ARM-Template-Generator"
+        },
+        "author":  {
+            "name":  ""
+        }
+    },
+    "parameters":  {
+        "PlaybookName":  {
+            "defaultValue":  "logic-decentral-VOD-listener",
+            "type":  "string"
+        }
+    },
+    "variables":  {
+        "AzuretablesConnectionName":  "[concat('Azuretables-', parameters('PlaybookName'))]"
+    },
+    "resources":  [
+        {
+            "properties":  {
+                "provisioningState":  "Succeeded",
+                "state":  "Enabled",
+                "definition":  {
+                    "$schema":  "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion":  "1.0.0.0",
+                    "parameters":  {
+                        "$connections":  {
+                            "defaultValue":  {
+                            },
+                            "type":  "Object"
+                        }
+                    },
+                    "triggers":  {
+                        "manual":  {
+                            "type":  "Request",
+                            "kind":  "Http",
+                            "inputs":  {
+                                "schema":  {
+                                    "properties":  {
+                                        "createdAt":  {
+                                            "type":  "integer"
+                                        },
+                                        "event":  {
+                                            "type":  "string"
+                                        },
+                                        "id":  {
+                                            "type":  "string"
+                                        },
+                                        "payload":  {
+                                            "properties":  {
+                                                "asset":  {
+                                                    "properties":  {
+                                                        "id":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "snapshot":  {
+                                                            "properties":  {
+                                                                "createdAt":  {
+                                                                    "type":  "integer"
+                                                                },
+                                                                "id":  {
+                                                                    "type":  "string"
+                                                                },
+                                                                "name":  {
+                                                                    "type":  "string"
+                                                                },
+                                                                "objectStoreId":  {
+                                                                    "type":  "string"
+                                                                },
+                                                                "playbackId":  {
+                                                                    "type":  "string"
+                                                                },
+                                                                "source":  {
+                                                                    "properties":  {
+                                                                        "type":  {
+                                                                            "type":  "string"
+                                                                        }
+                                                                    },
+                                                                    "type":  "object"
+                                                                },
+                                                                "status":  {
+                                                                    "properties":  {
+                                                                        "phase":  {
+                                                                            "type":  "string"
+                                                                        },
+                                                                        "updatedAt":  {
+                                                                            "type":  "integer"
+                                                                        }
+                                                                    },
+                                                                    "type":  "object"
+                                                                },
+                                                                "userId":  {
+                                                                    "type":  "string"
+                                                                }
+                                                            },
+                                                            "type":  "object"
+                                                        }
+                                                    },
+                                                    "type":  "object"
+                                                }
+                                            },
+                                            "type":  "object"
+                                        },
+                                        "timestamp":  {
+                                            "type":  "integer"
+                                        },
+                                        "webhookId":  {
+                                            "type":  "string"
+                                        }
+                                    },
+                                    "type":  "object"
+                                }
+                            },
+                            "description":  "takes asset's status from livepper updates status of Asset in DB"
+                        }
+                    },
+                    "actions":  {
+                        "Condition":  {
+                            "actions":  {
+                                "Compose":  {
+                                    "runAfter":  {
+                                        "Parse_JSON":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type":  "Compose",
+                                    "inputs":  "@replace(body('Parse_JSON')?['UploadAssetStatus'],'''','\"')"
+                                },
+                                "Compose_2":  {
+                                    "runAfter":  {
+                                        "Get_entity_(V2)":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type":  "Compose",
+                                    "inputs":  "@replace(string(body('Get_entity_(V2)')),'\\\"','''')"
+                                },
+                                "Get_entity_(V2)":  {
+                                    "runAfter":  {
+                                    },
+                                    "type":  "ApiConnection",
+                                    "inputs":  {
+                                        "host":  {
+                                            "connection":  {
+                                                "name":  "@parameters('$connections')['azuretables']['connectionId']"
+                                            }
+                                        },
+                                        "method":  "get",
+                                        "path":  "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/tables/@{encodeURIComponent('Asset')}/entities(PartitionKey='@{encodeURIComponent('USA')}',RowKey='@{encodeURIComponent(triggerBody()?['payload']?['asset']?['id'])}')"
+                                    }
+                                },
+                                "Parse_JSON":  {
+                                    "runAfter":  {
+                                        "Compose_2":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type":  "ParseJson",
+                                    "inputs":  {
+                                        "content":  "@outputs('Compose_2')",
+                                        "schema":  {
+                                            "properties":  {
+                                                "AssetId":  {
+                                                    "type":  "string"
+                                                },
+                                                "AssetName":  {
+                                                    "type":  "string"
+                                                },
+                                                "FileName":  {
+                                                    "type":  "string"
+                                                },
+                                                "PartitionKey":  {
+                                                    "type":  "string"
+                                                },
+                                                "RowKey":  {
+                                                    "type":  "string"
+                                                },
+                                                "Timestamp":  {
+                                                    "type":  "string"
+                                                },
+                                                "UploadAssetStatus":  {
+                                                    "type":  "string"
+                                                },
+                                                "Url":  {
+                                                    "type":  "string"
+                                                }
+                                            },
+                                            "type":  "object"
+                                        }
+                                    }
+                                },
+                                "Parse_JSON_2":  {
+                                    "runAfter":  {
+                                        "Compose":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type":  "ParseJson",
+                                    "inputs":  {
+                                        "content":  "@outputs('Compose')",
+                                        "schema":  {
+                                            "properties":  {
+                                                "ErrorMessage":  {
+                                                    "type":  [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "Phase":  {
+                                                    "type":  [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "Progress":  {
+                                                    "type":  [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "updatedAt":  {
+                                                    "type":  [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "type":  "object"
+                                        }
+                                    }
+                                },
+                                "Update_asset_status":  {
+                                    "runAfter":  {
+                                        "value_of_UpdateAssetStatus":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type":  "ApiConnection",
+                                    "inputs":  {
+                                        "body":  {
+                                            "UploadAssetStatus":  "@{outputs('value_of_UpdateAssetStatus')}"
+                                        },
+                                        "host":  {
+                                            "connection":  {
+                                                "name":  "@parameters('$connections')['azuretables']['connectionId']"
+                                            }
+                                        },
+                                        "method":  "patch",
+                                        "path":  "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/tables/@{encodeURIComponent('Asset')}/entities(PartitionKey='@{encodeURIComponent('USA')}',RowKey='@{encodeURIComponent(triggerBody()?['payload']?['asset']?['id'])}')"
+                                    }
+                                },
+                                "on_error_-_send_email":  {
+                                    "actions":  {
+                                    },
+                                    "runAfter":  {
+                                        "Update_asset_status":  [
+                                            "TimedOut",
+                                            "Skipped",
+                                            "Failed"
+                                        ]
+                                    },
+                                    "type":  "Scope"
+                                },
+                                "value_of_UpdateAssetStatus":  {
+                                    "runAfter":  {
+                                        "Parse_JSON_2":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type":  "Compose",
+                                    "inputs":  "@setProperty(body('Parse_JSON_2'),'Phase',variables('Status'))"
+                                }
+                            },
+                            "runAfter":  {
+                                "Switch":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "expression":  {
+                                "and":  [
+                                    {
+                                        "not":  {
+                                            "equals":  [
+                                                "@empty(variables('Status'))",
+                                                "@true"
+                                            ]
+                                        }
+                                    }
+                                ]
+                            },
+                            "type":  "If"
+                        },
+                        "Initialize_variable":  {
+                            "runAfter":  {
+                            },
+                            "type":  "InitializeVariable",
+                            "inputs":  {
+                                "variables":  [
+                                    {
+                                        "name":  "Status",
+                                        "type":  "string"
+                                    }
+                                ]
+                            }
+                        },
+                        "Switch":  {
+                            "runAfter":  {
+                                "Initialize_variable":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "cases":  {
+                                "Created":  {
+                                    "case":  "asset.created",
+                                    "actions":  {
+                                        "Set_variable_2":  {
+                                            "runAfter":  {
+                                            },
+                                            "type":  "SetVariable",
+                                            "inputs":  {
+                                                "name":  "Status",
+                                                "value":  "Created"
+                                            }
+                                        }
+                                    }
+                                },
+                                "Deleted":  {
+                                    "case":  "asset.deleted",
+                                    "actions":  {
+                                        "Set_variable_3":  {
+                                            "runAfter":  {
+                                            },
+                                            "type":  "SetVariable",
+                                            "inputs":  {
+                                                "name":  "Status",
+                                                "value":  "Deleted"
+                                            }
+                                        }
+                                    }
+                                },
+                                "Failed":  {
+                                    "case":  "asset.failed",
+                                    "actions":  {
+                                        "Set_variable":  {
+                                            "runAfter":  {
+                                            },
+                                            "type":  "SetVariable",
+                                            "inputs":  {
+                                                "name":  "Status",
+                                                "value":  "Failed"
+                                            }
+                                        }
+                                    }
+                                },
+                                "Ready":  {
+                                    "case":  "asset.ready",
+                                    "actions":  {
+                                        "Set_variable_4":  {
+                                            "runAfter":  {
+                                            },
+                                            "type":  "SetVariable",
+                                            "inputs":  {
+                                                "name":  "Status",
+                                                "value":  "Ready"
+                                            }
+                                        }
+                                    }
+                                },
+                                "Updated":  {
+                                    "case":  "asset.updated",
+                                    "actions":  {
+                                        "Set_variable_5":  {
+                                            "runAfter":  {
+                                            },
+                                            "type":  "SetVariable",
+                                            "inputs":  {
+                                                "name":  "Status",
+                                                "value":  "Updated"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "default":  {
+                                "actions":  {
+                                }
+                            },
+                            "expression":  "@triggerBody()?['event']",
+                            "type":  "Switch"
+                        }
+                    },
+                    "outputs":  {
+                    }
+                },
+                "parameters":  {
+                    "$connections":  {
+                        "value":  {
+                            "azuretables":  {
+                                "connectionId":  "[resourceId('Microsoft.Web/connections', variables('AzuretablesConnectionName'))]",
+                                "connectionName":  "[variables('AzuretablesConnectionName')]",
+                                "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Azuretables')]"
+                            }
+                        }
+                    }
+                }
+            },
+            "name":  "[parameters('PlaybookName')]",
+            "type":  "Microsoft.Logic/workflows",
+            "location":  "[resourceGroup().location]",
+            "tags":  {
+                "hidden-SentinelTemplateName":  "logic-decentral-VOD-listener",
+                "hidden-SentinelTemplateVersion":  "1.0"
+            },
+            "identity":  {
+                "type":  "SystemAssigned"
+            },
+            "apiVersion":  "2017-07-01",
+            "dependsOn":  [
+                "[resourceId('Microsoft.Web/connections', variables('AzuretablesConnectionName'))]"
+            ]
+        },
+        {
+            "type":  "Microsoft.Web/connections",
+            "apiVersion":  "2016-06-01",
+            "name":  "[variables('AzuretablesConnectionName')]",
+            "location":  "[resourceGroup().location]",
+            "kind":  "V1",
+            "properties":  {
+                "displayName":  "[variables('AzuretablesConnectionName')]",
+                "customParameterValues":  {
+                },
+                "api":  {
+                    "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Azuretables')]"
+                }
+            }
+        }
+    ]
+}

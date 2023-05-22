@@ -1,0 +1,282 @@
+{
+    "$schema":  "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion":  "1.0.0.0",
+    "metadata":  {
+        "title":  "",
+        "description":  "",
+        "prerequisites":  "",
+        "postDeployment":  [
+        ],
+        "prerequisitesDeployTemplateFile":  "",
+        "lastUpdateTime":  "",
+        "entities":  [
+        ],
+        "tags":  [
+        ],
+        "support":  {
+            "tier":  "community",
+            "armtemplate":  "Generated from https://github.com/Azure/Azure-Sentinel/tree/master/Tools/Playbook-ARM-Template-Generator"
+        },
+        "author":  {
+            "name":  ""
+        }
+    },
+    "parameters":  {
+        "PlaybookName":  {
+            "defaultValue":  "logic-decentral-livesream-orchestrator",
+            "type":  "string"
+        }
+    },
+    "variables":  {
+        "AzurequeuesConnectionName":  "[concat('Azurequeues-', parameters('PlaybookName'))]",
+        "AzuretablesConnectionName":  "[concat('Azuretables-', parameters('PlaybookName'))]"
+    },
+    "resources":  [
+        {
+            "properties":  {
+                "provisioningState":  "Succeeded",
+                "state":  "Enabled",
+                "definition":  {
+                    "$schema":  "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion":  "1.0.0.0",
+                    "parameters":  {
+                        "$connections":  {
+                            "defaultValue":  {
+                            },
+                            "type":  "Object"
+                        }
+                    },
+                    "triggers":  {
+                        "When_there_are_messages_in_a_queue_(V2)":  {
+                            "recurrence":  {
+                                "frequency":  "Minute",
+                                "interval":  2
+                            },
+                            "evaluatedRecurrence":  {
+                                "frequency":  "Minute",
+                                "interval":  2
+                            },
+                            "splitOn":  "@triggerBody()?['QueueMessagesList']?['QueueMessage']",
+                            "type":  "ApiConnection",
+                            "inputs":  {
+                                "host":  {
+                                    "connection":  {
+                                        "name":  "@parameters('$connections')['azurequeues_1']['connectionId']"
+                                    }
+                                },
+                                "method":  "get",
+                                "path":  "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/queues/@{encodeURIComponent('queue-livestream')}/message_trigger"
+                            }
+                        }
+                    },
+                    "actions":  {
+                        "Condition":  {
+                            "actions":  {
+                                "ComposeTableEntity":  {
+                                    "runAfter":  {
+                                        "schedule_livestream":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type":  "Compose",
+                                    "inputs":  {
+                                        "PartitionKey":  "USA",
+                                        "RowKey":  "@{body('Parse_JSON')?['RowKey']}"
+                                    }
+                                },
+                                "Delete_message_(V2)":  {
+                                    "runAfter":  {
+                                        "Parse_JSON":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type":  "ApiConnection",
+                                    "inputs":  {
+                                        "host":  {
+                                            "connection":  {
+                                                "name":  "@parameters('$connections')['azurequeues_1']['connectionId']"
+                                            }
+                                        },
+                                        "method":  "delete",
+                                        "path":  "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/queues/@{encodeURIComponent('queue-livestream')}/messages/@{encodeURIComponent(triggerBody()?['MessageId'])}",
+                                        "queries":  {
+                                            "popreceipt":  "@triggerBody()?['PopReceipt']"
+                                        }
+                                    }
+                                },
+                                "Insert_to_StreamDetail":  {
+                                    "runAfter":  {
+                                        "ComposeTableEntity":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type":  "ApiConnection",
+                                    "inputs":  {
+                                        "body":  "@union(outputs('ComposeTableEntity'),body('Parse_JSON'))",
+                                        "host":  {
+                                            "connection":  {
+                                                "name":  "@parameters('$connections')['azuretables']['connectionId']"
+                                            }
+                                        },
+                                        "method":  "post",
+                                        "path":  "/Tables/@{encodeURIComponent('StreamDetail')}/entities"
+                                    }
+                                },
+                                "Parse_JSON":  {
+                                    "runAfter":  {
+                                    },
+                                    "type":  "ParseJson",
+                                    "inputs":  {
+                                        "content":  "@json(triggerBody()?['MessageText'])",
+                                        "schema":  {
+                                            "properties":  {
+                                                "EndDateTime":  {
+                                                    "type":  "string"
+                                                },
+                                                "MessageRead":  {
+                                                    "type":  "boolean"
+                                                },
+                                                "RowKey":  {
+                                                    "type":  "string"
+                                                },
+                                                "StartDateTime":  {
+                                                    "type":  "string"
+                                                },
+                                                "streamId":  {
+                                                    "type":  "string"
+                                                },
+                                                "walletId":  {
+                                                    "type":  "string"
+                                                }
+                                            },
+                                            "type":  "object"
+                                        }
+                                    }
+                                },
+                                "Put_message_back_on_a_queue_(V2)":  {
+                                    "runAfter":  {
+                                        "schedule_livestream":  [
+                                            "Failed"
+                                        ]
+                                    },
+                                    "type":  "ApiConnection",
+                                    "inputs":  {
+                                        "body":  "@triggerBody()?['MessageText']",
+                                        "host":  {
+                                            "connection":  {
+                                                "name":  "@parameters('$connections')['azurequeues_1']['connectionId']"
+                                            }
+                                        },
+                                        "method":  "post",
+                                        "path":  "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/queues/@{encodeURIComponent('queue-livestream')}/messages"
+                                    }
+                                },
+                                "schedule_livestream":  {
+                                    "runAfter":  {
+                                        "Delete_message_(V2)":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type":  "Workflow",
+                                    "inputs":  {
+                                        "body":  {
+                                            "EndDateTime":  "@body('Parse_JSON')?['EndDateTime']",
+                                            "RowKey":  "@body('Parse_JSON')?['RowKey']",
+                                            "StartDateTime":  "@body('Parse_JSON')?['StartDateTime']",
+                                            "streamId":  "@body('Parse_JSON')?['streamId']",
+                                            "walletId":  "@body('Parse_JSON')?['walletId']"
+                                        },
+                                        "host":  {
+                                            "triggerName":  "manual",
+                                            "workflow":  {
+                                                "id":  "/subscriptions/d7a2619c-e2d1-4efc-bd0d-27c34a7319b0/resourceGroups/rg-eus-decentral-dev/providers/Microsoft.Logic/workflows/logic-decentral-livesream-scheduler-v2"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "runAfter":  {
+                            },
+                            "expression":  {
+                                "and":  [
+                                    {
+                                        "not":  {
+                                            "equals":  [
+                                                "@empty(triggerBody()?['MessageText'])",
+                                                "@true"
+                                            ]
+                                        }
+                                    }
+                                ]
+                            },
+                            "type":  "If"
+                        }
+                    },
+                    "outputs":  {
+                    }
+                },
+                "parameters":  {
+                    "$connections":  {
+                        "value":  {
+                            "azurequeues_1":  {
+                                "connectionId":  "[resourceId('Microsoft.Web/connections', variables('AzurequeuesConnectionName'))]",
+                                "connectionName":  "[variables('AzurequeuesConnectionName')]",
+                                "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Azurequeues')]"
+                            },
+                            "azuretables":  {
+                                "connectionId":  "[resourceId('Microsoft.Web/connections', variables('AzuretablesConnectionName'))]",
+                                "connectionName":  "[variables('AzuretablesConnectionName')]",
+                                "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Azuretables')]"
+                            }
+                        }
+                    }
+                }
+            },
+            "name":  "[parameters('PlaybookName')]",
+            "type":  "Microsoft.Logic/workflows",
+            "location":  "[resourceGroup().location]",
+            "tags":  {
+                "hidden-SentinelTemplateName":  "logic-decentral-livesream-orchestrator",
+                "hidden-SentinelTemplateVersion":  "1.0"
+            },
+            "identity":  {
+                "type":  "SystemAssigned"
+            },
+            "apiVersion":  "2017-07-01",
+            "dependsOn":  [
+                "[resourceId('Microsoft.Web/connections', variables('AzurequeuesConnectionName'))]",
+                "[resourceId('Microsoft.Web/connections', variables('AzuretablesConnectionName'))]"
+            ]
+        },
+        {
+            "type":  "Microsoft.Web/connections",
+            "apiVersion":  "2016-06-01",
+            "name":  "[variables('AzurequeuesConnectionName')]",
+            "location":  "[resourceGroup().location]",
+            "kind":  "V1",
+            "properties":  {
+                "displayName":  "[variables('AzurequeuesConnectionName')]",
+                "customParameterValues":  {
+                },
+                "api":  {
+                    "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Azurequeues')]"
+                }
+            }
+        },
+        {
+            "type":  "Microsoft.Web/connections",
+            "apiVersion":  "2016-06-01",
+            "name":  "[variables('AzuretablesConnectionName')]",
+            "location":  "[resourceGroup().location]",
+            "kind":  "V1",
+            "properties":  {
+                "displayName":  "[variables('AzuretablesConnectionName')]",
+                "customParameterValues":  {
+                },
+                "api":  {
+                    "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Azuretables')]"
+                }
+            }
+        }
+    ]
+}

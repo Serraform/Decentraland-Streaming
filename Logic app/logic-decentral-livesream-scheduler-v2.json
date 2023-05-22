@@ -1,0 +1,943 @@
+{
+    "$schema":  "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion":  "1.0.0.0",
+    "metadata":  {
+        "title":  "",
+        "description":  "",
+        "prerequisites":  "",
+        "postDeployment":  [
+        ],
+        "prerequisitesDeployTemplateFile":  "",
+        "lastUpdateTime":  "",
+        "entities":  [
+        ],
+        "tags":  [
+        ],
+        "support":  {
+            "tier":  "community",
+            "armtemplate":  "Generated from https://github.com/Azure/Azure-Sentinel/tree/master/Tools/Playbook-ARM-Template-Generator"
+        },
+        "author":  {
+            "name":  ""
+        }
+    },
+    "parameters":  {
+        "PlaybookName":  {
+            "defaultValue":  "logic-decentral-livesream-scheduler-v2",
+            "type":  "string"
+        },
+        "GitHubKey":  {
+            "type":  "string",
+            "metadata":  {
+                "description":  "Enter value for GitHubKey"
+            }
+        },
+        "GitHubUserAgent":  {
+            "type":  "string",
+            "metadata":  {
+                "description":  "Enter value for GitHubUserAgent"
+            }
+        },
+        "M3U8BaseUrl":  {
+            "type":  "string",
+            "metadata":  {
+                "description":  "Enter value for M3U8BaseUrl"
+            }
+        },
+        "M3U8Code":  {
+            "type":  "string",
+            "metadata":  {
+                "description":  "Enter value for M3U8Code"
+            }
+        },
+        "StorageAccountName":  {
+            "type":  "string",
+            "metadata":  {
+                "description":  "Enter value for StorageAccountName"
+            }
+        },
+        "WorkflowBaseUrl":  {
+            "type":  "string",
+            "metadata":  {
+                "description":  "Enter value for WorkflowBaseUrl"
+            }
+        },
+        "WorkflowBaseUrlForDeleteContainer":  {
+            "type":  "string",
+            "metadata":  {
+                "description":  "Enter value for WorkflowBaseUrlForDeleteContainer"
+            }
+        },
+        "livepeerApiUrl":  {
+            "type":  "string",
+            "metadata":  {
+                "description":  "Enter value for livepeerApiUrl"
+            }
+        },
+        "livepeerKey":  {
+            "type":  "string",
+            "metadata":  {
+                "description":  "Enter value for livepeerKey"
+            }
+        }
+    },
+    "variables":  {
+        "AzuretablesConnectionName":  "[concat('Azuretables-', parameters('PlaybookName'))]"
+    },
+    "resources":  [
+        {
+            "properties":  {
+                "provisioningState":  "Succeeded",
+                "state":  "Enabled",
+                "definition":  {
+                    "$schema":  "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion":  "1.0.0.0",
+                    "parameters":  {
+                        "$connections":  {
+                            "defaultValue":  {
+                            },
+                            "type":  "Object"
+                        },
+                        "GitHubKey":  {
+                            "defaultValue":  "[parameters('GitHubKey')]",
+                            "type":  "string"
+                        },
+                        "GitHubUserAgent":  {
+                            "defaultValue":  "[parameters('GitHubUserAgent')]",
+                            "type":  "string"
+                        },
+                        "M3U8BaseUrl":  {
+                            "defaultValue":  "[parameters('M3U8BaseUrl')]",
+                            "type":  "string"
+                        },
+                        "M3U8Code":  {
+                            "defaultValue":  "[parameters('M3U8Code')]",
+                            "type":  "string"
+                        },
+                        "StorageAccountName":  {
+                            "defaultValue":  "[parameters('StorageAccountName')]",
+                            "type":  "string"
+                        },
+                        "WorkflowBaseUrl":  {
+                            "defaultValue":  "[parameters('WorkflowBaseUrl')]",
+                            "type":  "string"
+                        },
+                        "WorkflowBaseUrlForDeleteContainer":  {
+                            "defaultValue":  "[parameters('WorkflowBaseUrlForDeleteContainer')]",
+                            "type":  "string"
+                        },
+                        "livepeerApiUrl":  {
+                            "defaultValue":  "[parameters('livepeerApiUrl')]",
+                            "type":  "string"
+                        },
+                        "livepeerKey":  {
+                            "defaultValue":  "[parameters('livepeerKey')]",
+                            "type":  "string"
+                        }
+                    },
+                    "triggers":  {
+                        "manual":  {
+                            "type":  "Request",
+                            "kind":  "Http",
+                            "inputs":  {
+                                "method":  "POST",
+                                "schema":  {
+                                    "properties":  {
+                                        "EndDateTime":  {
+                                            "type":  "string"
+                                        },
+                                        "RowKey":  {
+                                            "type":  "string"
+                                        },
+                                        "StartDateTime":  {
+                                            "type":  "string"
+                                        },
+                                        "streamId":  {
+                                            "type":  "string"
+                                        },
+                                        "walletId":  {
+                                            "type":  "string"
+                                        }
+                                    },
+                                    "type":  "object"
+                                }
+                            }
+                        }
+                    },
+                    "actions":  {
+                        "Compose":  {
+                            "runAfter":  {
+                                "temp":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "Compose",
+                            "inputs":  {
+                                "duration":  "@{sub(ticks(triggerBody()?['EndDateTime']),ticks(triggerBody()?['StartDateTime']))}",
+                                "endTimeWIth10minBuffer":  "@{addMinutes(triggerBody()?['EndDateTime'],-10)}",
+                                "startTimeWith10minBuffer":  "@{addMinutes(triggerBody()?['StartDateTime'],-10)}"
+                            }
+                        },
+                        "Condition":  {
+                            "actions":  {
+                                "Delay_until_endtime_+_10_mins":  {
+                                    "runAfter":  {
+                                        "Update_Stream_DB_with_Status_Idle":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type":  "Wait",
+                                    "inputs":  {
+                                        "until":  {
+                                            "timestamp":  "@addMinutes(triggerBody()?['EndDateTime'],+10)"
+                                        }
+                                    }
+                                },
+                                "Get_entity_(V2)":  {
+                                    "runAfter":  {
+                                        "Delay_until_endtime_+_10_mins":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type":  "ApiConnection",
+                                    "inputs":  {
+                                        "host":  {
+                                            "connection":  {
+                                                "name":  "@parameters('$connections')['azuretables']['connectionId']"
+                                            }
+                                        },
+                                        "method":  "get",
+                                        "path":  "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/tables/@{encodeURIComponent('Stream')}/entities(PartitionKey='@{encodeURIComponent('USA')}',RowKey='@{encodeURIComponent(triggerBody()?['RowKey'])}')"
+                                    }
+                                },
+                                "Parse_JSON":  {
+                                    "runAfter":  {
+                                        "Get_entity_(V2)":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type":  "ParseJson",
+                                    "inputs":  {
+                                        "content":  "@body('Get_entity_(V2)')",
+                                        "schema":  {
+                                            "properties":  {
+                                                "StreamEndDate":  {
+                                                    "type":  "string"
+                                                },
+                                                "StreamID":  {
+                                                    "type":  "string"
+                                                },
+                                                "StreamStartDate":  {
+                                                    "type":  "string"
+                                                }
+                                            },
+                                            "type":  "object"
+                                        }
+                                    }
+                                },
+                                "Update_Stream_DB_with_Status_Idle":  {
+                                    "runAfter":  {
+                                        "check_stream_type":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "type":  "ApiConnection",
+                                    "inputs":  {
+                                        "body":  {
+                                            "StreamStatus":  "Idle"
+                                        },
+                                        "host":  {
+                                            "connection":  {
+                                                "name":  "@parameters('$connections')['azuretables']['connectionId']"
+                                            }
+                                        },
+                                        "method":  "patch",
+                                        "path":  "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/tables/@{encodeURIComponent('Stream')}/entities(PartitionKey='@{encodeURIComponent('USA')}',RowKey='@{encodeURIComponent(triggerBody()?['RowKey'])}')"
+                                    }
+                                },
+                                "check_if_no_new_change_is_made_to_end_time":  {
+                                    "actions":  {
+                                        "Insert_or_Merge_Entity_(V2)":  {
+                                            "runAfter":  {
+                                                "check_stream_type_on_end":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type":  "ApiConnection",
+                                            "inputs":  {
+                                                "body":  {
+                                                    "StreamStatus":  "Suspended"
+                                                },
+                                                "host":  {
+                                                    "connection":  {
+                                                        "name":  "@parameters('$connections')['azuretables']['connectionId']"
+                                                    }
+                                                },
+                                                "method":  "patch",
+                                                "path":  "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/tables/@{encodeURIComponent('Stream')}/entities(PartitionKey='@{encodeURIComponent('USA')}',RowKey='@{encodeURIComponent(triggerBody()?['RowKey'])}')"
+                                            }
+                                        },
+                                        "Response":  {
+                                            "runAfter":  {
+                                                "Insert_or_Merge_Entity_(V2)":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type":  "Response",
+                                            "kind":  "Http",
+                                            "inputs":  {
+                                                "body":  {
+                                                    "StreamStatusChanged":  true
+                                                },
+                                                "statusCode":  200
+                                            }
+                                        },
+                                        "check_stream_type_on_end":  {
+                                            "runAfter":  {
+                                            },
+                                            "cases":  {
+                                                "Case":  {
+                                                    "case":  "vod",
+                                                    "actions":  {
+                                                    }
+                                                },
+                                                "Case_2":  {
+                                                    "case":  "liveStream",
+                                                    "actions":  {
+                                                        "suspendStream":  {
+                                                            "runAfter":  {
+                                                            },
+                                                            "type":  "Http",
+                                                            "inputs":  {
+                                                                "body":  {
+                                                                    "suspended":  true
+                                                                },
+                                                                "headers":  {
+                                                                    "Authorization":  "Bearer @{parameters('livepeerKey')}",
+                                                                    "Content-Type":  "application/json"
+                                                                },
+                                                                "method":  "PATCH",
+                                                                "uri":  "@{parameters('livepeerApiUrl')}stream/@{triggerBody()?['streamId']}"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "Case_3":  {
+                                                    "case":  "relayService",
+                                                    "actions":  {
+                                                        "Suspend_stream_-_relayService":  {
+                                                            "runAfter":  {
+                                                            },
+                                                            "type":  "Http",
+                                                            "inputs":  {
+                                                                "body":  {
+                                                                    "suspended":  true
+                                                                },
+                                                                "headers":  {
+                                                                    "Authorization":  "Bearer @{parameters('livepeerKey')}",
+                                                                    "Content-Type":  "application/json"
+                                                                },
+                                                                "method":  "PATCH",
+                                                                "uri":  "@{parameters('livepeerApiUrl')}stream/@{body('Parse_JSON')?['StreamID']}"
+                                                            }
+                                                        },
+                                                        "Trigger_Wrokflow_-_Delete_Container":  {
+                                                            "runAfter":  {
+                                                                "Suspend_stream_-_relayService":  [
+                                                                    "Succeeded"
+                                                                ]
+                                                            },
+                                                            "type":  "Http",
+                                                            "inputs":  {
+                                                                "body":  {
+                                                                    "inputs":  {
+                                                                        "container_name":  "@{variables('StreamKey')}"
+                                                                    },
+                                                                    "ref":  "main"
+                                                                },
+                                                                "headers":  {
+                                                                    "Accept":  "application/vnd.github+json",
+                                                                    "Authorization":  "@parameters('GitHubKey')",
+                                                                    "X-GitHub-Api-Version":  "2022-11-28"
+                                                                },
+                                                                "method":  "POST",
+                                                                "uri":  "@parameters('WorkflowBaseUrlForDeleteContainer')"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "default":  {
+                                                "actions":  {
+                                                }
+                                            },
+                                            "expression":  "@body('parse_stream')?['StreamType']",
+                                            "type":  "Switch"
+                                        }
+                                    },
+                                    "runAfter":  {
+                                        "Parse_JSON":  [
+                                            "Succeeded"
+                                        ]
+                                    },
+                                    "else":  {
+                                        "actions":  {
+                                            "Response_2":  {
+                                                "runAfter":  {
+                                                },
+                                                "type":  "Response",
+                                                "kind":  "Http",
+                                                "inputs":  {
+                                                    "body":  {
+                                                        "StreamStatusChanged":  false
+                                                    },
+                                                    "statusCode":  200
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "expression":  {
+                                        "and":  [
+                                            {
+                                                "equals":  [
+                                                    "@equals(variables('EndTime'),body('parse_stream')?['StreamEndDate'])",
+                                                    true
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "type":  "If"
+                                },
+                                "check_stream_type":  {
+                                    "runAfter":  {
+                                    },
+                                    "cases":  {
+                                        "Case":  {
+                                            "case":  "vod",
+                                            "actions":  {
+                                            }
+                                        },
+                                        "Case_2":  {
+                                            "case":  "liveStream",
+                                            "actions":  {
+                                                "unsuspend_stream":  {
+                                                    "runAfter":  {
+                                                    },
+                                                    "type":  "Http",
+                                                    "inputs":  {
+                                                        "body":  {
+                                                            "suspended":  false
+                                                        },
+                                                        "headers":  {
+                                                            "Authorization":  "Bearer @{parameters('livepeerKey')}",
+                                                            "Content-Type":  "application/json"
+                                                        },
+                                                        "method":  "PATCH",
+                                                        "uri":  "@{parameters('livepeerApiUrl')}stream/@{triggerBody()?['streamId']}"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "Case_3":  {
+                                            "case":  "relayService",
+                                            "actions":  {
+                                                "Condition_2":  {
+                                                    "actions":  {
+                                                        "Get_new_stream_info":  {
+                                                            "actions":  {
+                                                                "Get_entity_(V2)_2":  {
+                                                                    "runAfter":  {
+                                                                    },
+                                                                    "type":  "ApiConnection",
+                                                                    "inputs":  {
+                                                                        "host":  {
+                                                                            "connection":  {
+                                                                                "name":  "@parameters('$connections')['azuretables']['connectionId']"
+                                                                            }
+                                                                        },
+                                                                        "method":  "get",
+                                                                        "path":  "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent(parameters('StorageAccountName')))}/tables/@{encodeURIComponent('Stream')}/entities(PartitionKey='@{encodeURIComponent('USA')}',RowKey='@{encodeURIComponent(triggerBody()?['RowKey'])}')"
+                                                                    }
+                                                                },
+                                                                "Parse_JSON_3":  {
+                                                                    "runAfter":  {
+                                                                        "Get_entity_(V2)_2":  [
+                                                                            "Succeeded"
+                                                                        ]
+                                                                    },
+                                                                    "type":  "ParseJson",
+                                                                    "inputs":  {
+                                                                        "content":  "@body('Get_entity_(V2)_2')",
+                                                                        "schema":  {
+                                                                            "properties":  {
+                                                                                "Active":  {
+                                                                                    "type":  "boolean"
+                                                                                },
+                                                                                "Attendees":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "Cost":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "Name":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "PartitionKey":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "PlayBackId":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "Pulled":  {
+                                                                                    "type":  "boolean"
+                                                                                },
+                                                                                "RowKey":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "StreamDuration":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "StreamEndDate":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "StreamEndDate@odata.type":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "StreamID":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "StreamInfo":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "StreamStartDate":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "StreamStartDate@odata.type":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "StreamStatus":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "StreamType":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "SuspendStatus":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "Timestamp":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "VId":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "VaultContractId":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "WalletId":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "odata.etag":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "odata.metadata":  {
+                                                                                    "type":  "string"
+                                                                                }
+                                                                            },
+                                                                            "type":  "object"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "Parse_StreamInfo":  {
+                                                                    "runAfter":  {
+                                                                        "Set_streamInfo":  [
+                                                                            "Succeeded"
+                                                                        ]
+                                                                    },
+                                                                    "type":  "ParseJson",
+                                                                    "inputs":  {
+                                                                        "content":  "@variables('temp')",
+                                                                        "schema":  {
+                                                                            "properties":  {
+                                                                                "Name":  {
+                                                                                    "type":  "string"
+                                                                                },
+                                                                                "StreamKey":  {
+                                                                                    "type":  "string"
+                                                                                }
+                                                                            },
+                                                                            "type":  "object"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "Set_streamInfo":  {
+                                                                    "runAfter":  {
+                                                                        "Parse_JSON_3":  [
+                                                                            "Succeeded"
+                                                                        ]
+                                                                    },
+                                                                    "type":  "SetVariable",
+                                                                    "inputs":  {
+                                                                        "name":  "temp",
+                                                                        "value":  "@json(body('Parse_JSON_3')?['StreamInfo'])"
+                                                                    }
+                                                                },
+                                                                "Set_variable":  {
+                                                                    "runAfter":  {
+                                                                        "Parse_StreamInfo":  [
+                                                                            "Succeeded"
+                                                                        ]
+                                                                    },
+                                                                    "type":  "SetVariable",
+                                                                    "inputs":  {
+                                                                        "name":  "StreamKey",
+                                                                        "value":  "@body('Parse_StreamInfo')?['StreamKey']"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "runAfter":  {
+                                                                "Insert_or_Merge_Entity_(V2)_2":  [
+                                                                    "Succeeded"
+                                                                ]
+                                                            },
+                                                            "type":  "Scope"
+                                                        },
+                                                        "Insert_or_Merge_Entity_(V2)_2":  {
+                                                            "runAfter":  {
+                                                            },
+                                                            "type":  "ApiConnection",
+                                                            "inputs":  {
+                                                                "body":  {
+                                                                    "relayUrlIsVerified":  true
+                                                                },
+                                                                "host":  {
+                                                                    "connection":  {
+                                                                        "name":  "@parameters('$connections')['azuretables']['connectionId']"
+                                                                    }
+                                                                },
+                                                                "method":  "patch",
+                                                                "path":  "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent(parameters('StorageAccountName')))}/tables/@{encodeURIComponent('Stream')}/entities(PartitionKey='@{encodeURIComponent('USA')}',RowKey='@{encodeURIComponent(triggerBody()?['RowKey'])}')"
+                                                            }
+                                                        },
+                                                        "Trigger_Workflow_-_Create_container":  {
+                                                            "runAfter":  {
+                                                                "Unsuspend_stream_for_relay":  [
+                                                                    "Succeeded"
+                                                                ]
+                                                            },
+                                                            "type":  "Http",
+                                                            "inputs":  {
+                                                                "body":  {
+                                                                    "inputs":  {
+                                                                        "livestream_token":  "@{body('Parse_StreamInfo')?['StreamKey']}",
+                                                                        "m3u8_url":  "@{body('Verify_m3u8')}"
+                                                                    },
+                                                                    "ref":  "main"
+                                                                },
+                                                                "headers":  {
+                                                                    "Accept":  "application/vnd.github+json",
+                                                                    "Authorization":  "@parameters('GitHubKey')",
+                                                                    "X-GitHub-Api-Version":  "2022-11-28"
+                                                                },
+                                                                "method":  "POST",
+                                                                "uri":  "@parameters('WorkflowBaseUrl')"
+                                                            }
+                                                        },
+                                                        "Unsuspend_stream_for_relay":  {
+                                                            "runAfter":  {
+                                                                "Get_new_stream_info":  [
+                                                                    "Succeeded"
+                                                                ]
+                                                            },
+                                                            "type":  "Http",
+                                                            "inputs":  {
+                                                                "body":  {
+                                                                    "suspended":  false
+                                                                },
+                                                                "headers":  {
+                                                                    "Authorization":  "Bearer @{parameters('livepeerKey')}",
+                                                                    "Content-Type":  "application/json"
+                                                                },
+                                                                "method":  "PATCH",
+                                                                "uri":  "@{parameters('livepeerApiUrl')}stream/@{triggerBody()?['streamId']}"
+                                                            }
+                                                        }
+                                                    },
+                                                    "runAfter":  {
+                                                        "Verify_m3u8":  [
+                                                            "Succeeded",
+                                                            "TimedOut",
+                                                            "Skipped",
+                                                            "Failed"
+                                                        ]
+                                                    },
+                                                    "else":  {
+                                                        "actions":  {
+                                                            "Update_some_where_m3u8_failure_validation":  {
+                                                                "actions":  {
+                                                                    "Insert_or_Merge_Entity_(V2)_4":  {
+                                                                        "runAfter":  {
+                                                                        },
+                                                                        "type":  "ApiConnection",
+                                                                        "inputs":  {
+                                                                            "body":  {
+                                                                                "relayUrlIsVerified":  false
+                                                                            },
+                                                                            "host":  {
+                                                                                "connection":  {
+                                                                                    "name":  "@parameters('$connections')['azuretables']['connectionId']"
+                                                                                }
+                                                                            },
+                                                                            "method":  "patch",
+                                                                            "path":  "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/tables/@{encodeURIComponent('Stream')}/entities(PartitionKey='@{encodeURIComponent('USA')}',RowKey='@{encodeURIComponent(triggerBody()?['streamId'])}')"
+                                                                        }
+                                                                    },
+                                                                    "Response_3":  {
+                                                                        "runAfter":  {
+                                                                            "Insert_or_Merge_Entity_(V2)_4":  [
+                                                                                "Succeeded"
+                                                                            ]
+                                                                        },
+                                                                        "type":  "Response",
+                                                                        "kind":  "Http",
+                                                                        "inputs":  {
+                                                                            "body":  "m3u8 not live",
+                                                                            "statusCode":  400
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "runAfter":  {
+                                                                },
+                                                                "type":  "Scope"
+                                                            }
+                                                        }
+                                                    },
+                                                    "expression":  {
+                                                        "and":  [
+                                                            {
+                                                                "equals":  [
+                                                                    "@outputs('Verify_m3u8')['statusCode']",
+                                                                    200
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    "type":  "If"
+                                                },
+                                                "Verify_m3u8":  {
+                                                    "runAfter":  {
+                                                    },
+                                                    "type":  "Http",
+                                                    "inputs":  {
+                                                        "method":  "GET",
+                                                        "uri":  "@{parameters('M3U8BaseUrl')}?code=@{parameters('M3U8Code')}\u0026twitch_url=@{body('parse_stream')?['relayUrl']}"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "default":  {
+                                        "actions":  {
+                                        }
+                                    },
+                                    "expression":  "@body('parse_stream')?['StreamType']",
+                                    "type":  "Switch"
+                                }
+                            },
+                            "runAfter":  {
+                                "parse_stream":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "expression":  {
+                                "and":  [
+                                    {
+                                        "equals":  [
+                                            "@equals(variables('StartTime'),body('parse_stream')?['StreamStartDate'])",
+                                            "@true"
+                                        ]
+                                    },
+                                    {
+                                        "equals":  [
+                                            "@body('parse_stream')?['Active']",
+                                            "@true"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "type":  "If"
+                        },
+                        "Delay_until_10_mins_prior_to_start_time":  {
+                            "runAfter":  {
+                                "Compose":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "Wait",
+                            "inputs":  {
+                                "until":  {
+                                    "timestamp":  "@addMinutes(variables('StartTime'),-10)"
+                                }
+                            }
+                        },
+                        "EndTime":  {
+                            "runAfter":  {
+                                "StartTime":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "InitializeVariable",
+                            "inputs":  {
+                                "variables":  [
+                                    {
+                                        "name":  "EndTime",
+                                        "type":  "string",
+                                        "value":  "@triggerBody()?['EndDateTime']"
+                                    }
+                                ]
+                            }
+                        },
+                        "StartTime":  {
+                            "runAfter":  {
+                            },
+                            "type":  "InitializeVariable",
+                            "inputs":  {
+                                "variables":  [
+                                    {
+                                        "name":  "StartTime",
+                                        "type":  "string",
+                                        "value":  "@triggerBody()?['StartDateTime']"
+                                    }
+                                ]
+                            }
+                        },
+                        "StreamKey":  {
+                            "runAfter":  {
+                                "EndTime":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "InitializeVariable",
+                            "inputs":  {
+                                "variables":  [
+                                    {
+                                        "name":  "StreamKey",
+                                        "type":  "string"
+                                    }
+                                ]
+                            }
+                        },
+                        "check_starttime_again":  {
+                            "runAfter":  {
+                                "Delay_until_10_mins_prior_to_start_time":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "ApiConnection",
+                            "inputs":  {
+                                "host":  {
+                                    "connection":  {
+                                        "name":  "@parameters('$connections')['azuretables']['connectionId']"
+                                    }
+                                },
+                                "method":  "get",
+                                "path":  "/Tables/@{encodeURIComponent('Stream')}/entities(PartitionKey='@{encodeURIComponent('USA')}',RowKey='@{encodeURIComponent(triggerBody()?['RowKey'])}')"
+                            }
+                        },
+                        "parse_stream":  {
+                            "runAfter":  {
+                                "check_starttime_again":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "ParseJson",
+                            "inputs":  {
+                                "content":  "@body('check_starttime_again')",
+                                "schema":  {
+                                    "properties":  {
+                                        "Active":  {
+                                            "type":  "boolean"
+                                        },
+                                        "Name":  {
+                                            "type":  "string"
+                                        },
+                                        "StreamEndDate":  {
+                                            "type":  "string"
+                                        },
+                                        "StreamStartDate":  {
+                                            "type":  "string"
+                                        },
+                                        "StreamType":  {
+                                            "type":  "string"
+                                        },
+                                        "relayUrl":  {
+                                            "type":  "string"
+                                        }
+                                    },
+                                    "type":  "object"
+                                }
+                            }
+                        },
+                        "temp":  {
+                            "runAfter":  {
+                                "StreamKey":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "InitializeVariable",
+                            "inputs":  {
+                                "variables":  [
+                                    {
+                                        "name":  "temp",
+                                        "type":  "object"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "outputs":  {
+                    }
+                },
+                "parameters":  {
+                    "$connections":  {
+                        "value":  {
+                            "azuretables":  {
+                                "connectionId":  "[resourceId('Microsoft.Web/connections', variables('AzuretablesConnectionName'))]",
+                                "connectionName":  "[variables('AzuretablesConnectionName')]",
+                                "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Azuretables')]"
+                            }
+                        }
+                    }
+                }
+            },
+            "name":  "[parameters('PlaybookName')]",
+            "type":  "Microsoft.Logic/workflows",
+            "location":  "[resourceGroup().location]",
+            "tags":  {
+                "hidden-SentinelTemplateName":  "logic-decentral-livesream-scheduler-v2",
+                "hidden-SentinelTemplateVersion":  "1.0"
+            },
+            "identity":  {
+                "type":  "SystemAssigned"
+            },
+            "apiVersion":  "2017-07-01",
+            "dependsOn":  [
+                "[resourceId('Microsoft.Web/connections', variables('AzuretablesConnectionName'))]"
+            ]
+        },
+        {
+            "type":  "Microsoft.Web/connections",
+            "apiVersion":  "2016-06-01",
+            "name":  "[variables('AzuretablesConnectionName')]",
+            "location":  "[resourceGroup().location]",
+            "kind":  "V1",
+            "properties":  {
+                "displayName":  "[variables('AzuretablesConnectionName')]",
+                "customParameterValues":  {
+                },
+                "api":  {
+                    "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Azuretables')]"
+                }
+            }
+        }
+    ]
+}
