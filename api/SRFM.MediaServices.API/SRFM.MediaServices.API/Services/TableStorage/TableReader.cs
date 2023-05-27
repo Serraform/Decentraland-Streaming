@@ -103,13 +103,13 @@ namespace SRFM.MediaServices.API
             return result.Result as T;
         }
 
-        public async Task<T> GetItemsByStreamIDKeyAsync<T>(string tableName, string partitionKey, bool isActive, string colValue) where T : TableEntity, new()
+        public async Task<T> GetItemsByColNameKeyAsync<T>(string tableName, string partitionKey, bool isActive,string colName, string colValue) where T : TableEntity, new()
         {
             var tableref = _tableClient.GetTableReference(tableName);
 
             string welletIDQuery = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey);
             string isActiveQuery = TableQuery.GenerateFilterConditionForBool("Active", QueryComparisons.Equal, isActive);
-            string isFlagQuery = TableQuery.GenerateFilterCondition("StreamID", QueryComparisons.Equal, colValue);
+            string isFlagQuery = TableQuery.GenerateFilterCondition(colName, QueryComparisons.Equal, colValue);
             string combinedFilter = TableQuery.CombineFilters(TableQuery.CombineFilters(welletIDQuery, TableOperators.And, isActiveQuery), TableOperators.And, isFlagQuery);
 
             TableContinuationToken token = null;

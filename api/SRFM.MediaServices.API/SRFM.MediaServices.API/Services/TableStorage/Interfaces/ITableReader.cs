@@ -16,6 +16,6 @@ namespace SRFM.MediaServices.API
 
         public Task<T> GetItemsByRowKeyAsync<T>(string tableName, string walletId) where T : TableEntity;
 
-        public Task<T> GetItemsByStreamIDKeyAsync<T>(string tableName, string partitionKey, bool isActive, string colValue) where T : TableEntity, new();
+        public Task<T> GetItemsByColNameKeyAsync<T>(string tableName, string partitionKey, bool isActive, string colName, string colValue) where T : TableEntity, new();
     }
 }
