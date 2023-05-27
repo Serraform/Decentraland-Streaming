@@ -414,7 +414,7 @@ namespace SRFM.MediaServices.API.Controllers
             bool isValidToken = TokenManager.ValidateToken(token);
             if (isValidToken)
             {
-                var streams = await _process.GetStreamsByWalletId(walletId);
+                var streams = await _process.GetStreamsByWalletId(walletId.ToLower());
                 return streams;
             }
             else
