@@ -177,7 +177,7 @@ export const fetchFunds = createAsyncThunk(
       // get user details by wallet
       const accountDetails = await getAccountDetailsByWalletId(walletID);
       if ((accountDetails as any).data.role !== "admin" && isAdmin) {
-        updateAccount({ walletID, role: "admin" });
+        updateAccount({ walletID, Role: "admin" });
       }
       const { isPremium, discount } = accountDetails.data as any;
       return {

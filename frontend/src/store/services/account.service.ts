@@ -4,7 +4,7 @@ export const createAccount = async (walletID: string, authToken: string) => {
   return await client.post(
     "/api/User/CreateUser",
     {
-      walletID: walletID,
+      WalletId: walletID,
     },
     {
       headers: { Authorization: `Bearer ${authToken}` },
@@ -12,16 +12,18 @@ export const createAccount = async (walletID: string, authToken: string) => {
   );
 };
 
-export const updateAccount = async ({ walletID, role }: any) => {
+export const updateAccount = async ({ walletID, Role }: any) => {
   const jwtToken = localStorage.getItem("token");
   client.defaults.headers.common['Authorization'] =  "Bearer " +  jwtToken;
   return await client.put("/api/User/UpdateUser", {
     WalletId: walletID,
-    Role: role,
+    Role: Role,
   });
 };
 
 export const getAccountDetailsByWalletId = async (walletID: string) => {
+  const jwtToken = localStorage.getItem("token");
+  client.defaults.headers.common['Authorization'] =  "Bearer " +  jwtToken;
   return await client.get(`/api/User/GetUserDetailsByWalletId/${walletID}`);
 };
 
