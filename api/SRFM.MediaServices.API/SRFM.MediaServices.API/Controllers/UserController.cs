@@ -81,7 +81,7 @@ namespace SRFM.MediaServices.API.Controllers
             bool isValidToken = TokenManager.ValidateToken(token);
             if (isValidToken)
             {
-                UserDB isAdmin = await _process.GetUserByWalletId(adminWalletId);
+                UserDB isAdmin = await _process.GetUserByWalletId(adminWalletId.ToLower());
 
                 if (isAdmin.Role == UserRole.admin.ToString())
                 {
@@ -115,11 +115,11 @@ namespace SRFM.MediaServices.API.Controllers
             if (isValidToken)
             {
 
-                UserDB isAdmin = await _process.GetUserByWalletId(adminWalletId);
+                UserDB isAdmin = await _process.GetUserByWalletId(adminWalletId.ToLower());
 
                 if (isAdmin.Role == UserRole.admin.ToString())
                 {
-                    UserDB user = await _process.GetUserByWalletId(entity.WalletId);
+                    UserDB user = await _process.GetUserByWalletId(entity.WalletId.ToLower());
 
                     if (user != null)
                     {
@@ -160,7 +160,7 @@ namespace SRFM.MediaServices.API.Controllers
             {
                 if (walletId != null)
                 {
-                    UserDB user = await _process.GetUserByWalletId(walletId);
+                    UserDB user = await _process.GetUserByWalletId(walletId.ToLower());
                     return user;
                 }
                 throw new CustomException("WalletId inputs Required");
@@ -183,12 +183,12 @@ namespace SRFM.MediaServices.API.Controllers
             {
                 if (entity != null)
                 {
-                    UserDB user = await _process.GetUserByWalletId(entity.WalletId);
+                    UserDB user = await _process.GetUserByWalletId(entity.WalletId.ToLower());
 
                     if (user == null)
                     {
                         entity.PartitionKey = StorageAccount.PartitionKey;
-                        entity.RowKey = entity.WalletId;
+                        entity.RowKey = entity.WalletId.ToLower();
                         entity.Active = true;
                         entity.Role = UserRole.normal.ToString();
                         
@@ -199,7 +199,9 @@ namespace SRFM.MediaServices.API.Controllers
                     }
                     else
                     {
-                        throw new CustomException("WalletId already present. Please try again with new wallet Id.");                        
+                        //throw new CustomException("WalletId already present. Please try again with new wallet Id.");
+                        var responseMsg = new ResponseMessage { ErrorMsg = "WalletId already present. Please try again with new wallet Id." };
+                        return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(JsonSerializer.Serialize(responseMsg), System.Text.Encoding.UTF8, "application/json") };
                     }
                 }
                 throw new CustomException("User inputs Required");
@@ -221,7 +223,7 @@ namespace SRFM.MediaServices.API.Controllers
             bool isValidToken = TokenManager.ValidateToken(token);
             if (isValidToken)
             {
-                UserDB user = await _process.GetUserByWalletId(entity.WalletId);
+                UserDB user = await _process.GetUserByWalletId(entity.WalletId.ToLower());
 
                 if (user != null)
                 {
@@ -254,7 +256,7 @@ namespace SRFM.MediaServices.API.Controllers
             bool isValidToken = TokenManager.ValidateToken(token);
             if (isValidToken)
             {
-                UserDB user = await _process.GetUserByWalletId(walletId);
+                UserDB user = await _process.GetUserByWalletId(walletId.ToLower());
 
                 if (user != null)
                 {
