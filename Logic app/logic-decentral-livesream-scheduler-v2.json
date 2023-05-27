@@ -796,6 +796,18 @@
                                 ]
                             }
                         },
+                        "Send_mail_when_starttime_is_missing":  {
+                            "actions":  {
+                            },
+                            "runAfter":  {
+                                "check_starttime_again":  [
+                                    "TimedOut",
+                                    "Skipped",
+                                    "Failed"
+                                ]
+                            },
+                            "type":  "Scope"
+                        },
                         "StartTime":  {
                             "runAfter":  {
                             },
