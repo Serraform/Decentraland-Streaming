@@ -43,6 +43,25 @@ namespace SRFM.MediaServices.API.Controllers
             bool isValidToken = TokenManager.ValidateToken(token);
             if (isValidToken)
             {
+                List<UserDB> user = await _process.ListUsers();
+                return user;
+            }
+            else
+            {
+                throw new CustomException("Token not valid.");
+            }
+        }
+
+        [HttpGet]
+        [Route("ListIsActiveUsers")]
+        public async Task<List<UserDB>> ListIsActiveUsers()
+        {
+            Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
+            var tokenWithBearer = headerValue.ToString();
+            var token = tokenWithBearer.Split(" ")[1];
+            bool isValidToken = TokenManager.ValidateToken(token);
+            if (isValidToken)
+            {
                 List<UserDB> user = await _process.ListUserIsActiveItemsAsync(true);
                 return user;
             }
@@ -106,12 +125,11 @@ namespace SRFM.MediaServices.API.Controllers
                     {
                         if (entity != null)
                         {
-                            entity.PartitionKey = StorageAccount.PartitionKey;
-                            entity.RowKey = user.WalletId;
-                            entity.ETag = user.ETag;
-                            entity.Active = user.Active;
+                            user.IsPremium = entity.IsPremium;
+                            user.Discount = entity.Discount;
+                            user.Role = entity.Role == null ? user.Role : entity.Role;
 
-                            var statusCode = await _process.UpdateUser(entity);
+                            var statusCode = await _process.UpdateUser(user);
                             var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
                             return ret;
                         }
@@ -171,7 +189,9 @@ namespace SRFM.MediaServices.API.Controllers
                     {
                         entity.PartitionKey = StorageAccount.PartitionKey;
                         entity.RowKey = entity.WalletId;
-
+                        entity.Active = true;
+                        entity.Role = UserRole.normal.ToString();
+                        
                         var ret = await _process.CreateNewUser(entity);
                         //var ret = new ObjectResult(ret) { StatusCode = StatusCodes.Status204NoContent };
                         return ret;
@@ -179,9 +199,7 @@ namespace SRFM.MediaServices.API.Controllers
                     }
                     else
                     {
-                        //throw new CustomException("WalletId already present. Please try again with new wallet Id.");
-                        var responseMsg = new ResponseMessage { ErrorMsg = "WalletId already present. Please try again with new wallet Id." };
-                        return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(JsonSerializer.Serialize(responseMsg), System.Text.Encoding.UTF8, "application/json") };
+                        throw new CustomException("WalletId already present. Please try again with new wallet Id.");                        
                     }
                 }
                 throw new CustomException("User inputs Required");
@@ -209,11 +227,10 @@ namespace SRFM.MediaServices.API.Controllers
                 {
                     if (entity != null)
                     {
-                        entity.PartitionKey = StorageAccount.PartitionKey;
-                        entity.RowKey = user.WalletId;
-                        entity.ETag = user.ETag;
+                        user.Role = entity.Role;
+                        user.Active = entity.Active == false ? user.Active : entity.Active;
 
-                        var statusCode = await _process.UpdateUser(entity);
+                        var statusCode = await _process.UpdateUser(user);
                         var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
                         return ret;
                     }

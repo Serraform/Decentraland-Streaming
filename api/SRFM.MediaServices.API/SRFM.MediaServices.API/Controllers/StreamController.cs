@@ -333,6 +333,50 @@ namespace SRFM.MediaServices.API.Controllers
             }
         }
 
+        [HttpPatch]
+        [Route("UpdateStream/{vaultContractId}")]
+        public async Task<HttpResponseMessage> UpdateStreamByVaultContractId(string vaultContractId, StreamDB streamProps)
+        {
+            StreamDB getStream = await _process.GetStreamByVaultContractId(vaultContractId);
+
+            if (getStream != null)
+            {
+                //getStream.Name = streamProps.Name;
+                getStream.StreamStartDate = streamProps.StreamStartDate;
+                getStream.StreamEndDate = streamProps.StreamEndDate;
+                getStream.StreamDuration = streamProps.StreamDuration;
+                getStream.Cost = streamProps.Cost;
+                getStream.Attendees = streamProps.Attendees;
+
+                var response = await _process.UpdateStream(getStream);
+
+                string jsonString = JsonSerializer.Serialize(response);
+                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+            }
+            throw new CustomException("Stream inputs Required");
+
+        }
+
+
+        [HttpDelete]
+        [Route("DeleteStreamByVaultContractId/{vaultContractId}")]
+        public async Task<HttpResponseMessage> DeleteStreamByVaultContractId(string vaultContractId)
+        {
+            StreamDB stream = await _process.GetStreamByVaultContractId(vaultContractId);
+
+            if (stream != null)
+            {
+                stream.Active = false;
+                var response = await _process.DeleteStream(stream);
+
+                string jsonString = JsonSerializer.Serialize(response);
+                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+
+            }
+            throw new CustomException("Stream id not correct");
+
+        }
+
         [HttpGet]
         [Route("CalculateStreamCost/{streamStartDate}/{streamEndDate}")]
         public async Task<StreamCost> CalculateStreamCost(DateTime streamStartDate, DateTime streamEndDate)
