@@ -234,6 +234,35 @@
                                 "For_each_entity":  {
                                     "foreach":  "@body('Get_entities_(V2)')?['value']",
                                     "actions":  {
+                                        "Condition_2":  {
+                                            "actions":  {
+                                                "Set_variable_3":  {
+                                                    "runAfter":  {
+                                                    },
+                                                    "type":  "SetVariable",
+                                                    "inputs":  {
+                                                        "name":  "Status",
+                                                        "value":  "Suspended"
+                                                    }
+                                                }
+                                            },
+                                            "runAfter":  {
+                                                "Parse_JSON":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "expression":  {
+                                                "and":  [
+                                                    {
+                                                        "greater":  [
+                                                            "@utcNow()",
+                                                            "@body('Parse_JSON')?['StreamEndDate']"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "type":  "If"
+                                        },
                                         "Parse_JSON":  {
                                             "runAfter":  {
                                             },
@@ -324,7 +353,7 @@
                                         },
                                         "Update_stream_status":  {
                                             "runAfter":  {
-                                                "Parse_JSON":  [
+                                                "Condition_2":  [
                                                     "Succeeded"
                                                 ]
                                             },
