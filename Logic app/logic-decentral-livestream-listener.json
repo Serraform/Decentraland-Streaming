@@ -25,36 +25,6 @@
         "PlaybookName":  {
             "defaultValue":  "logic-decentral-livestream-listener",
             "type":  "string"
-        },
-        "AZURE_STORAGE_ACCESS_KEY":  {
-            "type":  "string",
-            "metadata":  {
-                "description":  "Enter value for AZURE_STORAGE_ACCESS_KEY"
-            }
-        },
-        "AZURE_STORAGE_ACCOUNT":  {
-            "type":  "string",
-            "metadata":  {
-                "description":  "Enter value for AZURE_STORAGE_ACCOUNT"
-            }
-        },
-        "Storage_resource":  {
-            "type":  "string",
-            "metadata":  {
-                "description":  "Enter value for Storage_resource"
-            }
-        },
-        "TABLE_NAME":  {
-            "type":  "string",
-            "metadata":  {
-                "description":  "Enter value for TABLE_NAME"
-            }
-        },
-        "TENANT_ID":  {
-            "type":  "string",
-            "metadata":  {
-                "description":  "Enter value for TENANT_ID"
-            }
         }
     },
     "variables":  {
@@ -73,26 +43,6 @@
                             "defaultValue":  {
                             },
                             "type":  "Object"
-                        },
-                        "AZURE_STORAGE_ACCESS_KEY":  {
-                            "defaultValue":  "[parameters('AZURE_STORAGE_ACCESS_KEY')]",
-                            "type":  "string"
-                        },
-                        "AZURE_STORAGE_ACCOUNT":  {
-                            "defaultValue":  "[parameters('AZURE_STORAGE_ACCOUNT')]",
-                            "type":  "string"
-                        },
-                        "Storage_resource":  {
-                            "defaultValue":  "[parameters('Storage_resource')]",
-                            "type":  "string"
-                        },
-                        "TABLE_NAME":  {
-                            "defaultValue":  "[parameters('TABLE_NAME')]",
-                            "type":  "string"
-                        },
-                        "TENANT_ID":  {
-                            "defaultValue":  "[parameters('TENANT_ID')]",
-                            "type":  "string"
                         }
                     },
                     "triggers":  {
