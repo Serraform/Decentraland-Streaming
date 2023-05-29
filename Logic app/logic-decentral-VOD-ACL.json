@@ -1,0 +1,316 @@
+{
+    "$schema":  "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion":  "1.0.0.0",
+    "metadata":  {
+        "title":  "",
+        "description":  "",
+        "prerequisites":  "",
+        "postDeployment":  [
+        ],
+        "prerequisitesDeployTemplateFile":  "",
+        "lastUpdateTime":  "",
+        "entities":  [
+        ],
+        "tags":  [
+        ],
+        "support":  {
+            "tier":  "community",
+            "armtemplate":  "Generated from https://github.com/Azure/Azure-Sentinel/tree/master/Tools/Playbook-ARM-Template-Generator"
+        },
+        "author":  {
+            "name":  ""
+        }
+    },
+    "parameters":  {
+        "PlaybookName":  {
+            "defaultValue":  "logic-decentral-VOD-ACL",
+            "type":  "string"
+        }
+    },
+    "variables":  {
+        "AzuretablesConnectionName":  "[concat('Azuretables-', parameters('PlaybookName'))]"
+    },
+    "resources":  [
+        {
+            "properties":  {
+                "provisioningState":  "Succeeded",
+                "state":  "Enabled",
+                "definition":  {
+                    "$schema":  "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion":  "1.0.0.0",
+                    "parameters":  {
+                        "$connections":  {
+                            "defaultValue":  {
+                            },
+                            "type":  "Object"
+                        }
+                    },
+                    "triggers":  {
+                        "manual":  {
+                            "type":  "Request",
+                            "kind":  "Http",
+                            "inputs":  {
+                                "schema":  {
+                                    "properties":  {
+                                        "accessKey":  {
+                                            "type":  "string"
+                                        },
+                                        "context":  {
+                                            "properties":  {
+                                                "data":  {
+                                                    "type":  "string"
+                                                }
+                                            },
+                                            "type":  "object"
+                                        },
+                                        "timestamp":  {
+                                            "type":  "integer"
+                                        }
+                                    },
+                                    "type":  "object"
+                                }
+                            }
+                        }
+                    },
+                    "actions":  {
+                        "AllowAccess":  {
+                            "runAfter":  {
+                                "Initialize_variable":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "InitializeVariable",
+                            "inputs":  {
+                                "variables":  [
+                                    {
+                                        "name":  "AllowAccess",
+                                        "type":  "boolean",
+                                        "value":  false
+                                    }
+                                ]
+                            }
+                        },
+                        "Condition_3":  {
+                            "actions":  {
+                                "Response":  {
+                                    "runAfter":  {
+                                    },
+                                    "type":  "Response",
+                                    "kind":  "Http",
+                                    "inputs":  {
+                                        "statusCode":  200
+                                    }
+                                }
+                            },
+                            "runAfter":  {
+                                "Scope":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "else":  {
+                                "actions":  {
+                                    "Deny":  {
+                                        "runAfter":  {
+                                        },
+                                        "type":  "Response",
+                                        "kind":  "Http",
+                                        "inputs":  {
+                                            "statusCode":  403
+                                        }
+                                    }
+                                }
+                            },
+                            "expression":  {
+                                "and":  [
+                                    {
+                                        "equals":  [
+                                            "@variables('AllowAccess')",
+                                            "@true"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "type":  "If"
+                        },
+                        "Deny_Access":  {
+                            "runAfter":  {
+                                "Scope":  [
+                                    "TimedOut",
+                                    "Skipped",
+                                    "Failed"
+                                ]
+                            },
+                            "type":  "Response",
+                            "kind":  "Http",
+                            "inputs":  {
+                                "statusCode":  403
+                            }
+                        },
+                        "Initialize_variable":  {
+                            "runAfter":  {
+                            },
+                            "type":  "InitializeVariable",
+                            "inputs":  {
+                                "variables":  [
+                                    {
+                                        "name":  "key",
+                                        "type":  "string",
+                                        "value":  "@triggerBody()?['accessKey']"
+                                    }
+                                ]
+                            }
+                        },
+                        "Scope":  {
+                            "actions":  {
+                                "Condition":  {
+                                    "actions":  {
+                                        "Condition_2":  {
+                                            "actions":  {
+                                                "Set_variable":  {
+                                                    "runAfter":  {
+                                                    },
+                                                    "type":  "SetVariable",
+                                                    "inputs":  {
+                                                        "name":  "AllowAccess",
+                                                        "value":  true
+                                                    }
+                                                }
+                                            },
+                                            "runAfter":  {
+                                                "Parse_JSON_3":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "expression":  {
+                                                "or":  [
+                                                    {
+                                                        "equals":  [
+                                                            "@toLower(body('Parse_JSON_3')?['StreamStatus'])",
+                                                            "idle"
+                                                        ]
+                                                    },
+                                                    {
+                                                        "equals":  [
+                                                            "@toLower(body('Parse_JSON_3')?['StreamStatus'])",
+                                                            "live"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "type":  "If"
+                                        },
+                                        "Get_entity_(V2)":  {
+                                            "runAfter":  {
+                                            },
+                                            "type":  "ApiConnection",
+                                            "inputs":  {
+                                                "host":  {
+                                                    "connection":  {
+                                                        "name":  "@parameters('$connections')['azuretables']['connectionId']"
+                                                    }
+                                                },
+                                                "method":  "get",
+                                                "path":  "/v2/storageAccounts/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/tables/@{encodeURIComponent('Stream')}/entities(PartitionKey='@{encodeURIComponent('USA')}',RowKey='@{encodeURIComponent(triggerBody()?['accessKey'])}')"
+                                            }
+                                        },
+                                        "Parse_JSON_3":  {
+                                            "runAfter":  {
+                                                "Get_entity_(V2)":  [
+                                                    "Succeeded"
+                                                ]
+                                            },
+                                            "type":  "ParseJson",
+                                            "inputs":  {
+                                                "content":  "@body('Get_entity_(V2)')",
+                                                "schema":  {
+                                                    "properties":  {
+                                                        "Active":  {
+                                                            "type":  "boolean"
+                                                        },
+                                                        "StreamStartDate":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "StreamStatus":  {
+                                                            "type":  "string"
+                                                        },
+                                                        "StreamType":  {
+                                                            "type":  "string"
+                                                        }
+                                                    },
+                                                    "type":  "object"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "runAfter":  {
+                                    },
+                                    "expression":  {
+                                        "and":  [
+                                            {
+                                                "not":  {
+                                                    "equals":  [
+                                                        "@empty(variables('key'))",
+                                                        "@true"
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "type":  "If"
+                                }
+                            },
+                            "runAfter":  {
+                                "AllowAccess":  [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type":  "Scope"
+                        }
+                    },
+                    "outputs":  {
+                    }
+                },
+                "parameters":  {
+                    "$connections":  {
+                        "value":  {
+                            "azuretables":  {
+                                "connectionId":  "[resourceId('Microsoft.Web/connections', variables('AzuretablesConnectionName'))]",
+                                "connectionName":  "[variables('AzuretablesConnectionName')]",
+                                "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Azuretables')]"
+                            }
+                        }
+                    }
+                }
+            },
+            "name":  "[parameters('PlaybookName')]",
+            "type":  "Microsoft.Logic/workflows",
+            "location":  "[resourceGroup().location]",
+            "tags":  {
+                "hidden-SentinelTemplateName":  "logic-decentral-VOD-ACL",
+                "hidden-SentinelTemplateVersion":  "1.0"
+            },
+            "identity":  {
+                "type":  "SystemAssigned"
+            },
+            "apiVersion":  "2017-07-01",
+            "dependsOn":  [
+                "[resourceId('Microsoft.Web/connections', variables('AzuretablesConnectionName'))]"
+            ]
+        },
+        {
+            "type":  "Microsoft.Web/connections",
+            "apiVersion":  "2016-06-01",
+            "name":  "[variables('AzuretablesConnectionName')]",
+            "location":  "[resourceGroup().location]",
+            "kind":  "V1",
+            "properties":  {
+                "displayName":  "[variables('AzuretablesConnectionName')]",
+                "customParameterValues":  {
+                },
+                "api":  {
+                    "id":  "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/', resourceGroup().location, '/managedApis/Azuretables')]"
+                }
+            }
+        }
+    ]
+}
