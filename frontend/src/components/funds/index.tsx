@@ -58,8 +58,7 @@ const Funds = () => {
       />
       {isPremium && (
         <span className="flex flex-row justify-between items-center pb-[20px] text-[#fdba74]">
-          Your account is a premium account that has a {discount}% <br /> for creating
-          and editing streams
+          You have a premium account with a {discount}% discount on all stream types
         </span>
       )}
       <div className={`${balanceStyle} rounded  `}>
