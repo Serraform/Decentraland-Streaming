@@ -1,6 +1,5 @@
 import { client } from "store/clientConfig";
 export const createAccount = async (walletID: string, authToken: string) => {
-  
   return await client.post(
     "/api/User/CreateUser",
     {
@@ -14,17 +13,25 @@ export const createAccount = async (walletID: string, authToken: string) => {
 
 export const updateAccount = async ({ walletID, Role }: any) => {
   const jwtToken = localStorage.getItem("token");
-  client.defaults.headers.common['Authorization'] =  "Bearer " +  jwtToken;
-  return await client.put("/api/User/UpdateUser", {
-    WalletId: walletID,
-    Role: Role,
-  });
+  client.defaults.headers.common["Authorization"] = "Bearer " + jwtToken;
+  return await client.put(
+    "/api/User/UpdateUser",
+    {
+      WalletId: walletID,
+      Role: Role,
+    },
+    {
+      headers: { Authorization: `Bearer ${jwtToken}` },
+    }
+  );
 };
 
 export const getAccountDetailsByWalletId = async (walletID: string) => {
   const jwtToken = localStorage.getItem("token");
-  client.defaults.headers.common['Authorization'] =  "Bearer " +  jwtToken;
-  return await client.get(`/api/User/GetUserDetailsByWalletId/${walletID}`);
+  client.defaults.headers.common["Authorization"] = "Bearer " + jwtToken;
+  return await client.get(`/api/User/GetUserDetailsByWalletId/${walletID}`, {
+    headers: { Authorization: `Bearer ${jwtToken}` },
+  });
 };
 
 export const getSignatureChallenge = async (
