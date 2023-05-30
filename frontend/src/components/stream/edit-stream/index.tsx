@@ -100,6 +100,9 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   useEffect(() => {
     if (receipt && receipt.status === 1 && transactionType === "cancel") {
       deleteStream({ streamId: selectedStream.streamInfo?.Id });
+      dispatch(fetchFunds(walletID));
+      dispatch(finishTransaction());
+      navigate("/");
     }
     if (receipt && receipt.status === 1 && transactionType === "edit") {
       if (cost === 0) {
@@ -330,7 +333,9 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
           <div className="flex flex-col justify-between border-t-third border mt-1 border-l-0 border-r-0 border-b-0 dark:border-t-[#323739]">
             {renderDetail("Playback URL", true, selectedStream.playBackUrl)}
             {selectedStream.streamType === "vod" && (
-              <>{renderDetail("Asset ID", true, (selectedStream as any)?.vId)}</>
+              <>
+                {renderDetail("Asset ID", true, (selectedStream as any)?.vId)}
+              </>
             )}
             {(selectedStream.streamType === "liveStream" ||
               selectedStream.streamType === "relayService") && (

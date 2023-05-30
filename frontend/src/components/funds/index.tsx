@@ -8,6 +8,7 @@ import {
   container,
 } from "./styles";
 import TransferTreasury from "components/funds/transfer-treasury";
+import TransferAvailableFunds from "components/funds/transfer-available-funds";
 import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
 import { useEffect, useState } from "react";
@@ -18,12 +19,13 @@ import {
   fundWallet,
   approvePulling,
 } from "store/slices/account.slice";
-import { transferTreasuryToWallet } from "store/slices/transaction.slice";
+import { transferTreasuryToWallet, transferAvailableFundsToWallet } from "store/slices/transaction.slice";
 
 import { useToasts } from "react-toast-notifications";
 const Funds = () => {
   const [balanceInput, setBalanceInput] = useState("");
   const [openModal, setOpenModal] = useState(false);
+  const [openAvailableFundsModal, setOpenAvailableFundsModal] = useState(false);
   const {
     walletID,
     loading,
@@ -49,12 +51,24 @@ const Funds = () => {
     );
   };
 
+  const handleTransferAvailableFunds = (amount: any) => {
+    dispatch(
+      transferAvailableFundsToWallet({ amount, addToast })
+    );
+  };
+
+
   return (
     <div className={container}>
       <TransferTreasury
         openModal={openModal}
         closeModal={setOpenModal}
         handleTransferTreasury={handleTransferTreasury}
+      />
+      <TransferAvailableFunds 
+       openModal={openAvailableFundsModal}
+       closeModal={setOpenAvailableFundsModal}
+       handleTransferAvailableFunds={handleTransferAvailableFunds}
       />
       {isPremium && (
         <span className="flex flex-row justify-between items-center pb-[20px] text-[#fdba74]">
@@ -70,14 +84,13 @@ const Funds = () => {
             {balance ? parseFloat(balance.toString()) / 10 ** 6 : 0} USDC
           </h3>
         </div>
-        <a
-          href="https://docs.google.com/document/d/1Dz-a3iqXRFiSoAd4owAYohmHywOJKQIx/edit"
-          target="_blank"
-          className="font-montserratbold tracking-[0.1rem] text-[0.8rem] text-center hidden read-more dark:text-white pr-1 pl-1"
-          rel="noreferrer"
-        >
-          For more info on Available Funds and Locked Funds, click here.
-        </a>
+        <button
+            onClick={() => setOpenAvailableFundsModal(true)}
+            className="font-montserratbold tracking-[0.1rem] text-[0.8rem] text-center hidden read-more dark:text-white pr-1 pl-1"
+          >
+            If you want to transfer this funds back to your wallet, click here to start
+            transfering.
+          </button>
       </div>
 
       {locked_balance && locked_balance !== 0 ? (

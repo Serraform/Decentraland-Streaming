@@ -281,6 +281,54 @@ export const withdrawToTreasury = createAsyncThunk(
   }
 );
 
+
+
+
+export const transferAvailableFundsToWallet = createAsyncThunk(
+  "transaction/availableFundsToWallet",
+  async (props: any) => {
+    // multiWithdraw
+    const { amount, addToast } = props;
+    const amountToTransfer = ethers.utils.parseUnits("" + amount, "6");
+    
+    try {
+      const { ethereum } = window as any;
+      if (!ethereum) {
+        return;
+      }
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESS as string,
+        smartcontractABI,
+        signer
+      );
+      const tx = await contract.withdraw(amountToTransfer);
+      addToast("Waiting for transaction approval", {
+        autoDismiss: true,
+      });
+      const receipt = await tx.wait();
+      if (receipt.status === 1) {
+        addToast("Transfer to wallet succesfully", {
+          appearance: "success",
+          autoDismiss: true,
+        });
+        return receipt;
+      } else {
+        throw new Error();
+      }
+    } catch (e) {
+      
+      addToast("We couldn't transfer funds", {
+        appearance: "error",
+        autoDismiss: true,
+      });
+      throw new Error();
+    }
+  }
+);
+
 export const transferTreasuryToWallet = createAsyncThunk(
   "transaction/treasuryToWallet",
   async (props: any) => {
@@ -438,6 +486,20 @@ const transactionSlice = createSlice({
       state.receipt = action.payload;
     });
     builder.addCase(transferTreasuryToWallet.rejected, (state, action) => {
+      state.loading = false;
+      state.error = (action.error as any).message;
+      state.cost = 0;
+      state.hasDiscountCost=false;
+      state.discountCost=0;
+    });
+    builder.addCase(transferAvailableFundsToWallet.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(transferAvailableFundsToWallet.fulfilled, (state, action) => {
+      state.loading = false;
+      state.receipt = action.payload;
+    });
+    builder.addCase(transferAvailableFundsToWallet.rejected, (state, action) => {
       state.loading = false;
       state.error = (action.error as any).message;
       state.cost = 0;
