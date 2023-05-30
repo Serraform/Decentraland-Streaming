@@ -100,6 +100,9 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
   useEffect(() => {
     if (receipt && receipt.status === 1 && transactionType === "cancel") {
       deleteStream({ streamId: selectedStream.streamInfo?.Id });
+      dispatch(fetchFunds(walletID));
+      dispatch(finishTransaction());
+      navigate("/");
     }
     if (receipt && receipt.status === 1 && transactionType === "edit") {
       if (cost === 0) {
@@ -330,7 +333,9 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
           <div className="flex flex-col justify-between border-t-third border mt-1 border-l-0 border-r-0 border-b-0 dark:border-t-[#323739]">
             {renderDetail("Playback URL", true, selectedStream.playBackUrl)}
             {selectedStream.streamType === "vod" && (
-              <>{renderDetail("Asset ID", true, (selectedStream as any)?.vId)}</>
+              <>
+                {renderDetail("Asset ID", true, (selectedStream as any)?.vId)}
+              </>
             )}
             {(selectedStream.streamType === "liveStream" ||
               selectedStream.streamType === "relayService") && (
@@ -367,72 +372,3 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
 };
 
 export default EditStream;
-
-// let costDifference = 0;
-// let durationUntilStart = 0;
-// let duration = 0;
-// duration = differenceInMinutes(
-//   returnAsDate(values.streamEndDate),
-//   Date.now()
-// );
-// durationUntilStart = differenceInMinutes(
-//   returnAsDate(values.streamStartDate),
-//   Date.now()
-// );
-// switch (
-//   checkDateRangeChange(
-//     returnAsDate(selectedStream.streamStartDate),
-//     returnAsDate(selectedStream.streamEndDate),
-//     returnAsDate(values.streamStartDate),
-//     returnAsDate(values.streamEndDate)
-//   )
-// ) {
-//   case 0:
-//     costDifference = streamValues.cost - cost;
-//     dispatch(
-//       editVault({
-//         vaultContractId: streamValues.vaultContractId,
-//         amountToBeUnlock: -1 * costDifference,
-//         addToast,
-//         duration: -1 * duration,
-//         durationUntilStart: durationUntilStart,
-//       })
-//     );
-
-//     setStreamValues({ ...values, cost: cost });
-//     // The date range has been shortened
-//     break;
-//   case 1:
-//     costDifference = cost - streamValues.cost;
-//     dispatch(
-//       editVault({
-//         vaultContractId: streamValues.vaultContractId,
-//         amountToBeUnlock: costDifference,
-//         addToast,
-//         duration,
-//         durationUntilStart: datesHasChanged(
-//           returnAsDate(selectedStream.streamStartDate),
-//           returnAsDate(values.streamStartDate)
-//         )
-//           ? -1 * durationUntilStart
-//           : durationUntilStart,
-//       })
-//     );
-//     setStreamValues({ ...values, cost: cost });
-//     // the date range has been extended
-//     break;
-//   case -1:
-//     // the date range didn't change
-//     dispatch(
-//       editVault({
-//         vaultContractId: streamValues.vaultContractId,
-//         amountToBeUnlock: 0,
-//         addToast,
-//         duration,
-//         durationUntilStart,
-//       })
-//     );
-//     setStreamValues({ ...values });
-
-//     break;
-// }

@@ -131,12 +131,12 @@ export const columnsDefinition = (
       );
     },
   }),
-  columnHelper.accessor("attendees", {
-    id: "attendees",
-    header: () => <span className="font-montserratbold">Attendance</span>,
+  columnHelper.accessor("cost", {
+    id: "cost",
+    header: () => <span className="font-montserratbold">Cost</span>,
     cell: (info: any) => (
       <span className="font-montserratregular text-[14px]">
-        {info.getValue()}
+        {info.getValue()} USDC
       </span>
     ),
   }),

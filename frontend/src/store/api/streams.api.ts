@@ -93,28 +93,7 @@ export const streamsApi = createApi({
         };
       },
     }),
-    suspendLiveStream: builder.mutation<any, any>({
-      query: ({ streamId, walletID }) => ({
-        url: `api/Stream/Suspend/${streamId}/${walletID}`,
-        method: "put",
-        prepareHeaders: (headers: any) => {
-          const jwtToken = localStorage.getItem("token");
-          headers.set("Authorization", `Bearer ${jwtToken}`);
-          return headers;
-        },
-      }),
-    }),
-    unSuspendLiveStream: builder.mutation<any, any>({
-      query: ({ streamId, walletID }) => ({
-        url: `api/Stream/UnSuspend/${streamId}/${walletID}`,
-        method: "put",
-        prepareHeaders: (headers: any) => {
-          const jwtToken = localStorage.getItem("token");
-          headers.set("Authorization", `Bearer ${jwtToken}`);
-          return headers;
-        },
-      }),
-    }),
+  
     deleteStream: builder.mutation<any, any>({
       query: ({ streamId }) => ({
         url: `api/Stream/DeleteStreamByStreamId/${streamId}`,
@@ -157,8 +136,6 @@ export const {
   useFetchStreamsByWalletIdQuery,
   useCreateLiveStreamMutation,
   useFetchAllEndedStreamsQuery,
-  useSuspendLiveStreamMutation,
-  useUnSuspendLiveStreamMutation,
   useDeleteStreamMutation,
   useFetchStreamDetailsQuery,
   useEditStreamMutation,
