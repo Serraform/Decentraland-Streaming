@@ -17,7 +17,7 @@
 # For more information on the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # For more samples to get started with GitHub Action workflows to deploy to Azure: https://github.com/Azure/actions-workflow-samples
 
-name: Build and deploy front end app Prod
+name: Build and deploy listener Prod
 
 on:
   
@@ -87,5 +87,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_WEBLISTNER_PUBLISH_PROFILE_PROD }}
+        publish-profile: ${{ secrets.AZURE_WEBLISTENER_PUBLISH_PROFILE_PROD }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
