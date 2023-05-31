@@ -27,6 +27,9 @@ env:
   AZURE_WEBAPP_NAME: decentral-demo-app    # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '16.x'                # set this to the node version to use
+  REACT_APP_API_BASE: ${{ secrets.REACT_APP_API_BASE }}
+  REACT_APP_CONTRACT_ADDRESS: ${{ secrets.REACT_APP_CONTRACT_ADDRESS }}
+  REACT_APP_USDC_CONTRACT_ADDRESS: ${{ secrets.REACT_APP_USDC_CONTRACT_ADDRESS }}
 
 permissions:
   contents: read
