@@ -57,7 +57,7 @@ jobs:
       run: |
         mkdir './Node-ChainEventHandler/build/'
         cd './Node-ChainEventHandler/build/'
-        zip release.zip ./* -r
+        zip -r release.zip . -i ./*
        
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v3
