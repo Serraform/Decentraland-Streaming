@@ -55,7 +55,7 @@ jobs:
     
     - name: Zip artifact for deployment
       run: |
-        md './Node-ChainEventHandler/build/'
+        mkdir './Node-ChainEventHandler/build/'
         cd './Node-ChainEventHandler/build/'
         zip release.zip ./* -r
        
