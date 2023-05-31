@@ -61,7 +61,7 @@ jobs:
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v3
       with:
-        name: node-app
+        name: node-listener-app
         path: './Node-ChainEventHandler/build/release.zip'
 
   deploy:
@@ -77,7 +77,7 @@ jobs:
     - name: Download artifact from build job
       uses: actions/download-artifact@v3
       with:
-        name: node-listner-app
+        name: node-listener-app
     
     - name: unzip artifact for deployment
       run: unzip release.zip
