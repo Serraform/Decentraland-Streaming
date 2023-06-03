@@ -342,23 +342,27 @@ namespace SRFM.MediaServices.API.Controllers
 
             if (_twitch.ValidateEndpoint(qsCode))
             {
-                StreamDB getStream = await _process.GetStreamByVaultContractId(vaultContractId);
-
-                if (getStream != null)
+                if (vaultContractId != null)
                 {
-                    //getStream.Name = streamProps.Name;
-                    getStream.StreamStartDate = streamProps.StreamStartDate;
-                    getStream.StreamEndDate = streamProps.StreamEndDate;
-                    getStream.StreamDuration = streamProps.StreamDuration;
-                    getStream.Cost = streamProps.Cost;
-                    getStream.Attendees = streamProps.Attendees;
+                    StreamDB getStream = await _process.GetStreamByVaultContractId(vaultContractId);
 
-                    var response = await _process.UpdateStream(getStream);
+                    if (getStream != null)
+                    {
+                        //getStream.Name = streamProps.Name;
+                        getStream.StreamStartDate = streamProps.StreamStartDate;
+                        getStream.StreamEndDate = streamProps.StreamEndDate;
+                        getStream.StreamDuration = streamProps.StreamDuration;
+                        getStream.Cost = streamProps.Cost;
+                        getStream.Attendees = streamProps.Attendees;
 
-                    string jsonString = JsonSerializer.Serialize(response);
-                    return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                        var response = await _process.UpdateStream(getStream);
+
+                        string jsonString = JsonSerializer.Serialize(response);
+                        return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                    }
+                    throw new CustomException("Stream inputs Required");
                 }
-                throw new CustomException("Stream inputs Required");
+                throw new CustomException("vaultContractId Required");
             }
             throw new CustomException("Token not valid.");
         }
@@ -373,18 +377,22 @@ namespace SRFM.MediaServices.API.Controllers
 
             if (_twitch.ValidateEndpoint(qsCode))
             {
-                StreamDB stream = await _process.GetStreamByVaultContractId(vaultContractId);
-
-                if (stream != null)
+                if (vaultContractId != null)
                 {
-                    stream.Active = false;
-                    var response = await _process.DeleteStream(stream);
+                    StreamDB stream = await _process.GetStreamByVaultContractId(vaultContractId);
 
-                    string jsonString = JsonSerializer.Serialize(response);
-                    return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                    if (stream != null)
+                    {
+                        stream.Active = false;
+                        var response = await _process.DeleteStream(stream);
 
+                        string jsonString = JsonSerializer.Serialize(response);
+                        return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+
+                    }
+                    throw new CustomException("Stream id not correct");
                 }
-                throw new CustomException("Stream id not correct");
+                throw new CustomException("vaultContractId Required");
             }
             throw new CustomException("Token not valid.");
         }
