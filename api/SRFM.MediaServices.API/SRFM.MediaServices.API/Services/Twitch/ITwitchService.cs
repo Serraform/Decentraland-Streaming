@@ -5,7 +5,7 @@ namespace SRFM.MediaServices.API.Services.Twitch
 {
     public interface ITwitchService
     {
-        public bool ValidDomain(string validUrl);
+        public bool ValidateEndpoint(string validUrl);
 
         public Task<bool> VerifyRelayM3U8Status(string twitchUrl);
 

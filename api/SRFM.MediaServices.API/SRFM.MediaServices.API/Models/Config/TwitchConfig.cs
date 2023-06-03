@@ -17,6 +17,6 @@ namespace SRFM.MediaServices.API.Models.Config
 
         public string GitHubKey { get; set; }
 
-        public string validDomain { get; set; }
+        public string ValidateNodeEndpoint { get; set; }
     }
 }

@@ -337,9 +337,10 @@ namespace SRFM.MediaServices.API.Controllers
         [Route("UpdateStream/{vaultContractId}")]
         public async Task<HttpResponseMessage> UpdateStreamByVaultContractId(string vaultContractId, StreamDB streamProps)
         {
-            var url = Request.Scheme + "://" + Request.Host.Value;
+            //var url = Request.Scheme + "://" + Request.Host.Value;
+            var qsCode = Request.QueryString.Value;
 
-            if (_twitch.ValidDomain(url))
+            if (_twitch.ValidateEndpoint(qsCode))
             {
                 StreamDB getStream = await _process.GetStreamByVaultContractId(vaultContractId);
 
@@ -367,9 +368,10 @@ namespace SRFM.MediaServices.API.Controllers
         [Route("DeleteStreamByVaultContractId/{vaultContractId}")]
         public async Task<HttpResponseMessage> DeleteStreamByVaultContractId(string vaultContractId)
         {
-            var url = Request.Scheme + "://" + Request.Host.Value;
+            //var url = Request.Scheme + "://" + Request.Host.Value;
+            var qsCode = Request.QueryString.Value;
 
-            if (_twitch.ValidDomain(url))
+            if (_twitch.ValidateEndpoint(qsCode))
             {
                 StreamDB stream = await _process.GetStreamByVaultContractId(vaultContractId);
 

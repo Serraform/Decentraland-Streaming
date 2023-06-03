@@ -28,12 +28,12 @@ namespace SRFM.MediaServices.API
             Client = client;
         }
 
-        public bool ValidDomain(string validUrl)
+        public bool ValidateEndpoint(string validCode)
         {
-            if (!string.IsNullOrEmpty(validUrl))
+            if (!string.IsNullOrEmpty(validCode))
             {
 
-                if (validUrl == _twitchConfig.validDomain)
+                if (validCode == _twitchConfig.ValidateNodeEndpoint)
                 {
                     return true;
                 }
