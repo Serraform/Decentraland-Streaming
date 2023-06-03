@@ -31,12 +31,12 @@ namespace SRFM.MediaServices.API.Controllers
             _process = process;
             _twitch = twitch;
             _logger = logger;
-        }
+        }    
 
         [HttpGet]
         [Route("ListAllEndStream")]
         public async Task<List<StreamDB>> ListAllEndStream(DateTime? startDate, DateTime? endDate)
-        {
+        { 
             Request.Headers.TryGetValue("Authorization", out Microsoft.Extensions.Primitives.StringValues headerValue);
             var tokenWithBearer = headerValue.ToString();
             var token = tokenWithBearer.Split(" ")[1];
@@ -337,24 +337,34 @@ namespace SRFM.MediaServices.API.Controllers
         [Route("UpdateStream/{vaultContractId}")]
         public async Task<HttpResponseMessage> UpdateStreamByVaultContractId(string vaultContractId, StreamDB streamProps)
         {
-            StreamDB getStream = await _process.GetStreamByVaultContractId(vaultContractId);
+            //var url = Request.Scheme + "://" + Request.Host.Value;
+            var qsCode = Request.QueryString.Value;
 
-            if (getStream != null)
+            if (_twitch.ValidateEndpoint(qsCode))
             {
-                //getStream.Name = streamProps.Name;
-                getStream.StreamStartDate = streamProps.StreamStartDate;
-                getStream.StreamEndDate = streamProps.StreamEndDate;
-                getStream.StreamDuration = streamProps.StreamDuration;
-                getStream.Cost = streamProps.Cost;
-                getStream.Attendees = streamProps.Attendees;
+                if (vaultContractId != null)
+                {
+                    StreamDB getStream = await _process.GetStreamByVaultContractId(vaultContractId);
 
-                var response = await _process.UpdateStream(getStream);
+                    if (getStream != null)
+                    {
+                        //getStream.Name = streamProps.Name;
+                        getStream.StreamStartDate = streamProps.StreamStartDate;
+                        getStream.StreamEndDate = streamProps.StreamEndDate;
+                        getStream.StreamDuration = streamProps.StreamDuration;
+                        getStream.Cost = streamProps.Cost;
+                        getStream.Attendees = streamProps.Attendees;
 
-                string jsonString = JsonSerializer.Serialize(response);
-                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                        var response = await _process.UpdateStream(getStream);
+
+                        string jsonString = JsonSerializer.Serialize(response);
+                        return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                    }
+                    throw new CustomException("Stream inputs Required");
+                }
+                throw new CustomException("vaultContractId Required");
             }
-            throw new CustomException("Stream inputs Required");
-
+            throw new CustomException("Token not valid.");
         }
 
 
@@ -362,19 +372,29 @@ namespace SRFM.MediaServices.API.Controllers
         [Route("DeleteStreamByVaultContractId/{vaultContractId}")]
         public async Task<HttpResponseMessage> DeleteStreamByVaultContractId(string vaultContractId)
         {
-            StreamDB stream = await _process.GetStreamByVaultContractId(vaultContractId);
+            //var url = Request.Scheme + "://" + Request.Host.Value;
+            var qsCode = Request.QueryString.Value;
 
-            if (stream != null)
+            if (_twitch.ValidateEndpoint(qsCode))
             {
-                stream.Active = false;
-                var response = await _process.DeleteStream(stream);
+                if (vaultContractId != null)
+                {
+                    StreamDB stream = await _process.GetStreamByVaultContractId(vaultContractId);
 
-                string jsonString = JsonSerializer.Serialize(response);
-                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+                    if (stream != null)
+                    {
+                        stream.Active = false;
+                        var response = await _process.DeleteStream(stream);
 
+                        string jsonString = JsonSerializer.Serialize(response);
+                        return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(jsonString, System.Text.Encoding.UTF8, "application/json") };
+
+                    }
+                    throw new CustomException("Stream id not correct");
+                }
+                throw new CustomException("vaultContractId Required");
             }
-            throw new CustomException("Stream id not correct");
-
+            throw new CustomException("Token not valid.");
         }
 
         [HttpGet]

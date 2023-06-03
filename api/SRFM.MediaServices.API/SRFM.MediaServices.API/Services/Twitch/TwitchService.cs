@@ -28,6 +28,20 @@ namespace SRFM.MediaServices.API
             Client = client;
         }
 
+        public bool ValidateEndpoint(string validCode)
+        {
+            if (!string.IsNullOrEmpty(validCode))
+            {
+
+                if (validCode == _twitchConfig.ValidateNodeEndpoint)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public async Task<bool> VerifyRelayM3U8Status(string twitchUrl)
         {
             if (!string.IsNullOrEmpty(twitchUrl))
