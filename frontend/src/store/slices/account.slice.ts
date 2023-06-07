@@ -8,9 +8,9 @@ import {
 } from "store/services/account.service";
 import jazzicon from "jazzicon-ts";
 import { ethers } from "ethers";
-import smartcontractV2ABI from "utils/abi/smartcontractV4ABI.json";
+import smartcontractV2ABI from "utils/abi/smartcontractpolygon_abi.json";
 import usdcABI from "utils/abi/usdcAbi.json";
-const smartcontractABI = smartcontractV2ABI.output.abi;
+const smartcontractABI = smartcontractV2ABI.output.contracts["Work/CLS-Polygon.sol"].SubscriptionContract.abi;
 const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 const USDC_CONTRACT_ADDRESS = process.env.REACT_APP_USDC_CONTRACT_ADDRESS;
 const initialState = {
@@ -27,14 +27,13 @@ const initialState = {
   discount: 0,
 };
 
-const targetNetworkId = "0x5";
-
+const targetNetworkId = process.env.REACT_APP_TARGET_NETWORK_ID;
+const chainId = process.env.REACT_APP_CHAIN_ID as string;
 const switchNetwork = async () => {
   const { ethereum } = window as any;
   const currentChainId = await ethereum.request({
     method: "eth_chainId",
   });
-
   // return true if network id is the same
   if (currentChainId !== targetNetworkId) {
     await ethereum.request({
@@ -88,6 +87,7 @@ export const approvePulling = createAsyncThunk(
 );
 
 const checkAllowance = async (signer: any, provider: any, account: any) => {
+  debugger;
   const USDCContract = new ethers.Contract(
     USDC_CONTRACT_ADDRESS as string,
     usdcABI,
@@ -97,7 +97,6 @@ const checkAllowance = async (signer: any, provider: any, account: any) => {
     account,
     CONTRACT_ADDRESS
   );
-
   return Number(allowanceResponse._hex) > 0;
 };
 
@@ -114,12 +113,11 @@ export const requestConnectWallet = createAsyncThunk(
         method: "eth_requestAccounts",
       });
       const walletAddress = accounts[0];
-      const chainId = await ethereum.request({ method: "eth_chainId" });
       const network = await ethereum.request({ method: "net_version" });
       const signatureChallenge = await getSignatureChallenge(
         walletAddress,
         network,
-        chainId[2]
+        chainId+""
       );
       const params = [(signatureChallenge as any).data.message, walletAddress];
       const sign = await ethereum.request({
@@ -161,6 +159,7 @@ export const fetchFunds = createAsyncThunk(
         smartcontractABI,
         signer
       );
+       debugger;
       await switchNetwork();
       const accountInfo = await contract.view_sub_info(walletID);
       const isAdmin = await contract.admin(walletID);
@@ -169,6 +168,7 @@ export const fetchFunds = createAsyncThunk(
         treasuryFunds = await contract.treasury();
       }
       const balance = Number(accountInfo.balance._hex) as any;
+      debugger;
       const isTokenContractApprove = await checkAllowance(
         signer,
         provider,
@@ -190,6 +190,7 @@ export const fetchFunds = createAsyncThunk(
         treasuryFunds: treasuryFunds,
       };
     } catch (e) {
+      debugger;
       return {
         balance: 0,
         locked_balance: 0,
