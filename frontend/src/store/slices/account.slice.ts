@@ -87,7 +87,7 @@ export const approvePulling = createAsyncThunk(
 );
 
 const checkAllowance = async (signer: any, provider: any, account: any) => {
-  debugger;
+  
   const USDCContract = new ethers.Contract(
     USDC_CONTRACT_ADDRESS as string,
     usdcABI,
@@ -159,7 +159,7 @@ export const fetchFunds = createAsyncThunk(
         smartcontractABI,
         signer
       );
-       debugger;
+       
       await switchNetwork();
       const accountInfo = await contract.view_sub_info(walletID);
       const isAdmin = await contract.admin(walletID);
@@ -168,7 +168,7 @@ export const fetchFunds = createAsyncThunk(
         treasuryFunds = await contract.treasury();
       }
       const balance = Number(accountInfo.balance._hex) as any;
-      debugger;
+      
       const isTokenContractApprove = await checkAllowance(
         signer,
         provider,
@@ -190,7 +190,7 @@ export const fetchFunds = createAsyncThunk(
         treasuryFunds: treasuryFunds,
       };
     } catch (e) {
-      debugger;
+      
       return {
         balance: 0,
         locked_balance: 0,
