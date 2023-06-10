@@ -106,7 +106,7 @@ const Funds = () => {
             </h3>
           </div>
           <a
-            href="https://docs.google.com/document/d/1Dz-a3iqXRFiSoAd4owAYohmHywOJKQIx/edit"
+            href="https://serraform.gitbook.io/streaming-docs/"
             target="_blank"
             className="font-montserratbold tracking-[0.1rem] text-[0.8rem] text-center hidden read-more dark:text-white pr-1 pl-1"
             rel="noreferrer"
