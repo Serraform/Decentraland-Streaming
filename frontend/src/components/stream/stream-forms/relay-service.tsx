@@ -48,14 +48,14 @@ const RelayService: React.FC<Props> = ({
 
   useEffect(() => {
     if (isSuccess && verifyRelayLinkResponse) {
-      addToast("Broadcast url could be verified", {
+      addToast("Stream URL was successfully verified", {
         appearance: "success",
         autoDismiss: true,
       });
       setIsVerfied(verifyRelayLinkResponse);
     } else if (isSuccess && !verifyRelayLinkResponse) {
       addToast(
-        "Broadcast url couldn't be verified, please read here for more info: ",
+        "Stream URL couldn't be verified, please read here for more info: ",
         {
           appearance: "error",
           autoDismiss: true,
@@ -120,7 +120,7 @@ const RelayService: React.FC<Props> = ({
               >
                 <div className="mb-2 w-full mr-3">
                   <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center">
-                  Broadcast Link
+                  Stream URL
                     <ReactTooltip
                       id="relayUrl"
                       place="top"
@@ -130,7 +130,7 @@ const RelayService: React.FC<Props> = ({
                     <div
                       className="form-tooltip"
                       data-for="relayUrl"
-                      data-tip={"Link of your Twitch/YouTube/etc live stream"}
+                      data-tip={"URL of your Twitch/YouTube/etc stream"}
                       data-iscapture="true"
                     >
                       <FaqIcon />
@@ -143,7 +143,7 @@ const RelayService: React.FC<Props> = ({
                       name="relayUrl"
                       disabled={formMode === "edit" && (values as any)?.relayUrlIsVerified}
                       onChange={handleChange}
-                      placeholder="Broadcast Link"
+                      placeholder="Stream URL"
                       required
                       className=" w-[100%] mr-5 border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
                     />
@@ -160,7 +160,7 @@ const RelayService: React.FC<Props> = ({
                       {isSuccess && verifyRelayLinkResponse && <SuccessIcon />}
                       {isSuccess && !verifyRelayLinkResponse && <ErrorIcon />}
 
-                      <span className="ml-2 " style={{whiteSpace: "pre"}}>Verify Link</span>
+                      <span className="ml-2 " style={{whiteSpace: "pre"}}>Verify URL</span>
                     </button>
                   </div>
                 </div>
