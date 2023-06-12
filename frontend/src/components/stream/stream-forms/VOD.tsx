@@ -91,7 +91,7 @@ const VOD: React.FC<Props> = ({
               >
                 {!isEditForm ? (<div className="mb-2 w-full mr-3">
                   <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center">
-                    Select Asset
+                    Select Video Asset
                     <ReactTooltip
                       id="asset"
                       place="top"
@@ -102,7 +102,7 @@ const VOD: React.FC<Props> = ({
                       className="form-tooltip"
                       data-for="asset"
                       data-tip={
-                        "Make sure that you previously uploaded your asset"
+                        "Select a video asset from your library of uploaded videos."
                       }
                       data-iscapture="true"
                     >
@@ -118,7 +118,7 @@ const VOD: React.FC<Props> = ({
                       onChange={handleChange}
                       className="mb-[20px] mt-[10px] w-[100%] border bg-transparent  border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
                     >
-                      <option value="">Select an asset</option>
+                      <option value="">Select from existing assets</option>
                       {assets &&
                         Object.keys(
                           assets.filter(

@@ -81,7 +81,7 @@ export const columnsDefinition = (
         case "relayService":
           return (
             <span className="font-montserratregular text-[14px]">
-              Broadcast
+              Relay
             </span>
           );
         default:
@@ -125,7 +125,7 @@ export const columnsDefinition = (
     cell: (info: any) => {
       return (
         <span className="font-montserratregular text-[14px]">
-          {new Date(info.row.original.streamStartDate).toDateString()}-
+          {new Date(info.row.original.streamStartDate).toDateString()} - 
           {new Date(info.row.original.streamEndDate).toDateString()}
         </span>
       );

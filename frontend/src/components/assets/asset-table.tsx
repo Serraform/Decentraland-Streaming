@@ -82,7 +82,7 @@ const AssetTable: React.FC<Props> = ({
             overflow: "hidden",
           }}
         >
-          Please click "Schedule new stream" to upload your first asset and start streaming
+          Please click "Upload New Video" to upload your first asset and start streaming
         </h1>
       )}
       <div className="h-4" />

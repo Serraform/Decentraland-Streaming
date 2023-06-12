@@ -351,7 +351,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
                   "rtmp://rtmp.serraform.com/live"
                 )}
                 {renderDetail(
-                  "Created at",
+                  "Created on",
                   false,
                   new Date(selectedStream?.streamInfo?.CreatedAt)
                     .toLocaleString()

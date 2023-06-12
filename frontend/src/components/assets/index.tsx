@@ -82,7 +82,7 @@ const Assets = () => {
     return (
       <div className="container pt-10">
         <h1 className="font-montserratbold text-primary text-center pt-20 pb-20 border-third border-r-0 border-t-0">
-          Your session has expired, please refresh your browser to see your video files.
+          Your session has expired, please refresh your browser to see your video assets.
         </h1>
       </div>
     );
@@ -92,13 +92,13 @@ const Assets = () => {
         <AssetUploader setOpenAssetUploader={setOpenAssetUploader} />
       )}
      <div className="container flex flex-row justify-between items-center pt-10">
-        <h1  className="font-montserratbold tracking-[0rem] text-primary dark:text-white text-xl">Video Files</h1>
+        <h1  className="font-montserratbold tracking-[0rem] text-primary dark:text-white text-xl">Video Assets/Files</h1>
         <button
           className="btn-third flex flex-row items-center !pr-0"
           onClick={() => setOpenAssetUploader(true)}
         >
           <AddIcon />{" "}
-          <span className="dark:text-white ml-2">Add new video file</span>
+          <span className="dark:text-white ml-2">Upload New Video</span>
         </button>
       </div>
       <AssetTable

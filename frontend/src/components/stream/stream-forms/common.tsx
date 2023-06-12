@@ -178,9 +178,9 @@ const CommonForm: React.FC<Props> = ({
           <span className="font-montserratregular h-[20px] d-flex ">
             {cost !== 0 &&
               !loading &&
-              `Your stream will cost:
-              ${cost} USDC`}<br />
-             {hasDiscountCost && `With your discount, it will cost you ${discountCost} USDC`}
+              `Total cost:
+              <p style="color:green;"><b>${cost} USDC`}</b></p><br />
+             {hasDiscountCost && `Total cost after ${discount}% discount: <p style="color:green;"><b>${discountCost} USDC`}</b></p>
           </span>{" "}
         </h2>
 

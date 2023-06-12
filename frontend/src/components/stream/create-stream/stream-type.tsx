@@ -64,7 +64,7 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
                         data-for="live"
                         className="radio-item"
                         data-tip={
-                          "Request an RTMP url/key to broadcast live using OBS, Zoom or other services supporting RTMP output."
+                          "Request an RTMP URL/key to broadcast live using OBS, Zoom or other services supporting RTMP output."
                         }
                         data-iscapture="true"
                       >
@@ -89,7 +89,7 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
                         data-for="VOD"
                         className="radio-item"
                         data-tip={
-                          "Upload your own video file and stream it on-demand."
+                          "Stream an uploaded video file (asset) on-demand."
                         }
                         data-iscapture="true"
                       >
@@ -117,7 +117,7 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
                         data-for="RelayService"
                         className="radio-item"
                         data-tip={
-                          "Extract a stream from various services to make them compatible with Decentraland."
+                          "Relay a stream from various services to make them compatible with Decentraland."
                         }
                         data-iscapture="true"
                       >
