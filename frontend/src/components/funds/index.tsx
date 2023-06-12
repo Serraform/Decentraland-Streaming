@@ -88,8 +88,7 @@ const Funds = () => {
             onClick={() => setOpenAvailableFundsModal(true)}
             className="font-montserratbold tracking-[0.1rem] text-[0.8rem] text-center hidden read-more dark:text-white pr-1 pl-1"
           >
-            If you want to transfer this funds back to your wallet, click here to start
-            transfering.
+            Click here to withdraw any available funds back to your wallet.
           </button>
       </div>
 
@@ -106,12 +105,12 @@ const Funds = () => {
             </h3>
           </div>
           <a
-            href="https://docs.google.com/document/d/1Dz-a3iqXRFiSoAd4owAYohmHywOJKQIx/edit"
+            href="https://serraform.gitbook.io/streaming-docs/guides/deposit-withdraw-funds#available-funds"
             target="_blank"
             className="font-montserratbold tracking-[0.1rem] text-[0.8rem] text-center hidden read-more dark:text-white pr-1 pl-1"
             rel="noreferrer"
           >
-            For more info on Available Funds and Locked Funds, click here.
+            For more info on available and locked funds, click here.
           </a>
         </div>
       ) : (
