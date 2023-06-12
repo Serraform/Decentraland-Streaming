@@ -72,7 +72,7 @@ const Funds = () => {
       />
       {isPremium && (
         <span className="flex flex-row justify-between items-center pb-[20px] text-[#fdba74]">
-          You have a premium account with a {discount}% discount on all stream types
+          You have a premium account with a {discount}% discount on all stream types.
         </span>
       )}
       <div className={`${balanceStyle} rounded  `}>
@@ -88,7 +88,7 @@ const Funds = () => {
             onClick={() => setOpenAvailableFundsModal(true)}
             className="font-montserratbold tracking-[0.1rem] text-[0.8rem] text-center hidden read-more dark:text-white pr-1 pl-1"
           >
-            Click here to withdraw any available funds back to your wallet.
+            Click here to withdraw any available funds out of your account and back to your wallet.
           </button>
       </div>
 
@@ -132,8 +132,7 @@ const Funds = () => {
             onClick={() => setOpenModal(true)}
             className="font-montserratbold tracking-[0.1rem] text-[0.8rem] text-center hidden read-more dark:text-white pr-1 pl-1"
           >
-            This funds are ready to be transfer to a wallet, click here to start
-            transfering.
+            These funds are ready to be withdrawn to a wallet, click here to begin.
           </button>
         </div>
       ) : (
@@ -142,8 +141,8 @@ const Funds = () => {
       {!isTokenContractApprove && (
         <div>
           <p className="font-montserratmedium mt-[24px] dark:text-white">
-            In order to create a stream, our contract must be approved to
-            interact with your USDC
+            In order to create a stream, the payment contract must be approved to
+            interact with your USDC.
           </p>{" "}
           <button
             onClick={(e) =>
@@ -170,10 +169,10 @@ const Funds = () => {
             <p
               className={`${labelStyle} font-montserratbold tracking-[0.1rem] dark:text-white`}
             >
-              Fund Account
+              Deposit to Account
             </p>
             <input
-              placeholder="amount"
+              placeholder="amount to deposit"
               onChange={(e) => setBalanceInput(e.target.value)}
               className={`text-primary ${inputStyle} rounded rounded-b-none  dark:border-primary dark:border  dark:text-white `}
             />
@@ -188,7 +187,7 @@ const Funds = () => {
               }
               className={`${buttonStyle} bg-primary rounded rounded-t-none flex justify-center dark:hover:bg-transparent dark:border-primary dark:border`}
             >
-              {loading ? <div className="basic" /> : <>Fund Account</>}
+              {loading ? <div className="basic" /> : <>Deposit Funds</>}
             </button>
           </div>
         </>
