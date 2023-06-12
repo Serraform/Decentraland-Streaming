@@ -29,10 +29,10 @@ const Header = () => {
               <div id="#jazzicon" className="flex" />
             </button>
             <a
-               href="https://docs.google.com/document/d/1Dz-a3iqXRFiSoAd4owAYohmHywOJKQIx/edit"
+               href="https://serraform.gitbook.io/streaming-docs/"
                target="_blank"
               data-for="faq"
-              data-tip={"FAQ"}
+              data-tip={"Manual"}
               data-iscapture="true"
               type="button"
               className="ml-2"
