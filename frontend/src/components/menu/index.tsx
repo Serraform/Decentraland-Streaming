@@ -27,7 +27,7 @@ const Menu = () => {
       <Link to="/assets" className={`${listType==="assets" && `active`}`}>
         {" "}
         <VideoIcon />
-        <span>Video files</span>{" "}
+        <span>Video Assets</span>{" "}
       </Link>
       {role === "admin" && (
         <>

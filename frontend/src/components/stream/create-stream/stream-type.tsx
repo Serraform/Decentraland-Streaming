@@ -129,7 +129,7 @@ const StreamType: React.FC<Props> = ({ handleSave, changeStep }) => {
                           value={"relayService"}
                         />
                         <label htmlFor={"relayService"}>
-                          Broadcast 
+                          Stream Relay
                         </label>
                       </div>
                     </>
