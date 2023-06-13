@@ -33,13 +33,13 @@ const SuspendModal: React.FC<Props> = ({
       <div className="items-start flex flex-col justify-start w-100 dark:bg-[#1a1d1e]">
         <div className="px-[5rem] py-[20px]">
           <h1 className="font-montserratbold text-black text-start b-[40px] dark:text-white">
-            This action is irreversible
+            Delete Stream
           </h1>
           <p
             className="pt-[15px] text-black
 dark:text-white"
           >
-            Deleting your stream will unlock funds back to your available funds
+            Deleting your stream will unlock funds back to your available funds.
           </p>
           <div className="pt-[20px] flex flex-row justify-end">
             <button

@@ -68,7 +68,7 @@ export const approvePulling = createAsyncThunk(
         deposit
       );
 
-      addToast("Waiting for pulling approval", {
+      addToast("Waiting for transaction approval", {
         autoDismiss: true,
       });
       const pullFundsApprovalReceipt = await pullFundsApproval.wait();
@@ -228,7 +228,7 @@ export const fundWallet = createAsyncThunk(
       });
       const receipt = await tx.wait();
       if (receipt.status === 1) {
-        addToast("Balance Updated", {
+        addToast("Balance updated", {
           appearance: "success",
           autoDismiss: true,
         });

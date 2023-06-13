@@ -48,14 +48,14 @@ const RelayService: React.FC<Props> = ({
 
   useEffect(() => {
     if (isSuccess && verifyRelayLinkResponse) {
-      addToast("Broadcast url could be verified", {
+      addToast("Stream URL was successfully verified", {
         appearance: "success",
         autoDismiss: true,
       });
       setIsVerfied(verifyRelayLinkResponse);
     } else if (isSuccess && !verifyRelayLinkResponse) {
       addToast(
-        "Broadcast url couldn't be verified, please read here for more info: ",
+        "Stream URL couldn't be verified, please read here for more info: ",
         {
           appearance: "error",
           autoDismiss: true,
@@ -118,9 +118,9 @@ const RelayService: React.FC<Props> = ({
                 className="flex flex-col justify-top w-[50%] h-[100%]"
                 style={{ position: "relative" }}
               >
-                <div className="mb-2 w-full mr-3">
+                <div className="w-full mr-3 mb-[20px]">
                   <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center">
-                  Broadcast Link
+                  Stream URL
                     <ReactTooltip
                       id="relayUrl"
                       place="top"
@@ -130,20 +130,20 @@ const RelayService: React.FC<Props> = ({
                     <div
                       className="form-tooltip"
                       data-for="relayUrl"
-                      data-tip={"Link of your Twitch/YouTube/etc live stream"}
+                      data-tip={"URL of your Twitch/YouTube/etc stream"}
                       data-iscapture="true"
                     >
                       <FaqIcon />
                     </div>
                   </h2>
-                  <div className="flex flex-row items-center mb-[20px] mt-[10px]">
+                  <div className="flex flex-row items-center mb-[10px] mt-[10px]">
                     <Field
                       type="text"
                       value={values.relayUrl}
                       name="relayUrl"
                       disabled={formMode === "edit" && (values as any)?.relayUrlIsVerified}
                       onChange={handleChange}
-                      placeholder="Broadcast Link"
+                      placeholder="Stream URL"
                       required
                       className=" w-[100%] mr-5 border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
                     />
@@ -160,9 +160,13 @@ const RelayService: React.FC<Props> = ({
                       {isSuccess && verifyRelayLinkResponse && <SuccessIcon />}
                       {isSuccess && !verifyRelayLinkResponse && <ErrorIcon />}
 
-                      <span className="ml-2 " style={{whiteSpace: "pre"}}>Verify Link</span>
+                      <span className="ml-2 " style={{whiteSpace: "pre"}}>Verify URL</span>
                     </button>
                   </div>
+                  <span className="font-montserratregular text-white text-[12px] "><a href="https://serraform.gitbook.io/streaming-docs/guides/decentraland-playback" target="_blank" rel="noreferrer">Click {" "}
+ here
+ for a list of supported streams.</a>
+</span>
                 </div>
                 <CommonForm
                   initialValues={initialValues}

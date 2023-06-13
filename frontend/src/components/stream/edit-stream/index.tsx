@@ -331,39 +331,57 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
         <div className=" mt-[40px]">
           <h3 className="font-montserratbold dark:text-white">Details</h3>
           <div className="flex flex-col justify-between border-t-third border mt-1 border-l-0 border-r-0 border-b-0 dark:border-t-[#323739]">
-            {renderDetail("Playback URL", true, selectedStream.playBackUrl)}
+            {renderDetail("Playback URL:", true, selectedStream.playBackUrl)}
             {selectedStream.streamType === "vod" && (
               <>
                 {renderDetail("Asset ID", true, (selectedStream as any)?.vId)}
               </>
             )}
-            {(selectedStream.streamType === "liveStream" ||
-              selectedStream.streamType === "relayService") && (
+            {(selectedStream.streamType === "liveStream") && (
               <>
                 {renderDetail(
-                  "Stream Key",
+                  "Stream Key:",
                   true,
                   selectedStream?.streamInfo?.StreamKey
                 )}
                 {renderDetail(
-                  "RTMP ingest URL",
+                  "RTMP Ingest URL:",
                   true,
                   "rtmp://rtmp.serraform.com/live"
                 )}
                 {renderDetail(
-                  "Created at",
+                  "Created:",
                   false,
                   new Date(selectedStream?.streamInfo?.CreatedAt)
                     .toLocaleString()
                     .split(",")[0]
                 )}
                 {renderDetail(
-                  "Stream ID",
+                  "Stream ID:",
                   true,
                   selectedStream?.streamInfo?.Id
                 )}
               </>
             )}
+            {(selectedStream.streamType === "relayService") && (
+              <>
+                {renderDetail(
+                  "Created:",
+                  false,
+                  new Date(selectedStream?.streamInfo?.CreatedAt)
+                    .toLocaleString()
+                    .split(",")[0]
+                )}
+                {renderDetail(
+                  "Stream ID:",
+                  true,
+                  selectedStream?.streamInfo?.Id
+                )}
+              </>
+            )}
+            <span className="font-montserratregular text-white text-[12px] mt-2">Please see here for information on playback within Decentraland: {" "}
+ <a href="https://serraform.gitbook.io/streaming-docs/guides/decentraland-playback" target="_blank" rel="noreferrer">Click here</a>
+</span>
           </div>
         </div>
       </div>

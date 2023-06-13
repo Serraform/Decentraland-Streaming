@@ -106,7 +106,7 @@ const TransferAvailableFunds = (props: any) => {
                   onClick={() => handleTransferAvailableFunds(transferInfo.amount)}
                 >
                   {loading && <div className="basic mr-[1rem]" />}
-                  Transfer to treasury
+                  Withdraw from Account
                 </button>
               </div>
             </div>

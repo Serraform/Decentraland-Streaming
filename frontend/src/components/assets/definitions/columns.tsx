@@ -65,7 +65,7 @@ export const columnsDefinition = (
   }),
   columnHelper.accessor("reload", {
     id: "reload",
-    header: () => <span className="font-montserratbold">Refresh asset</span>,
+    header: () => <span className="font-montserratbold">Refresh Asset</span>,
     cell: (info: any) => {
       return (
         <button onClick={(e) => {

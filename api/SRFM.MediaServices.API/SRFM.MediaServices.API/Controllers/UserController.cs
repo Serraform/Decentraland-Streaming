@@ -48,7 +48,7 @@ namespace SRFM.MediaServices.API.Controllers
             }
             else
             {
-                throw new CustomException("Token not valid.");
+                throw new CustomException("Token not valid");
             }
         }
 
@@ -67,7 +67,7 @@ namespace SRFM.MediaServices.API.Controllers
             }
             else
             {
-                throw new CustomException("Token not valid.");
+                throw new CustomException("Token not valid");
             }
         }
 
@@ -94,12 +94,12 @@ namespace SRFM.MediaServices.API.Controllers
                 }
                 else
                 {
-                    throw new CustomException("User is not Admin. Please try with admin account.");
+                    throw new CustomException("User is not admin. Please try with admin account.");
                 }
             }
             else
             {
-                throw new CustomException("Token not valid.");
+                throw new CustomException("Token not valid");
             }
         }
 
@@ -139,12 +139,12 @@ namespace SRFM.MediaServices.API.Controllers
                 }
                 else
                 {
-                    throw new CustomException("User is not Admin. Please try with admin account.");
+                    throw new CustomException("User is not admin. Please try with admin account.");
                 }
             }
             else
             {
-                throw new CustomException("Token not valid.");
+                throw new CustomException("Token not valid");
             }
         }
 
@@ -163,11 +163,11 @@ namespace SRFM.MediaServices.API.Controllers
                     UserDB user = await _process.GetUserByWalletId(walletId.ToLower());
                     return user;
                 }
-                throw new CustomException("WalletId inputs Required");
+                throw new CustomException("WalletId inputs required");
             }
             else
             {
-                throw new CustomException("Token not valid.");
+                throw new CustomException("Token not valid");
             }
         }
 
@@ -200,15 +200,15 @@ namespace SRFM.MediaServices.API.Controllers
                     else
                     {
                         //throw new CustomException("WalletId already present. Please try again with new wallet Id.");
-                        var responseMsg = new ResponseMessage { ErrorMsg = "WalletId already present. Please try again with new wallet Id." };
+                        var responseMsg = new ResponseMessage { ErrorMsg = "WalletId already present. Please try again with new WalletID." };
                         return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(JsonSerializer.Serialize(responseMsg), System.Text.Encoding.UTF8, "application/json") };
                     }
                 }
-                throw new CustomException("User inputs Required");
+                throw new CustomException("User inputs required");
             }
             else
             {
-                throw new CustomException("Token not valid.");
+                throw new CustomException("Token not valid");
             }
         }
 
@@ -236,13 +236,13 @@ namespace SRFM.MediaServices.API.Controllers
                         var ret = new ObjectResult(statusCode) { StatusCode = StatusCodes.Status204NoContent };
                         return ret;
                     }
-                    throw new CustomException("WalletId inputs Required");
+                    throw new CustomException("WalletId inputs required");
                 }
                 return NotFound();
             }
             else
             {
-                throw new CustomException("Token not valid.");
+                throw new CustomException("Token not valid");
             }
         }
 
@@ -269,7 +269,7 @@ namespace SRFM.MediaServices.API.Controllers
             }
             else
             {
-                throw new CustomException("Token not valid.");
+                throw new CustomException("Token not valid");
             }
         }
     }

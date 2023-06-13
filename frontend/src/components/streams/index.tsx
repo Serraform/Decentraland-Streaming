@@ -93,7 +93,7 @@ const Streams = () => {
           disabled={walletID === ""}
         >
           <AddIcon />{" "}
-          <span className="dark:text-white ml-2">Add new stream</span>
+          <span className="dark:text-white ml-2">Schedule New Stream</span>
         </button>
       </div>
       <StreamTable

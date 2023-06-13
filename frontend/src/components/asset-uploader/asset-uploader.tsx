@@ -95,7 +95,7 @@ const AssetUploader = (props: any) => {
         <div className="items-start flex flex-col justify-start w-100 dark:bg-[#1a1d1e]">
           <div className="px-[2rem] py-[20px]">
             <h1 className="font-montserratbold text-black text-start b-[40px] dark:text-white">
-              Upload Asset
+              Upload Video File
             </h1>
             <div className="mt-[15px] mb-[10px]">
               <div
@@ -152,7 +152,7 @@ const AssetUploader = (props: any) => {
                   if (uploadInstance) {
                     uploadInstance.start();
                     dispatch(startUploadAsset({ title: file.fileInfo.name,  assetId: file.assetId }));
-                    addToast("Uploading asset started", {
+                    addToast("Starting Video Upload", {
                       appearance: "success",
                       autoDismiss: true,
                     });

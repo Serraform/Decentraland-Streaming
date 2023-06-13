@@ -4,7 +4,7 @@ import WalletIcon from "assets/icons/Wallet";
 import WalletDrawer from "components/wallet-drawer";
 import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
-import FaqIcon from "assets/icons/Question"
+import FaqIcon from "assets/icons/Docs"
 const Header = () => {
   const { walletID, avatar, isPremium } = useSelector(
     (state: RootState) => state.accountData
@@ -32,10 +32,10 @@ const Header = () => {
                href="https://serraform.gitbook.io/streaming-docs/"
                target="_blank"
               data-for="faq"
-              data-tip={"FAQ"}
+              data-tip={"Manual"}
               data-iscapture="true"
               type="button"
-              className="ml-2"
+              className="ml-2 docs"
               aria-haspopup="true"
               aria-expanded="false"
               data-headlessui-state=""

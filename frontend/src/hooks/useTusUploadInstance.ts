@@ -32,7 +32,7 @@ const useTusUploadInstance = (
           dispatch(updatePercentage({ percentage: percentage }));
         },
         onSuccess() {
-          addToast("Asset uploaded successfully", {
+          addToast("Video file successfully uploaded", {
             appearance: "success",
             autoDismiss: true,
           });

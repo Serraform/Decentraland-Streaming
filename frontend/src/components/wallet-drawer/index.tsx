@@ -42,7 +42,7 @@ const WalletDrawer: React.FC<Props> = ({ openDrawer, setOpenDrawer }) => {
               effect={"float"}
             />
             <a
-               href="https://serraform.gitbook.io/streaming-docs/"
+               href="https://serraform.gitbook.io/streaming-docs/faq"
                target="_blank"
               data-for="faq"
               data-tip={"FAQ"}
