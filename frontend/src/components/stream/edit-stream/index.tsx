@@ -379,8 +379,8 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
                 )}
               </>
             )}
-            <span className="font-montserratregular text-white text-[12px] mt-2">Please see here for information on playback within Decentraland: {" "}
- <a href="https://serraform.gitbook.io/streaming-docs/guides/decentraland-playback" target="_blank" rel="noreferrer">Click here</a>
+            <span className="font-montserratregular text-slate-500 text-[12px] mt-2"> {" "}
+ <a href="https://serraform.gitbook.io/streaming-docs/guides/decentraland-playback" target="_blank" rel="noreferrer">Click here for information on playback within Decentraland.</a>
 </span>
           </div>
         </div>

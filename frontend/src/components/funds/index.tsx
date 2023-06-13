@@ -88,7 +88,7 @@ const Funds = () => {
             onClick={() => setOpenAvailableFundsModal(true)}
             className="font-montserratbold tracking-[0.1rem] text-[0.8rem] text-center hidden read-more dark:text-white pr-1 pl-1"
           >
-            Click here to withdraw any available funds out of your account and back to your wallet.
+            Click here to withdraw available funds back to your wallet.
           </button>
       </div>
 
@@ -110,7 +110,7 @@ const Funds = () => {
             className="font-montserratbold tracking-[0.1rem] text-[0.8rem] text-center hidden read-more dark:text-white pr-1 pl-1"
             rel="noreferrer"
           >
-            For more info on available and locked funds, click here.
+            Click here for more info on available and locked funds.
           </a>
         </div>
       ) : (
@@ -169,7 +169,7 @@ const Funds = () => {
             <p
               className={`${labelStyle} font-montserratbold tracking-[0.1rem] dark:text-white`}
             >
-              Deposit to Account
+              Deposit Funds to Account
             </p>
             <input
               placeholder="amount to deposit"

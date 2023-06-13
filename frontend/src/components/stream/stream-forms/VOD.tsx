@@ -54,7 +54,7 @@ const VOD: React.FC<Props> = ({
   const disabledEstimateCost = (values: IStreamVOD, errors: any) => {
     return (
       values.name === "" ||
-      values.attendees === "" ||
+
       values.streamStartDate === undefined ||
       values.streamEndDate === undefined ||
       errors.streamEndDate ||

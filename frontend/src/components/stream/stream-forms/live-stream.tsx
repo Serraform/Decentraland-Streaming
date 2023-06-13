@@ -46,7 +46,7 @@ const LiveStream: React.FC<Props> = ({
   const disabledEstimateCost = (values: ILiveStream, errors: any) => {
     return (
       values.name === "" ||
-      values.attendees === "" ||
+
       values.streamStartDate === undefined ||
       values.streamEndDate === undefined ||
       errors.streamEndDate ||  errors.streamStartDate

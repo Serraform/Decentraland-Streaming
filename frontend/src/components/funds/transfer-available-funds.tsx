@@ -51,12 +51,12 @@ const TransferAvailableFunds = (props: any) => {
         <div className="items-start flex flex-col justify-start w-100 dark:bg-[#1a1d1e]">
           <div className="px-[2rem] py-[20px]">
             <h1 className="font-montserratbold text-black text-start b-[40px] dark:text-white">
-              Input the amount you want to transfer into your account
+              Input the amount you want to withdraw
             </h1>
             <div className="mt-[15px] mb-[10px]">
               <input
                 className="mt-[5px] w-[100%] border border-secondary text-secondary p-[0.5rem] border-b-0 placeholder:text-secondary focus:outline-none"
-                placeholder="Amount you want to transfer"
+                placeholder="Amount to withdraw"
                 name="amount"
                 value={
             transferInfo.amount
@@ -80,7 +80,7 @@ const TransferAvailableFunds = (props: any) => {
                 }}
               >
                 <div className="mr-2">
-                  Balance: {parseFloat(balance?.toString()) / 10 ** 6} USDC
+                  Balance: {parseFloat(balance?.toString()) / 10 ** 6} USDC   
                 </div>
                 <button
                   onClick={() =>
@@ -106,7 +106,7 @@ const TransferAvailableFunds = (props: any) => {
                   onClick={() => handleTransferAvailableFunds(transferInfo.amount)}
                 >
                   {loading && <div className="basic mr-[1rem]" />}
-                  Withdraw from Account
+                  Withdraw
                 </button>
               </div>
             </div>

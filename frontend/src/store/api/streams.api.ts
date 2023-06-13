@@ -29,7 +29,6 @@ export const streamsApi = createApi({
       query: ({ walletID, streamValues }) => {
         const {
           name,
-          attendees,
           streamStartDate,
           streamEndDate,
           streamType,
@@ -56,7 +55,7 @@ export const streamsApi = createApi({
             streamDuration: "",
             streamStartDate: streamStartDate.toISOString(),
             streamEndDate: streamEndDate.toISOString(),
-            attendees: "" + attendees,
+            attendees: "" + 1,
             cost: "" + cost,
             vaultContractId: "" + vaultContractId,
           },
@@ -67,7 +66,6 @@ export const streamsApi = createApi({
       query: ({ streamValues }) => {
         const {
           name,
-          attendees,
           streamStartDate,
           streamEndDate,
           cost,
@@ -87,8 +85,7 @@ export const streamsApi = createApi({
             Cost: cost,
             StreamStartDate: streamStartDate,
             StreamEndDate: streamEndDate,
-            Attendees:
-              typeof attendees === "number" ? "" + attendees : attendees,
+            Attendees:"1",
           },
         };
       },

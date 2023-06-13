@@ -13,7 +13,6 @@ const initialState: InitialState = {
   selectedStream: {
     name: "",
     status: false,
-    attendees: "",
     streamType: "",
     pulled:false,
     streamID: "",

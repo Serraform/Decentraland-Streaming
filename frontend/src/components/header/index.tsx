@@ -17,17 +17,11 @@ const Header = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
   return (
     <div className="border-b dark:border-[#323739] ">
-      <div className="container  flex flex-row justify-end items-center pt-[10px] pb-[10px]">
+      <div className="container  flex flex-row justify-end items-center pt-[10px] pb-[10px] pr-[30px]">
         <WalletDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} />
        
         {walletID !== "" && avatar ? (
           <div className="flex flex-row items-center">
-            <button
-              className={`border-2 rounded-full p-[0.2rem] ${isPremium ? "border-orange-300" : "border-primary"} flex justify-center items-center flex-row`}
-              onClick={() => setOpenDrawer(true)}
-            >
-              <div id="#jazzicon" className="flex" />
-            </button>
             <a
                href="https://serraform.gitbook.io/streaming-docs/"
                target="_blank"
@@ -35,7 +29,7 @@ const Header = () => {
               data-tip={"Manual"}
               data-iscapture="true"
               type="button"
-              className="ml-2 docs"
+              className="mr-2 docs"
               aria-haspopup="true"
               aria-expanded="false"
               data-headlessui-state=""
@@ -43,6 +37,13 @@ const Header = () => {
             >
               <FaqIcon />
             </a>
+            <button
+              className={`border-2 rounded-full p-[0.2rem] ${isPremium ? "border-orange-300" : "border-primary"} flex justify-center items-center flex-row`}
+              onClick={() => setOpenDrawer(true)}
+            >
+              <div id="#jazzicon" className="flex" />
+            </button>
+
           </div>
         ) : (
           <button onClick={() => setOpenDrawer(true)}>
