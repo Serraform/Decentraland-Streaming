@@ -17,7 +17,7 @@ const Header = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
   return (
     <div className="border-b dark:border-[#323739] ">
-      <div className="container  flex flex-row justify-end items-center pt-[10px] pb-[10px]">
+      <div className="container  flex flex-row justify-end items-center pt-[10px] pb-[10px] pr-[30px]">
         <WalletDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} />
        
         {walletID !== "" && avatar ? (
@@ -29,7 +29,7 @@ const Header = () => {
               data-tip={"Manual"}
               data-iscapture="true"
               type="button"
-              className="ml-2 docs"
+              className="mr-2 docs"
               aria-haspopup="true"
               aria-expanded="false"
               data-headlessui-state=""

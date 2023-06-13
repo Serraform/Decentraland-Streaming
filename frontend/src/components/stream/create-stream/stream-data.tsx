@@ -39,7 +39,6 @@ const StreamInfo: React.FC<IStreamCreation> = ({
       streamType: streamType,
       name: "",
       status: false,
-      attendees: "",
       streamStartDate: Date.now(),
       streamEndDate: Date.now(),
     }

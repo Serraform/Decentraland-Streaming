@@ -91,11 +91,7 @@ const CommonForm: React.FC<Props> = ({
     }
   }, [streamIsHappeningOrHasHappened, addToast]);
 
-  const preventMinus = (e: any) => {
-    if (e.code === "Minus") {
-      e.preventDefault();
-    }
-  };
+ 
 
 
   return (
@@ -133,37 +129,6 @@ const CommonForm: React.FC<Props> = ({
             disabled={streamIsHappeningOrHasHappened}
             onChange={handleChange}
             placeholder="Name"
-            className="mb-[20px] mt-[10px] w-[100%] border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
-          />
-        </div>
-        <div className="mb-2 w-full ml-3">
-          <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center whitespace-nowrap	">
-            Estimated number of attendees
-            <ReactTooltip
-              id="stream-attendees"
-              place="top"
-              type={"dark"}
-              effect={"float"}
-            />
-            <div
-              className="form-tooltip"
-              data-for="stream-attendees"
-              data-tip={"Estimated number of attendees for the stream"}
-              data-iscapture="true"
-            >
-              <FaqIcon />
-            </div>
-          </h2>
-          <Field
-            type="number"
-            min="0"
-            onKeyPress={preventMinus}
-            required
-            value={values.attendees}
-            disabled={streamIsHappeningOrHasHappened}
-            name="attendees"
-            onChange={handleChange}
-            placeholder="Attendees"
             className="mb-[20px] mt-[10px] w-[100%] border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
           />
         </div>

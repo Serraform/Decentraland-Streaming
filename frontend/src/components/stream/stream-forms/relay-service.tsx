@@ -84,7 +84,7 @@ const RelayService: React.FC<Props> = ({
       values.relayUrl === "" ||
       !values.relayUrlIsVerified ||
       values.name === "" ||
-      values.attendees === "" ||
+      
       values.streamStartDate === undefined ||
       values.streamEndDate === undefined ||
       errors.streamEndDate !== ""|| errors.streamStartDate!==""

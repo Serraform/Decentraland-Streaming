@@ -67,13 +67,5 @@ export const columnsDefinition = (
       );
     },
   }),
-  columnHelper.accessor("attendees", {
-    id: "attendees",
-    header: () => <span className="font-montserratbold">Attendance</span>,
-    cell: (info: any) => (
-      <span className="font-montserratregular text-[14px]">
-        {info.getValue()}
-      </span>
-    ),
-  }),
+  
 ];

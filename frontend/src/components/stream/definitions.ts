@@ -4,7 +4,6 @@ interface IStream {
   streamID: any;
   name: string;
   status: boolean;
-  attendees: string;
   streamType: string;
   pulled: boolean;
   streamStartDate: Date | undefined;
@@ -59,7 +58,6 @@ const initialInfoState = {
   streamType: "",
   name: "",
   status: false,
-  attendees: "",
   streamStartDate: Date.now(),
   streamEndDate: Date.now(),
   pulled: false,
@@ -68,7 +66,6 @@ const initialInfoState = {
 const validationSchema = Yup.object().shape({
   streamType: Yup.string().required(),
   name: Yup.string().required(),
-  attendees: Yup.string().required(),
   streamStartDate: Yup.date().required(),
   streamEndDate: Yup.date().required(),
 });
