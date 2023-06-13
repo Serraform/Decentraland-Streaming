@@ -118,7 +118,7 @@ const RelayService: React.FC<Props> = ({
                 className="flex flex-col justify-top w-[50%] h-[100%]"
                 style={{ position: "relative" }}
               >
-                <div className="mb-2 w-full mr-3">
+                <div className="w-full mr-3 mb-[20px]">
                   <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center">
                   Stream URL
                     <ReactTooltip
@@ -136,7 +136,7 @@ const RelayService: React.FC<Props> = ({
                       <FaqIcon />
                     </div>
                   </h2>
-                  <div className="flex flex-row items-center mb-[20px] mt-[10px]">
+                  <div className="flex flex-row items-center mb-[10px] mt-[10px]">
                     <Field
                       type="text"
                       value={values.relayUrl}
@@ -163,6 +163,10 @@ const RelayService: React.FC<Props> = ({
                       <span className="ml-2 " style={{whiteSpace: "pre"}}>Verify URL</span>
                     </button>
                   </div>
+                  <span className="font-montserratregular text-white text-[12px] "><a href="https://serraform.gitbook.io/streaming-docs/guides/decentraland-playback" target="_blank" rel="noreferrer">Click {" "}
+ here
+ for a list of supported streams.</a>
+</span>
                 </div>
                 <CommonForm
                   initialValues={initialValues}
