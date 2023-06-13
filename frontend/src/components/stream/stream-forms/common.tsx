@@ -82,7 +82,7 @@ const CommonForm: React.FC<Props> = ({
     console.log("streamIsHappeningOrHasHappened has re execute");
     if (streamIsHappeningOrHasHappened) {
       addToast(
-        "This stream cannot be modified because it has already passed.",
+        "This stream cannot be modified because the start time has already passed.",
         {
           appearance: "warning",
           autoDismiss: true,
@@ -148,7 +148,7 @@ const CommonForm: React.FC<Props> = ({
             <div
               className="form-tooltip"
               data-for="stream-attendees"
-              data-tip={"Estimated number of attendees of the stream"}
+              data-tip={"Estimated number of attendees for the stream"}
               data-iscapture="true"
             >
               <FaqIcon />
@@ -184,7 +184,7 @@ const CommonForm: React.FC<Props> = ({
               <span
                 dangerouslySetInnerHTML={{
                   __html: `Total cost:
-              <span class="!text-green-500">${cost} USDC</span>
+              <span class="!text-white"><b>${cost} USDC</b></span>
             `
                 }}
               />
@@ -194,7 +194,7 @@ const CommonForm: React.FC<Props> = ({
               <span
               dangerouslySetInnerHTML={{
                 __html: `Total cost after ${discount}% discount: 
-                  <span class="!text-green-500">${discountCost} USDC</span>`
+                  <span class="!text-white"><b>${discountCost} USDC</b></span>`
                 }}
                 />)}
           </span>{" "}

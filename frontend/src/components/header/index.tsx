@@ -22,12 +22,6 @@ const Header = () => {
        
         {walletID !== "" && avatar ? (
           <div className="flex flex-row items-center">
-            <button
-              className={`border-2 rounded-full p-[0.2rem] ${isPremium ? "border-orange-300" : "border-primary"} flex justify-center items-center flex-row`}
-              onClick={() => setOpenDrawer(true)}
-            >
-              <div id="#jazzicon" className="flex" />
-            </button>
             <a
                href="https://serraform.gitbook.io/streaming-docs/"
                target="_blank"
@@ -43,6 +37,13 @@ const Header = () => {
             >
               <FaqIcon />
             </a>
+            <button
+              className={`border-2 rounded-full p-[0.2rem] ${isPremium ? "border-orange-300" : "border-primary"} flex justify-center items-center flex-row`}
+              onClick={() => setOpenDrawer(true)}
+            >
+              <div id="#jazzicon" className="flex" />
+            </button>
+
           </div>
         ) : (
           <button onClick={() => setOpenDrawer(true)}>

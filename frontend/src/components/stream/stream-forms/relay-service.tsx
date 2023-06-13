@@ -55,7 +55,7 @@ const RelayService: React.FC<Props> = ({
       setIsVerfied(verifyRelayLinkResponse);
     } else if (isSuccess && !verifyRelayLinkResponse) {
       addToast(
-        "Stream URL couldn't be verified, please read here for more info: ",
+        <a href="https://serraform.gitbook.io/streaming-docs/guides/scheduling-a-stream#stream-relay" target="_blank" rel="noreferrer">Stream URL couldn't be verified, please click here for more info.</a>,
         {
           appearance: "error",
           autoDismiss: true,
@@ -130,7 +130,7 @@ const RelayService: React.FC<Props> = ({
                     <div
                       className="form-tooltip"
                       data-for="relayUrl"
-                      data-tip={"URL of your Twitch/YouTube/etc stream"}
+                      data-tip={"URL of your Twitch, YouTube, or other stream"}
                       data-iscapture="true"
                     >
                       <FaqIcon />
@@ -163,7 +163,7 @@ const RelayService: React.FC<Props> = ({
                       <span className="ml-2 " style={{whiteSpace: "pre"}}>Verify URL</span>
                     </button>
                   </div>
-                  <span className="font-montserratregular text-white text-[12px] "><a href="https://serraform.gitbook.io/streaming-docs/guides/decentraland-playback" target="_blank" rel="noreferrer">Click {" "}
+                  <span className="font-montserratregular text-slate-500 text-[12px] "><a href="https://streamlink.github.io/plugins.html" target="_blank" rel="noreferrer">Click {" "}
  here
  for a list of supported streams.</a>
 </span>
