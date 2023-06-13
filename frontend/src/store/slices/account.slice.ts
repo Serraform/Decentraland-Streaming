@@ -8,9 +8,9 @@ import {
 } from "store/services/account.service";
 import jazzicon from "jazzicon-ts";
 import { ethers } from "ethers";
-import smartcontractV2ABI from "utils/abi/smartcontractpolygon_abi.json";
 import usdcABI from "utils/abi/usdcAbi.json";
-const smartcontractABI = smartcontractV2ABI.output.contracts["Work/CLS-Polygon.sol"].SubscriptionContract.abi;
+
+const smartcontractABI = process.env.REACT_APP_CONTRACT_ABI === "POLYGON"  ? require("utils/abi/smartcontractpolygon_abi.json") : require("utils/abi/smartcontractgoerli_abi.json");
 const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 const USDC_CONTRACT_ADDRESS = process.env.REACT_APP_USDC_CONTRACT_ADDRESS;
 const initialState = {
@@ -190,7 +190,7 @@ export const fetchFunds = createAsyncThunk(
         treasuryFunds: treasuryFunds,
       };
     } catch (e) {
-      
+      console.log(e);
       return {
         balance: 0,
         locked_balance: 0,
