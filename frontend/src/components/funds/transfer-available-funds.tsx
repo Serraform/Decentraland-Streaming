@@ -51,7 +51,7 @@ const TransferAvailableFunds = (props: any) => {
         <div className="items-start flex flex-col justify-start w-100 dark:bg-[#1a1d1e]">
           <div className="px-[2rem] py-[20px]">
             <h1 className="font-montserratbold text-black text-start b-[40px] dark:text-white">
-              Input the amount you want to withdraw
+              Input the amount to withdraw
             </h1>
             <div className="mt-[15px] mb-[10px]">
               <input

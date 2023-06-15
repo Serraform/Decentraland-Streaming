@@ -54,7 +54,7 @@ const StreamTable: React.FC<Props> = ({
         >
           <TransferIcon />{" "}
           <span className="dark:text-white ml-2">
-            Transfer selected stream vaults to treasury
+            Transfer Selected Streams
           </span>
         </button>
       </div>

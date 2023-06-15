@@ -34,7 +34,7 @@ const Menu = () => {
           {" "}
           <Link to="/streams-to-pull" className={`${listType==="streams-to-pull" && `active` }  ${role === "admin" && "gold"}`}>
             <TransferIcon />
-            <span>Streams to pull</span>
+            <span>Withdraw to Treasury</span>
           </Link>
           <Link to="/premium-users" className={`${listType==="premium-users" && `active`} ${role === "admin" && "gold"} ` }>
             <UserPremium />

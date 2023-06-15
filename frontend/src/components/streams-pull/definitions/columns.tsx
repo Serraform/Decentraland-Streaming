@@ -40,9 +40,26 @@ export const columnsDefinition = (
     id: "name",
     header: () => <span className="font-montserratbold">Name</span>,
     cell: (info: any) => (
-      <span className="font-montserratregular text-[14.5px]">
-        {info.getValue()}
-      </span>
+      switch (info.getValue()) {
+        case "vod":
+          return (
+            <span className="font-montserratregular text-[14px]">VOD</span>
+          );
+        case "liveStream":
+          return (
+            <span className="font-montserratregular text-[14px]">Live</span>
+          );
+        case "relayService":
+          return (
+            <span className="font-montserratregular text-[14px]">
+              Relay
+            </span>
+          );
+        default:
+          return (
+            <span className="font-montserratregular text-[14px]">Live</span>
+          );
+      }
     ),
   }),
   columnHelper.accessor("streamType", {
@@ -61,7 +78,7 @@ export const columnsDefinition = (
     cell: (info: any) => {
       return (
         <span className="font-montserratregular text-[14px]">
-          {new Date(info.row.original.streamStartDate).toDateString()}-
+          {new Date(info.row.original.streamStartDate).toDateString()} - 
           {new Date(info.row.original.streamEndDate).toDateString()}
         </span>
       );

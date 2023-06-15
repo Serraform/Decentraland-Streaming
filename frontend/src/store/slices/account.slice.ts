@@ -68,7 +68,7 @@ export const approvePulling = createAsyncThunk(
         deposit
       );
 
-      addToast("Waiting for transaction approval", {
+      addToast("Waiting for transaction confirmation", {
         autoDismiss: true,
       });
       const pullFundsApprovalReceipt = await pullFundsApproval.wait();
@@ -223,7 +223,7 @@ export const fundWallet = createAsyncThunk(
 
       let tx = null;
       tx = await contract.deposit(deposit);
-      addToast("Waiting for funding approval", {
+      addToast("Waiting for funding transaction confirmation", {
         autoDismiss: true,
       });
       const receipt = await tx.wait();

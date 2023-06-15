@@ -122,7 +122,7 @@ const Funds = () => {
         >
           <div className="text-center locked-funds">
             <p className="font-montserratmedium dark:text-white">
-              Treasury funds
+              Treasury Funds
             </p>
             <h3 className="font-montserratbold tracking-[0.1rem] text-[1.5rem] dark:text-white">
               {parseFloat(treasuryFunds.toString()) / 10 ** 6} USDC
@@ -154,7 +154,7 @@ const Funds = () => {
             }
             className={`${buttonStyle} bg-primary rounded flex justify-center dark:hover:bg-transparent dark:border-primary dark:border mt-[24px]`}
           >
-            {loading ? <div className="basic" /> : <>Approve contract</>}
+            {loading ? <div className="basic" /> : <>Approve Contract</>}
           </button>
         </div>
       )}
