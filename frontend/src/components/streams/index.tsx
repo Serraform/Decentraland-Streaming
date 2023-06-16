@@ -125,16 +125,16 @@ const Streams = () => {
             } else if (a.status !== "Upcoming" && b.status === "Upcoming") {
               return 1; // b comes before a
             }
+            return 0
+            // // Sort by closest startDate if statuses are the same
+            // const dateA = new Date(a.streamStartDate);
+            // const dateB = new Date(b.streamStartDate);
+            // const currentDate = new Date()
+            // // Calculate the difference in milliseconds between the dates
+            // const diffA = Math.abs(dateA.getTime() - currentDate.getTime() as any);
+            // const diffB = Math.abs(dateB.getTime() - currentDate.getTime() as any);
           
-            // Sort by closest startDate if statuses are the same
-            const dateA = new Date(a.streamStartDate);
-            const dateB = new Date(b.streamStartDate);
-            const currentDate = new Date()
-            // Calculate the difference in milliseconds between the dates
-            const diffA = Math.abs(dateA.getTime() - currentDate.getTime() as any);
-            const diffB = Math.abs(dateB.getTime() - currentDate.getTime() as any);
-          
-            return diffA - diffB;
+            // return diffA - diffB;
           }) as any}
         handleSelectStream={handleSelectStream}
       />
