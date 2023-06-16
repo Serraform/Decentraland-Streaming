@@ -135,6 +135,7 @@ const PremiumUsers = () => {
         columns={columns}
         premiumUsers={data as PremiumUser[]}
         handleSelectUser={handleSelectUser}
+        refetch={refetch}
       />
     </>
   );

@@ -149,7 +149,7 @@ const CommonForm: React.FC<Props> = ({
               <span
                 dangerouslySetInnerHTML={{
                   __html: `Total cost:
-              <span class="!text-white"><b>${cost} USDC</b></span>
+              <span class="dark:!text-white text-black"><b>${cost} USDC</b></span>
             `
                 }}
               />

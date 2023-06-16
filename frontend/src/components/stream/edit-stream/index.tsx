@@ -99,7 +99,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
 
   useEffect(() => {
     if (receipt && receipt.status === 1 && transactionType === "cancel") {
-      deleteStream({ streamId: selectedStream.streamInfo?.Id });
+      deleteStream({ streamId: selectedStream.streamID });
       dispatch(fetchFunds(walletID));
       dispatch(finishTransaction());
       navigate("/");
@@ -332,6 +332,7 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
           <h3 className="font-montserratbold dark:text-white">Details</h3>
           <div className="flex flex-col justify-between border-t-third border mt-1 border-l-0 border-r-0 border-b-0 dark:border-t-[#323739]">
             {renderDetail("Playback URL:", true, selectedStream.playBackUrl)}
+            {renderDetail("Stream ID", true, (selectedStream as any)?.streamID)}
             {selectedStream.streamType === "vod" && (
               <>
                 {renderDetail("Asset ID", true, (selectedStream as any)?.vId)}

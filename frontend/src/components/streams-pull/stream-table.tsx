@@ -8,16 +8,19 @@ import {
 import { IStreamVOD, ILiveStream } from "components/stream/definitions";
 import { useMemo } from "react";
 import TransferIcon from "assets/icons/Transfer";
+import RefreshIcon from "assets/icons/Refresh";
 
 type Props = {
   columns: any;
   streams: (IStreamVOD | ILiveStream)[];
   handleSelectStream: Function;
+  refetch: Function;
 };
 const StreamTable: React.FC<Props> = ({
   columns,
   streams,
   handleSelectStream,
+  refetch
 }) => {
   const table = useReactTable({
     data: streams,
@@ -41,7 +44,15 @@ const StreamTable: React.FC<Props> = ({
   return (
     <>
      <div className="container flex flex-row justify-between items-center pt-10">
+      <div className="flex flex-row">
         <h1  className="font-montserratbold tracking-[0rem] text-primary dark:text-white text-xl">Streams to Pull</h1>
+        <button className="ml-5" onClick={(e) => {
+          e.stopPropagation();
+          refetch()
+        }}>
+          <RefreshIcon />
+        </button>
+      </div>
         <button
           className="btn-third flex flex-row items-center !pr-0"
           onClick={() =>

@@ -12,7 +12,7 @@ import AddIcon from "assets/icons/Add";
 import { useFetchStreamsByWalletIdQuery } from "store/api/streams.api";
 import { useNavigate } from "react-router-dom";
 import { clearSelectStream } from "store/slices/stream.slice";
-
+import RefreshIcon from "assets/icons/Refresh";
 const Streams = () => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
@@ -24,6 +24,7 @@ const Streams = () => {
     isSuccess,
     isLoading: loading,
     isFetching,
+    refetch,
   } = useFetchStreamsByWalletIdQuery(walletID, {
     skip: walletID === "",
     refetchOnMountOrArgChange: true,
@@ -79,14 +80,28 @@ const Streams = () => {
     return (
       <div className="container pt-10">
         <h1 className="font-montserratbold text-primary text-center pt-20 pb-20 border-third border-r-0 border-t-0">
-          Your session has expired, please refresh your browser to see your streams.
+          Your session has expired, please refresh your browser to see your
+          streams.
         </h1>
       </div>
     );
   return (
     <>
       <div className="container flex flex-row justify-between items-center pt-10">
-        <h1  className="font-montserratbold tracking-[0rem] text-primary dark:text-white text-xl">Streams</h1>
+        <div className="flex flex-row">
+          <h1 className="font-montserratbold tracking-[0rem] text-primary dark:text-white text-xl">
+            Streams
+          </h1>
+          <button
+            className="ml-5"
+            onClick={(e) => {
+              e.stopPropagation();
+              refetch();
+            }}
+          >
+            <RefreshIcon />
+          </button>
+        </div>
         <button
           className="btn-third flex flex-row items-center !pr-0"
           onClick={() => handleOpenNewStream()}
@@ -98,18 +113,29 @@ const Streams = () => {
       </div>
       <StreamTable
         columns={columns}
-        streams={
-          data
-            ?.map((stream: any) => ({
-              ...stream,
-              streamInfo: JSON.parse(stream.streamInfo),
-            }))
-            .sort(
-              (a, b) =>
-                (new Date(b.streamStartDate) as any) -
-                (new Date(a.streamStartDate) as any)
-            ) as any
-        }
+        streams={data
+          ?.map((stream: any) => ({
+            ...stream,
+            streamInfo: JSON.parse(stream.streamInfo),
+          }))
+         
+          .sort((a, b) => {
+            if (a.status === "Upcoming" && b.status !== "Upcoming") {
+              return -1; // a comes before b
+            } else if (a.status !== "Upcoming" && b.status === "Upcoming") {
+              return 1; // b comes before a
+            }
+          
+            // Sort by closest startDate if statuses are the same
+            const dateA = new Date(a.streamStartDate);
+            const dateB = new Date(b.streamStartDate);
+            const currentDate = new Date()
+            // Calculate the difference in milliseconds between the dates
+            const diffA = Math.abs(dateA.getTime() - currentDate.getTime() as any);
+            const diffB = Math.abs(dateB.getTime() - currentDate.getTime() as any);
+          
+            return diffA - diffB;
+          }) as any}
         handleSelectStream={handleSelectStream}
       />
     </>

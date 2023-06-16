@@ -54,6 +54,7 @@ const StreamsPull = () => {
     isSuccess,
     isLoading: loading,
     isFetching,
+    refetch
   } = useFetchAllEndedStreamsQuery({
     skip: walletID === "",
     refetchOnMountOrArgChange: true || (receipt && receipt.status === 1),
@@ -156,6 +157,7 @@ const StreamsPull = () => {
                 (new Date(a.streamStartDate) as any)
             ) as any
         }
+        refetch={refetch}
         handleSelectStream={handleSelectStream}
       />
     </>
