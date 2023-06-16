@@ -45,7 +45,7 @@ const StreamTable: React.FC<Props> = ({
     <>
      <div className="container flex flex-row justify-between items-center pt-10">
       <div className="flex flex-row">
-        <h1  className="font-montserratbold tracking-[0rem] text-primary dark:text-white text-xl">Streams to Pull</h1>
+        <h1  className="font-montserratbold tracking-[0rem] text-primary dark:text-white text-xl">Completed Streams</h1>
         <button className="ml-5" onClick={(e) => {
           e.stopPropagation();
           refetch()
@@ -65,7 +65,7 @@ const StreamTable: React.FC<Props> = ({
         >
           <TransferIcon />{" "}
           <span className="dark:text-white ml-2">
-            Transfer Selected Streams
+            Deposit to Treasury
           </span>
         </button>
       </div>

@@ -132,7 +132,7 @@ const Funds = () => {
             onClick={() => setOpenModal(true)}
             className="font-montserratbold tracking-[0.1rem] text-[0.8rem] text-center hidden read-more dark:text-white pr-1 pl-1"
           >
-            These funds are ready to be withdrawn to a wallet, click here to begin.
+            Click here to withdraw treasury funds to a wallet.
           </button>
         </div>
       ) : (
@@ -141,7 +141,7 @@ const Funds = () => {
       {!isTokenContractApprove && (
         <div>
           <p className="font-montserratmedium mt-[24px] dark:text-white">
-            In order to create a stream, the payment contract must be approved to
+            In order to create a stream the payment contract must be approved to
             interact with your USDC.
           </p>{" "}
           <button
@@ -162,7 +162,7 @@ const Funds = () => {
         <>
           <p className="font-montserratmedium mt-[24px] dark:text-white">
             {!balance
-              ? "In order to create a stream, you must fund your account with USDC"
+              ? "In order to create a stream you must fund your account with USDC"
               : ""}
           </p>
           <div className={bottomFormStyle}>
