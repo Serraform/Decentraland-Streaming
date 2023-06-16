@@ -36,6 +36,7 @@ export const streamsApi = createApi({
           vaultContractId,
           VId,
           relayUrl,
+          relayUrlIsVerified
         } = streamValues;
         return {
           url: `api/Stream/CreateStream`,
@@ -55,6 +56,7 @@ export const streamsApi = createApi({
             streamDuration: "",
             streamStartDate: streamStartDate.toISOString(),
             streamEndDate: streamEndDate.toISOString(),
+            relayUrlIsVerified: relayUrlIsVerified,
             attendees: "" + 1,
             cost: "" + cost,
             vaultContractId: "" + vaultContractId,

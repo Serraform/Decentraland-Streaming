@@ -8,16 +8,18 @@ import {
 import { PremiumUser } from "components/premium-users/definitions/types";
 import { useMemo } from "react";
 import PremiumIcon from "assets/icons/Premium";
-
+import RefreshIcon from "assets/icons/Refresh";
 type Props = {
   columns: any;
   premiumUsers: PremiumUser[];
   handleSelectUser: Function;
+  refetch: Function;
 };
 const PremiumUsersTable: React.FC<Props> = ({
   columns,
   premiumUsers,
   handleSelectUser,
+  refetch
 }) => {
   const table = useReactTable({
     data: premiumUsers,
@@ -40,9 +42,18 @@ const PremiumUsersTable: React.FC<Props> = ({
   return (
     <>
       <div className="container flex flex-row justify-between items-center pt-10">
+        <div className="flex flex-row">
+
         <h1 className="font-montserratbold tracking-[0rem] text-primary dark:text-white text-xl">
           Premium Users
         </h1>
+        <button className="ml-5" onClick={(e) => {
+          e.stopPropagation();
+          refetch()
+        }}>
+          <RefreshIcon />
+        </button>
+        </div>
         <button
           className="btn-third flex flex-row items-center !pr-0"
           onClick={() => {

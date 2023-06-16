@@ -9,7 +9,7 @@ const Refresh = () => {
       stroke-linejoin="round"
       stroke-width="2"
       viewBox="0 0 24 24"
-      className="mx-auto hover:cursor-pointer hover:bg-gray-300 hover:text-gray-800 hover:transition hover:ease-linear w-fit  p-1 rounded-sm"
+      className="mx-auto hover:cursor-pointer hover:bg-gray-300 hover:text-gray-800 hover:transition hover:ease-linear w-fit  p-1 rounded-sm dark:text-white dark:hover:text-gray-800"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path d="M1 4v6h6"></path>

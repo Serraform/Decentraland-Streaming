@@ -28,13 +28,12 @@ const PremiumUser = (props: any) => {
         <div className="items-start flex flex-col justify-start w-100 dark:bg-[#1a1d1e]">
           <div className="px-[2rem] py-[20px]">
             <h1 className="font-montserratbold text-black text-start b-[40px] dark:text-white">
-              Input the wallet you want to make premium, and don't forget about
-              the discount!
+              Enter the wallet address and discount amount (%)
             </h1>
             <div className="mt-[15px] mb-[10px]">
               <input
                 className="mb-[5px] mt-[10px] w-[100%] border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
-                placeholder="Wallet Address you want to make premium"
+                placeholder="Wallet public address (0x...)"
                 name="walletId"
                 value={premiumUserData.walletId}
                 onChange={(e) =>
@@ -46,7 +45,7 @@ const PremiumUser = (props: any) => {
               />
               <input
                 className="mt-[5px] w-[100%] border border-secondary text-secondary p-[0.5rem]  placeholder:text-secondary focus:outline-none"
-                placeholder="Discount you want to give the user"
+                placeholder="User discount (%)"
                 name="discount"
                 value={premiumUserData.discount}
                 onChange={(e) =>

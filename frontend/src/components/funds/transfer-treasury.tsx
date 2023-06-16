@@ -52,12 +52,12 @@ const TransferTreasury = (props: any) => {
         <div className="items-start flex flex-col justify-start w-100 dark:bg-[#1a1d1e]">
           <div className="px-[2rem] py-[20px]">
             <h1 className="font-montserratbold text-black text-start b-[40px] dark:text-white">
-              Input the wallet you want to transfer the funds and the amount
+              Input the wallet and amount to withdraw
             </h1>
             <div className="mt-[15px] mb-[10px]">
               <input
                 className="mb-[5px] mt-[10px] w-[100%] border border-secondary text-secondary p-[0.5rem] placeholder:text-secondary focus:outline-none"
-                placeholder="Wallet you want to transfer"
+                placeholder="Wallet to receive funds"
                 name="walletAddress"
                 value={transferInfo.walletAddress}
                 onChange={(e) =>
@@ -69,7 +69,7 @@ const TransferTreasury = (props: any) => {
               />
               <input
                 className="mt-[5px] w-[100%] border border-secondary text-secondary p-[0.5rem] border-b-0 placeholder:text-secondary focus:outline-none"
-                placeholder="Amount you want to transfer"
+                placeholder="Amount to withdraw"
                 name="amount"
                 value={
             transferInfo.amount
@@ -119,7 +119,7 @@ const TransferTreasury = (props: any) => {
                   onClick={() => handleTransferTreasury(transferInfo.walletAddress, transferInfo.amount)}
                 >
                   {loading && <div className="basic mr-[1rem]" />}
-                  Transfer to treasury
+                  Withdraw
                 </button>
               </div>
             </div>

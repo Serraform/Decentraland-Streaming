@@ -55,7 +55,13 @@ const RelayService: React.FC<Props> = ({
       setIsVerfied(verifyRelayLinkResponse);
     } else if (isSuccess && !verifyRelayLinkResponse) {
       addToast(
-        <a href="https://serraform.gitbook.io/streaming-docs/guides/scheduling-a-stream#stream-relay" target="_blank" rel="noreferrer">Stream URL couldn't be verified, please click here for more info.</a>,
+        <a
+          href="https://serraform.gitbook.io/streaming-docs/guides/scheduling-a-stream#stream-relay"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Stream URL couldn't be verified, please click here for more info.
+        </a>,
         {
           appearance: "error",
           autoDismiss: true,
@@ -74,8 +80,8 @@ const RelayService: React.FC<Props> = ({
         ...values,
         streamType: "relayService",
       };
-    
-        handleSave(valuesToSend);
+
+      handleSave(valuesToSend);
     },
     [handleSave]
   );
@@ -84,10 +90,12 @@ const RelayService: React.FC<Props> = ({
       values.relayUrl === "" ||
       !values.relayUrlIsVerified ||
       values.name === "" ||
-      
       values.streamStartDate === undefined ||
       values.streamEndDate === undefined ||
-      errors.streamEndDate !== ""|| errors.streamStartDate!==""
+      (errors.streamEndDate !== "" &&
+      errors.streamStartDate !== "" &&
+      errors.streamEndDate !== undefined &&
+      errors.streamStartDate !== undefined)
     );
   };
 
@@ -120,7 +128,7 @@ const RelayService: React.FC<Props> = ({
               >
                 <div className="w-full mr-3 mb-[20px]">
                   <h2 className="font-montserratbold text-black text-[14px] dark:text-white flex flex-row items-center">
-                  Stream URL
+                    Stream URL
                     <ReactTooltip
                       id="relayUrl"
                       place="top"
@@ -141,7 +149,10 @@ const RelayService: React.FC<Props> = ({
                       type="text"
                       value={values.relayUrl}
                       name="relayUrl"
-                      disabled={formMode === "edit" && (values as any)?.relayUrlIsVerified}
+                      disabled={
+                        formMode === "edit" &&
+                        (values as any)?.relayUrlIsVerified
+                      }
                       onChange={handleChange}
                       placeholder="Stream URL"
                       required
@@ -152,7 +163,8 @@ const RelayService: React.FC<Props> = ({
                       disabled={
                         values.relayUrl === "" ||
                         values.relayUrl === null ||
-                        (formMode === "edit" && (values as any)?.relayUrlIsVerified)
+                        (formMode === "edit" &&
+                          (values as any)?.relayUrlIsVerified)
                       }
                       onClick={() => verifyRelayLink(values.relayUrl)}
                     >
@@ -160,17 +172,29 @@ const RelayService: React.FC<Props> = ({
                       {isSuccess && verifyRelayLinkResponse && <SuccessIcon />}
                       {isSuccess && !verifyRelayLinkResponse && <ErrorIcon />}
 
-                      <span className="ml-2 " style={{whiteSpace: "pre"}}>Verify URL</span>
+                      <span className="ml-2 " style={{ whiteSpace: "pre" }}>
+                        Verify URL
+                      </span>
                     </button>
                   </div>
-                  <span className="font-montserratregular text-slate-500 text-[12px] "><a href="https://streamlink.github.io/plugins.html" target="_blank" rel="noreferrer">Click {" "}
- here
- for a list of supported streams.</a>
-</span>
+                  <span className="font-montserratregular text-slate-500 text-[12px] ">
+                    <a
+                      href="https://streamlink.github.io/plugins.html"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Click here for a list of supported streams.
+                    </a>
+                  </span>
                 </div>
                 <CommonForm
                   initialValues={initialValues}
-                  values={{ ...values, relayUrlIsVerified:  (relayUrlIsVerified || ((values)?.relayUrlIsVerified as boolean))  }}
+                  values={{
+                    ...values,
+                    relayUrlIsVerified:
+                      relayUrlIsVerified ||
+                      (values?.relayUrlIsVerified as boolean),
+                  }}
                   handleChange={handleChange}
                   cost={cost}
                   loading={isLoading}

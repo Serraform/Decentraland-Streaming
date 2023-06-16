@@ -115,7 +115,7 @@ export const lockFunds = createAsyncThunk(
         duration,
         deposit
       );
-      addToast("Waiting for transaction approval", {
+      addToast("Waiting for transaction confirmation", {
         autoDismiss: true,
       });
       const receipt = await tx.wait();
@@ -157,7 +157,7 @@ export const unLockAllFunds = createAsyncThunk(
       );
 
       const tx = await contract.cancel_stream(vaultContractId);
-      addToast("Waiting for transaction approval", {
+      addToast("Waiting for transaction confirmation", {
         autoDismiss: true,
       });
       const receipt = await tx.wait();
@@ -256,7 +256,7 @@ export const withdrawToTreasury = createAsyncThunk(
       );
       
       const tx = await contract.multiWithdraw(vaultsId, vaultsFunds);
-      addToast("Waiting for transaction approval", {
+      addToast("Waiting for transaction confirmation", {
         autoDismiss: true,
       });
       const receipt = await tx.wait();
@@ -309,7 +309,7 @@ export const transferAvailableFundsToWallet = createAsyncThunk(
       });
       const receipt = await tx.wait();
       if (receipt.status === 1) {
-        addToast("Transfer to wallet succesfully", {
+        addToast("Transfered to wallet succesfully", {
           appearance: "success",
           autoDismiss: true,
         });
@@ -349,7 +349,7 @@ export const transferTreasuryToWallet = createAsyncThunk(
         signer
       );
       const tx = await contract.treasuryWithdraw(walletAddress, amountToTransfer);
-      addToast("Waiting for transaction approval", {
+      addToast("Waiting for transaction confirmation", {
         autoDismiss: true,
       });
       const receipt = await tx.wait();
