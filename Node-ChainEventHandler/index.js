@@ -3,6 +3,12 @@ const axios = require("axios");
 const differenceInMinutes = require("date-fns/differenceInMinutes");
 const addMinutes = require("date-fns/addMinutes");
 require("dotenv").config();
+let appInsights = require('applicationinsights');
+appInsights.setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING);
+appInsights.start();
+let clientAppInsights = appInsights.defaultClient;
+
+
 // initialize web3 with a provider
 const providerUrl = process.env.PROVIDER_URL; // replace with your Alchemy API key
 const provider = new Web3.providers.WebsocketProvider(providerUrl);
@@ -34,6 +40,7 @@ contract.events.vault_cancellation({}, async (error, event) => {
   if (!error) {
     const videoID = event.returnValues.videoID;
     console.log(videoID);
+    clientAppInsights.trackTrace({message: `Deleting: ${videoID}`});
     // send videoId to api and delete that stream
     if (videoID) {
       try {
@@ -41,6 +48,7 @@ contract.events.vault_cancellation({}, async (error, event) => {
           `api/Stream/DeleteStreamByVaultContractId/${videoID}${api_key}`
         );
       } catch (e) {
+        client.trackException({exception: new Error(e)});
         console.log(e);
       }
     }
@@ -52,7 +60,8 @@ contract.events
     if (!error) {
       console.log(event.returnValues);
       const { new_balance, new_lockend, new_lockstart, videoID } =
-        event.returnValues;
+      event.returnValues;
+      clientAppInsights.trackTrace({message: `Editing video: ${videoID}`});
       const balance = removeTrailingZeros(new_balance);
       const lockEnd = addMinutes(new Date(new_lockend * 1000 + 10), 10);
       const lockStart = addMinutes(new Date(new_lockstart * 1000 + 10), 10);
@@ -65,6 +74,7 @@ contract.events
           streamDuration: duration + "",
         });
       } catch (e) {
+        client.trackException({exception: new Error(e)});
         console.log(e);
       }
       // send videoId to api and delete that stream
@@ -72,3 +82,4 @@ contract.events
   })
   .on("error", console.error);
 console.log("Listening to events!");
+clientAppInsights.trackTrace({message: "Listening to events!"});
