@@ -48,7 +48,7 @@ contract.events.vault_cancellation({}, async (error, event) => {
           `api/Stream/DeleteStreamByVaultContractId/${videoID}${api_key}`
         );
       } catch (e) {
-        client.trackException({exception: new Error(e)});
+        clientAppInsights.trackException({exception: new Error(e)});
         console.log(e);
       }
     }
@@ -74,7 +74,7 @@ contract.events
           streamDuration: duration + "",
         });
       } catch (e) {
-        client.trackException({exception: new Error(e)});
+        clientAppInsights.trackException({exception: new Error(e)});
         console.log(e);
       }
       // send videoId to api and delete that stream
