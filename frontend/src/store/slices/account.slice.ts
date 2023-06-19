@@ -191,10 +191,8 @@ export const fetchFunds = createAsyncThunk(
       };
     } catch (e) {
       console.log(e);
-      return {
-        balance: 0,
-        locked_balance: 0,
-      };
+      throw new Error();
+     
     }
   }
 );
