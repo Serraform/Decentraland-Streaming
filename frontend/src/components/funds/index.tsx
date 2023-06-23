@@ -11,11 +11,10 @@ import TransferTreasury from "components/funds/transfer-treasury";
 import TransferAvailableFunds from "components/funds/transfer-available-funds";
 import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 import {
-  fetchFunds,
   fundWallet,
   approvePulling,
 } from "store/slices/account.slice";

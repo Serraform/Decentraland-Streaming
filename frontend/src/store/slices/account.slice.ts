@@ -29,10 +29,15 @@ const initialState = {
 const targetNetworkId = process.env.REACT_APP_TARGET_NETWORK_ID;
 const chainId = process.env.REACT_APP_CHAIN_ID as string;
 const getSignerAndProvider = () => {
-  const provider = new ethers.providers.Web3Provider("wss://polygon-mainnet.g.alchemy.com/v2/u7441D8iV8m57gM9LHGbmRRvX563250N");
-    const signer = provider.getSigner();
-    return {provider, signer}
-}
+  const { ethereum } = window as any;
+  if (!ethereum || !ethereum.isConnected()) {
+    return;
+  }
+  
+  const provider = new ethers.providers.Web3Provider(ethereum) as any;
+  const signer  = provider.getSigner() as any;
+  return { signer, provider };
+};
 const switchNetwork = async () => {
   const { ethereum } = window as any;
   const currentChainId = await ethereum.request({
@@ -139,7 +144,7 @@ export const requestConnectWallet = createAsyncThunk(
       dispatchEvent(new Event("storage"));
       await createAccount(accounts[0], signatureVerified.data);
       const addr = accounts[0].slice(2, 10);
-      const identicon = jazzicon(40, parseInt(addr, 20));
+      const identicon = jazzicon(45, parseInt(addr, 16))
       return { walletID: accounts[0], avatar: identicon, balance: 0 };
     } catch (e) {
       return { walletID: "", avatar: "" };
@@ -151,13 +156,7 @@ export const fetchFunds = createAsyncThunk(
   "fetch-funds",
   async (walletID: string) => {
     try {
-      const { ethereum } = window as any;
-      if (!ethereum) {
-        return;
-      }
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = await provider.getSigner();
-
+      const { signer } = getSignerAndProvider() as any;
       const contract = new ethers.Contract(
         CONTRACT_ADDRESS as string,
         smartcontractABI,
@@ -182,13 +181,7 @@ export const checkTokenAllowance = createAsyncThunk(
   "check-token-allowance",
   async (walletID: string) => {
     try {
-      const { ethereum } = window as any;
-      if (!ethereum) {
-        return;
-      }
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = await provider.getSigner();
-
+      const { signer, provider } = getSignerAndProvider()  as any;
       const isTokenContractApprove = await checkAllowance(
         signer,
         provider,
@@ -208,13 +201,7 @@ export const fetchTreasuryFunds = createAsyncThunk(
   "fetch-treasury-funds",
   async () => {
     try {
-      const { ethereum } = window as any;
-      if (!ethereum) {
-        return;
-      }
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = await provider.getSigner();
-
+      const { signer } = getSignerAndProvider()  as any;
       const contract = new ethers.Contract(
         CONTRACT_ADDRESS as string,
         smartcontractABI,
@@ -235,13 +222,7 @@ export const fetchUserRole = createAsyncThunk(
   "fetch-user-role",
   async (walletID: string) => {
     try {
-      const { ethereum } = window as any;
-      if (!ethereum) {
-        return;
-      }
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = await provider.getSigner();
-
+      const { signer } = getSignerAndProvider() as any;
       const contract = new ethers.Contract(
         CONTRACT_ADDRESS as string,
         smartcontractABI,
@@ -387,7 +368,8 @@ const accountSlice = createSlice({
     });
     builder.addCase(checkTokenAllowance.fulfilled, (state, action) => {
       state.loading = false;
-      state.isTokenContractApprove = action.payload?.isTokenContractApprove as boolean;
+      state.isTokenContractApprove = action.payload
+        ?.isTokenContractApprove as boolean;
     });
     builder.addCase(checkTokenAllowance.rejected, (state, action) => {
       state.loading = false;
