@@ -27,7 +27,6 @@ const Funds = () => {
   const [openModal, setOpenModal] = useState(false);
   const [openAvailableFundsModal, setOpenAvailableFundsModal] = useState(false);
   const {
-    walletID,
     loading,
     balance,
     locked_balance,
@@ -39,11 +38,7 @@ const Funds = () => {
   const { addToast } = useToasts();
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    if (walletID !== "") {
-      dispatch(fetchFunds(walletID));
-    }
-  }, [walletID]);
+  
 
   const handleTransferTreasury = (address: string, amount: any) => {
     dispatch(

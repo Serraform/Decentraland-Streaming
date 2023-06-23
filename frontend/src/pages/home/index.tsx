@@ -8,7 +8,6 @@ import { useParams } from 'react-router-dom';
 
 const Home = () => {
   let { listType } = useParams();
-  console.log(listType)
   const renderTable = () => {
     switch (listType) {
       case "streams":
