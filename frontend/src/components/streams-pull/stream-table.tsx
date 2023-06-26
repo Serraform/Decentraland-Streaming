@@ -65,7 +65,7 @@ const StreamTable: React.FC<Props> = ({
         >
           <TransferIcon />{" "}
           <span className="dark:text-white ml-2">
-            Deposit to Treasury
+            Transfer to Treasury
           </span>
         </button>
       </div>
