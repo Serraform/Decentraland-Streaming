@@ -357,11 +357,6 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
                     .toLocaleString()
                     .split(",")[0]
                 )}
-                {renderDetail(
-                  "Stream ID:",
-                  true,
-                  selectedStream?.streamInfo?.Id
-                )}
               </>
             )}
             {(selectedStream.streamType === "relayService") && (
@@ -372,11 +367,6 @@ const EditStream: React.FC<Props> = ({ selectedStream }) => {
                   new Date(selectedStream?.streamInfo?.CreatedAt)
                     .toLocaleString()
                     .split(",")[0]
-                )}
-                {renderDetail(
-                  "Stream ID:",
-                  true,
-                  selectedStream?.streamInfo?.Id
                 )}
               </>
             )}
