@@ -11,11 +11,10 @@ import TransferTreasury from "components/funds/transfer-treasury";
 import TransferAvailableFunds from "components/funds/transfer-available-funds";
 import { useSelector } from "react-redux";
 import { RootState } from "store/configStore";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "store/configStore";
 import {
-  fetchFunds,
   fundWallet,
   approvePulling,
 } from "store/slices/account.slice";
@@ -27,7 +26,6 @@ const Funds = () => {
   const [openModal, setOpenModal] = useState(false);
   const [openAvailableFundsModal, setOpenAvailableFundsModal] = useState(false);
   const {
-    walletID,
     loading,
     balance,
     locked_balance,
@@ -39,11 +37,7 @@ const Funds = () => {
   const { addToast } = useToasts();
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    if (walletID !== "") {
-      dispatch(fetchFunds(walletID));
-    }
-  }, [walletID]);
+  
 
   const handleTransferTreasury = (address: string, amount: any) => {
     dispatch(

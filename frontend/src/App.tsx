@@ -7,7 +7,8 @@ import { ToastProvider } from "react-toast-notifications";
 import useConnectWallet from "hooks/useConnectWallet";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
-  const { connectWallet } = useConnectWallet();
+  const { connectWallet, fetchAccountData, fetchTreasuryData, role, walletID } =
+    useConnectWallet();
   const token = localStorage.getItem("token");
   const theme = localStorage.getItem("theme");
   const dontConnectWallet =
@@ -17,6 +18,13 @@ function App() {
     const root = window.document.documentElement;
     root.classList.add(theme as string);
   }, []);
+
+  useEffect(() => {
+    fetchAccountData();
+  }, [walletID]);
+  useEffect(() => {
+    fetchTreasuryData();
+  }, [walletID, role]);
 
   useEffect(() => {
     if (!dontConnectWallet) {

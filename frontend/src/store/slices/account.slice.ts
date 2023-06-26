@@ -9,8 +9,7 @@ import {
 import jazzicon from "jazzicon-ts";
 import { ethers } from "ethers";
 import usdcABI from "utils/abi/usdcAbi.json";
-
-const smartcontractABI = process.env.REACT_APP_CONTRACT_ABI === "POLYGON"  ? require("utils/abi/smartcontractpolygon_abi.json") : require("utils/abi/smartcontractgoerli_abi.json");
+import smartcontractABI from "utils/abi/smartcontractpolygon_abi.json";
 const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 const USDC_CONTRACT_ADDRESS = process.env.REACT_APP_USDC_CONTRACT_ADDRESS;
 const initialState = {
@@ -29,6 +28,16 @@ const initialState = {
 
 const targetNetworkId = process.env.REACT_APP_TARGET_NETWORK_ID;
 const chainId = process.env.REACT_APP_CHAIN_ID as string;
+const getSignerAndProvider = () => {
+  const { ethereum } = window as any;
+  if (!ethereum || !ethereum.isConnected()) {
+    return;
+  }
+  
+  const provider = new ethers.providers.Web3Provider(ethereum) as any;
+  const signer  = provider.getSigner() as any;
+  return { signer, provider };
+};
 const switchNetwork = async () => {
   const { ethereum } = window as any;
   const currentChainId = await ethereum.request({
@@ -87,7 +96,6 @@ export const approvePulling = createAsyncThunk(
 );
 
 const checkAllowance = async (signer: any, provider: any, account: any) => {
-  
   const USDCContract = new ethers.Contract(
     USDC_CONTRACT_ADDRESS as string,
     usdcABI,
@@ -114,10 +122,11 @@ export const requestConnectWallet = createAsyncThunk(
       });
       const walletAddress = accounts[0];
       const network = await ethereum.request({ method: "net_version" });
+
       const signatureChallenge = await getSignatureChallenge(
         walletAddress,
         network,
-        chainId+""
+        chainId + ""
       );
       const params = [(signatureChallenge as any).data.message, walletAddress];
       const sign = await ethereum.request({
@@ -135,7 +144,7 @@ export const requestConnectWallet = createAsyncThunk(
       dispatchEvent(new Event("storage"));
       await createAccount(accounts[0], signatureVerified.data);
       const addr = accounts[0].slice(2, 10);
-      const identicon = jazzicon(40, parseInt(addr, 20));
+      const identicon = jazzicon(45, parseInt(addr, 16))
       return { walletID: accounts[0], avatar: identicon, balance: 0 };
     } catch (e) {
       return { walletID: "", avatar: "" };
@@ -147,52 +156,92 @@ export const fetchFunds = createAsyncThunk(
   "fetch-funds",
   async (walletID: string) => {
     try {
-      const { ethereum } = window as any;
-      if (!ethereum) {
-        return;
-      }
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = provider.getSigner();
-
+      const { signer } = getSignerAndProvider() as any;
       const contract = new ethers.Contract(
         CONTRACT_ADDRESS as string,
         smartcontractABI,
         signer
       );
-       
       await switchNetwork();
       const accountInfo = await contract.view_sub_info(walletID);
-      const isAdmin = await contract.admin(walletID);
-      let treasuryFunds = 0;
-      if (isAdmin) {
-        treasuryFunds = await contract.treasury();
-      }
       const balance = Number(accountInfo.balance._hex) as any;
-      
+
+      return {
+        balance: balance,
+        locked_balance: Number(accountInfo.lockedBalance._hex) as any,
+      };
+    } catch (e) {
+      console.log(e);
+      throw new Error();
+    }
+  }
+);
+
+export const checkTokenAllowance = createAsyncThunk(
+  "check-token-allowance",
+  async (walletID: string) => {
+    try {
+      const { signer, provider } = getSignerAndProvider()  as any;
       const isTokenContractApprove = await checkAllowance(
         signer,
         provider,
         walletID
       );
-      // get user details by wallet
+      return {
+        isTokenContractApprove: isTokenContractApprove,
+      };
+    } catch (e) {
+      console.log(e);
+      throw new Error();
+    }
+  }
+);
+
+export const fetchTreasuryFunds = createAsyncThunk(
+  "fetch-treasury-funds",
+  async () => {
+    try {
+      const { signer } = getSignerAndProvider()  as any;
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESS as string,
+        smartcontractABI,
+        signer
+      );
+      const treasuryFunds = await contract.treasury();
+      return {
+        treasuryFunds: treasuryFunds,
+      };
+    } catch (e) {
+      console.log(e);
+      throw new Error();
+    }
+  }
+);
+
+export const fetchUserRole = createAsyncThunk(
+  "fetch-user-role",
+  async (walletID: string) => {
+    try {
+      const { signer } = getSignerAndProvider() as any;
+      const contract = new ethers.Contract(
+        CONTRACT_ADDRESS as string,
+        smartcontractABI,
+        signer
+      );
+      const isAdmin = await contract.admin(walletID);
       const accountDetails = await getAccountDetailsByWalletId(walletID);
       if ((accountDetails as any).data.role !== "admin" && isAdmin) {
         updateAccount({ walletID, Role: "admin" });
       }
       const { isPremium, discount } = accountDetails.data as any;
       return {
-        balance: balance,
-        locked_balance: Number(accountInfo.lockedBalance._hex) as any,
-        isTokenContractApprove: isTokenContractApprove,
         isPremium: isPremium,
         discount: discount,
         role: isAdmin ? "admin" : "user",
-        treasuryFunds: treasuryFunds,
       };
     } catch (e) {
       console.log(e);
       throw new Error();
-     
     }
   }
 );
@@ -267,13 +316,7 @@ const accountSlice = createSlice({
     builder.addCase(fetchFunds.fulfilled, (state, action) => {
       state.loading = false;
       state.balance = action.payload?.balance;
-      state.treasuryFunds = action.payload?.treasuryFunds as number;
       state.locked_balance = action.payload?.locked_balance;
-      state.isTokenContractApprove = action.payload
-        ?.isTokenContractApprove as boolean;
-      state.isPremium = action.payload?.isPremium;
-      state.discount = action.payload?.discount;
-      state.role = action.payload?.role as string;
     });
     builder.addCase(fetchFunds.rejected, (state, action) => {
       state.loading = false;
@@ -296,6 +339,39 @@ const accountSlice = createSlice({
       state.isTokenContractApprove = true;
     });
     builder.addCase(approvePulling.rejected, (state, action) => {
+      state.loading = false;
+    });
+    builder.addCase(fetchTreasuryFunds.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchTreasuryFunds.fulfilled, (state, action) => {
+      state.loading = false;
+      state.treasuryFunds = action.payload?.treasuryFunds;
+    });
+    builder.addCase(fetchTreasuryFunds.rejected, (state, action) => {
+      state.loading = false;
+    });
+    builder.addCase(fetchUserRole.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchUserRole.fulfilled, (state, action) => {
+      state.loading = false;
+      state.isPremium = action.payload?.isPremium;
+      state.discount = action.payload?.discount;
+      state.role = action.payload?.role as any;
+    });
+    builder.addCase(fetchUserRole.rejected, (state, action) => {
+      state.loading = false;
+    });
+    builder.addCase(checkTokenAllowance.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(checkTokenAllowance.fulfilled, (state, action) => {
+      state.loading = false;
+      state.isTokenContractApprove = action.payload
+        ?.isTokenContractApprove as boolean;
+    });
+    builder.addCase(checkTokenAllowance.rejected, (state, action) => {
       state.loading = false;
     });
   },
