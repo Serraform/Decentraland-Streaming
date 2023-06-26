@@ -66,7 +66,7 @@ const ReviewVaults = (props: any) => {
         <div className="items-start flex flex-col justify-start w-100 dark:bg-[#1a1d1e]">
           <div className="px-[2rem] py-[20px]">
             <h1 className="font-montserratbold text-black text-start b-[40px] dark:text-white">
-              Confirm treasury deposit
+              Confirm treasury transfer
             </h1>
             <div className="mt-[15px] mb-[10px]">
               <ul>
@@ -100,7 +100,7 @@ const ReviewVaults = (props: any) => {
                   onClick={() => handleTransfering()}
                 >
                   {loading && <div className="basic mr-[1rem]" />}
-                  Deposit
+                  Transfer
                 </button>
               </div>
             </div>
